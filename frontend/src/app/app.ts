@@ -131,6 +131,7 @@ export interface StressTestRun {
   custom_ir_shock: number;
   custom_unemp_shock?: number;
   custom_re_shock: number;
+  npl_stress?: number;
   rejection_reason?: string;
   created_at: string;
   car_impact?: {
@@ -1015,6 +1016,21 @@ export class App implements OnInit {
       this.selectedRunToReview.set(target);
       this.fetchRunReviewDetail(target.id);
     }
+  }
+
+  openApproverTab() {
+    this.activeTab.set('approver');
+    const approverEligible = this.allRuns().filter(r => r.status === 'PENDING_APPROVAL' || r.status === 'APPROVED');
+    const target = this.selectedApproverRun() || (approverEligible.length > 0 ? approverEligible[0] : null);
+    if (target) {
+      this.selectedApproverRun.set(target);
+      this.fetchRunReviewDetail(target.id);
+    }
+  }
+
+  selectApproverRun(run: StressTestRun) {
+    this.selectedApproverRun.set(run);
+    this.fetchRunReviewDetail(run.id);
   }
 
   getStageCount(stageObj: any, stageNum: number | string): number {

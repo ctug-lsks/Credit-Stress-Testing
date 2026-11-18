@@ -96,7 +96,7 @@
             </button>
           }
           @if (canAccess('approver')) {
-            <button (click)="activeTab.set('approver')"
+            <button (click)="openApproverTab()"
                     [class]="activeTab() === 'approver' ? 'border-slate-900 text-slate-900 font-bold' : 'border-transparent text-slate-600 hover:text-slate-900'"
                     class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
               {{ t('tab_approver') }}
@@ -645,7 +645,7 @@
                   </button>
                   <button type="button" (click)="makerRunFilter.set('PENDING')"
                           class="px-2 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
-                          [class]="makerRunFilter() === 'PENDING' ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'">
+                          [class]="makerRunFilter() === 'PENDING' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'">
                     {{ currentLang() === 'vi' ? 'Chờ phê duyệt' : 'Pending Approval' }}
                   </button>
                   <button type="button" (click)="makerRunFilter.set('APPROVED')"
@@ -1304,16 +1304,16 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5">
                   @for (run of approverRuns(); track run.id) {
                     <button type="button"
-                            (click)="selectedApproverRun.set(run)"
+                            (click)="selectApproverRun(run)"
                             class="p-3 text-left rounded-lg border transition-all cursor-pointer shadow-2xs hover:shadow-xs flex flex-col justify-between"
-                            [class]="selectedApproverRun()?.id === run.id ? 'bg-purple-50/70 border-purple-400 ring-1 ring-purple-300' : 'bg-slate-50 border-slate-200 hover:bg-slate-100/70'">
+                            [class]="selectedApproverRun()?.id === run.id ? 'bg-white border-slate-900 ring-1 ring-slate-900 shadow-xs' : 'bg-white border-slate-200 hover:border-slate-400'">
                       <div class="flex items-center justify-between gap-1 mb-1">
-                        <span class="font-bold text-xs" [class]="selectedApproverRun()?.id === run.id ? 'text-purple-900' : 'text-slate-900'">
+                        <span class="font-bold text-xs" [class]="selectedApproverRun()?.id === run.id ? 'text-slate-950 font-bold' : 'text-slate-800'">
                           {{ run.run_code }}
                         </span>
                         <span class="px-2 py-0.5 rounded text-[10px] font-bold"
-                              [class]="run.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800' :
-                                      (run.status === 'PENDING_APPROVAL' ? 'bg-purple-100 text-purple-800 border border-purple-300' : 'bg-amber-100 text-amber-800')">
+                              [class]="run.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                                      (run.status === 'PENDING_APPROVAL' ? 'bg-slate-900 text-white' : 'bg-amber-50 text-amber-700 border border-amber-200')">
                           {{ getStatusLabel(run.status) }}
                         </span>
                       </div>
@@ -1339,39 +1339,39 @@
             </div>
 
                         @if (selectedApproverRun()) {
-              <div class="p-4 rounded-xl bg-purple-50/40 border border-purple-200 space-y-3">
-                <div class="flex items-center justify-between border-b border-purple-100 pb-2">
+              <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
+                <div class="flex items-center justify-between border-b border-slate-200 pb-2">
                   <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-purple-700"></span>
-                    <h3 class="text-xs font-bold text-purple-900 uppercase tracking-wide">
+                    <span class="w-2.5 h-2.5 rounded-full bg-slate-900"></span>
+                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wide">
                       Bối Cảnh Kịch Bản và Tờ Trình Thẩm Định
                     </h3>
                   </div>
-                  <span class="text-xs font-bold text-purple-800 bg-white px-2.5 py-0.5 rounded border border-purple-200">
+                  <span class="text-xs font-bold text-slate-800 bg-white px-2.5 py-0.5 rounded border border-slate-200">
                     {{ selectedApproverRun()!.run_code }} • {{ selectedApproverRun()!.scenario_name }}
                   </span>
                 </div>
 
                                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                  <div class="p-2 bg-white rounded-lg border border-purple-100">
+                  <div class="p-2 bg-white rounded-lg border border-slate-200">
                     <span class="text-slate-500 text-[11px]">Cú sốc GDP:</span>
                     <div class="font-bold text-blue-700 text-sm">{{ formatShock(selectedApproverRun()!.custom_gdp_shock, 100, 1) }}%</div>
                   </div>
-                  <div class="p-2 bg-white rounded-lg border border-purple-100">
+                  <div class="p-2 bg-white rounded-lg border border-slate-200">
                     <span class="text-slate-500 text-[11px]">Cú sốc Lãi suất:</span>
                     <div class="font-bold text-amber-700 text-sm">+{{ formatShock(selectedApproverRun()!.custom_ir_shock, 10000, 0) }} bps</div>
                   </div>
-                  <div class="p-2 bg-white rounded-lg border border-purple-100">
+                  <div class="p-2 bg-white rounded-lg border border-slate-200">
                     <span class="text-slate-500 text-[11px]">Cú sốc Thất nghiệp:</span>
                     <div class="font-bold text-emerald-700 text-sm">+{{ formatShock(selectedApproverRun()!.custom_unemp_shock, 100, 1) }}%</div>
                   </div>
-                  <div class="p-2 bg-white rounded-lg border border-purple-100">
+                  <div class="p-2 bg-white rounded-lg border border-slate-200">
                     <span class="text-slate-500 text-[11px]">Cú sốc Bất động sản:</span>
                     <div class="font-bold text-red-700 text-sm">{{ formatShock(selectedApproverRun()!.custom_re_shock, 100, 1) }}%</div>
                   </div>
                 </div>
 
-                                <div class="p-3 bg-white rounded-lg border border-purple-100 text-xs space-y-1">
+                                <div class="p-3 bg-white rounded-lg border border-slate-200 text-xs space-y-1">
                   <div class="font-bold text-slate-800 flex items-center justify-between">
                     <span>Ý kiến xác nhận của Trưởng phòng Quản lý rủi ro:</span>
                     <span class="font-medium text-slate-600">{{ selectedApproverRun()!.checker_name || 'Trần Thị Bình' }}</span>
@@ -1466,51 +1466,57 @@
                             <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3.5">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
                   <div class="flex items-center gap-2">
-                    <div class="w-2 h-2 rounded-full bg-purple-600"></div>
+                    <div class="w-2 h-2 rounded-full bg-slate-900"></div>
                     <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wide">
-                      2. Ma Trận 3 Kịch Bản Vĩ Mô
+                      2. Ma Trận Dịch Chuyển Nhóm Nợ IFRS 9
                     </h3>
                   </div>
-                  <span class="whitespace-nowrap shrink-0 text-xs font-bold text-purple-700 bg-purple-50 px-2.5 py-0.5 rounded border border-purple-200">
-                    Cơ sở • Căng thẳng • Khủng hoảng
+                  <span class="whitespace-nowrap shrink-0 text-xs font-bold text-red-600 bg-red-50 px-2.5 py-0.5 rounded border border-red-200">
+                    {{ getReviewStageMigration()?.sicr_count || 0 }} SICR
                   </span>
                 </div>
 
-                <div class="grid grid-cols-3 gap-3 pt-1">
-                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2 text-center">
-                    <div class="text-xs font-bold text-slate-800">Kịch bản Cơ sở</div>
-                    <div class="pt-1 border-t border-slate-200">
-                      <div class="text-xs text-slate-500">Trích thêm (ΔPS):</div>
-                      <div class="text-sm font-bold text-slate-800">+4,3 tỷ</div>
+                <div class="grid grid-cols-3 gap-3 pt-1 text-center">
+                  <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+                    <div class="text-[11px] font-semibold text-slate-700">{{ currentLang() === 'vi' ? 'Nhóm 1 (Chuẩn)' : 'Stage 1' }}</div>
+                    <div class="text-2xl font-bold text-emerald-700 mt-1">
+                      {{ getStageCount(getReviewStageMigration()?.post_stress, 1) }}
                     </div>
-                    <div class="pt-1 border-t border-slate-200">
-                      <div class="text-xs text-slate-500">Tỷ lệ CAR:</div>
-                      <div class="text-sm font-bold text-emerald-700">19,41%</div>
+                    <div class="text-[10px] text-slate-500">{{ currentLang() === 'vi' ? 'Dự phòng 12T' : '12-month ECL' }}</div>
+                  </div>
+
+                  <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+                    <div class="text-[11px] font-semibold text-slate-700">{{ currentLang() === 'vi' ? 'Nhóm 2 (Gia tăng)' : 'Stage 2' }}</div>
+                    <div class="text-2xl font-bold text-amber-700 mt-1">
+                      {{ getStageCount(getReviewStageMigration()?.post_stress, 2) }}
+                    </div>
+                    <div class="text-[10px] text-amber-700">
+                      +{{ getReviewStageMigration()?.migrated_to_stage2 || 0 }} {{ currentLang() === 'vi' ? 'từ Nhóm 1' : 'from S1' }}
                     </div>
                   </div>
 
-                                    <div class="p-3 bg-amber-50/50 rounded-lg border border-amber-200 space-y-2 text-center">
-                    <div class="text-xs font-bold text-amber-900">Căng thẳng Vừa</div>
-                    <div class="pt-1 border-t border-amber-200">
-                      <div class="text-xs text-amber-700">Trích thêm (ΔPS):</div>
-                      <div class="text-sm font-bold text-red-700">+471,4 tỷ</div>
+                  <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+                    <div class="text-[11px] font-semibold text-slate-700">{{ currentLang() === 'vi' ? 'Nhóm 3 (Nợ xấu)' : 'Stage 3' }}</div>
+                    <div class="text-2xl font-bold text-red-700 mt-1">
+                      {{ getStageCount(getReviewStageMigration()?.post_stress, 3) }}
                     </div>
-                    <div class="pt-1 border-t border-amber-200">
-                      <div class="text-xs text-amber-700">Tỷ lệ CAR:</div>
-                      <div class="text-sm font-bold text-red-700">2,18%</div>
+                    <div class="text-[10px] text-red-700">
+                      +{{ getReviewStageMigration()?.migrated_to_stage3 || 0 }} {{ currentLang() === 'vi' ? 'suy giảm' : 'impaired' }}
                     </div>
                   </div>
+                </div>
 
-                                    <div class="p-3 bg-red-50/50 rounded-lg border border-red-200 space-y-2 text-center">
-                    <div class="text-xs font-bold text-rose-900">Khủng hoảng Sâu</div>
-                    <div class="pt-1 border-t border-red-200">
-                      <div class="text-xs text-red-700">Trích thêm (ΔPS):</div>
-                      <div class="text-sm font-bold text-rose-800">+1.110 tỷ</div>
-                    </div>
-                    <div class="pt-1 border-t border-red-200">
-                      <div class="text-xs text-red-700">Tỷ lệ CAR:</div>
-                      <div class="text-sm font-bold text-rose-900">Dưới 0%</div>
-                    </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1 text-xs">
+                  <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between">
+                    <span class="text-slate-600 flex items-center gap-1.5">
+                      <i class="fa-solid fa-triangle-exclamation text-amber-600"></i>
+                      <span>Rủi ro tăng đáng kể (SICR):</span>
+                    </span>
+                    <strong class="text-slate-900">{{ getReviewStageMigration()?.sicr_count || 0 }} / 100 HĐ</strong>
+                  </div>
+                  <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between">
+                    <span class="text-slate-600">Tỷ lệ Nợ xấu NPL sau sốc:</span>
+                    <strong class="text-red-700 font-bold">{{ ((getStageCount(getReviewStageMigration()?.post_stress, 3) / 100) * 100).toFixed(1) }}%</strong>
                   </div>
                 </div>
               </div>
@@ -1521,7 +1527,7 @@
                     <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-2.5 gap-2">
               <div class="flex items-center gap-2">
-                <div class="w-2 h-2 rounded-full bg-purple-700"></div>
+                <div class="w-2 h-2 rounded-full bg-slate-900"></div>
                 <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wide">
                   3 Quyết Định Điều Hành Chiến Lược
                 </h3>
@@ -1567,7 +1573,7 @@
                            class="w-full text-xs font-bold text-slate-900 bg-white border border-slate-300 rounded px-2 py-1 focus:border-purple-600 focus:outline-none disabled:bg-slate-100 disabled:text-slate-600"
                            title="Giám đốc có thể chỉnh sửa tiêu đề điều lệnh">
 
-                                        <div class="p-2 bg-purple-50/50 rounded-lg border border-purple-100 space-y-1.5">
+                                        <div class="p-2 bg-purple-50/50 rounded-lg border border-slate-200 space-y-1.5">
                       <div class="text-[10px] text-purple-800 font-bold flex items-center gap-1">
                         <i class="fa-solid fa-wand-magic-sparkles text-purple-600"></i> Đề cử AI:
                       </div>
@@ -1645,7 +1651,7 @@
                            class="w-full text-xs font-bold text-slate-900 bg-white border border-slate-300 rounded px-2 py-1 focus:border-purple-600 focus:outline-none disabled:bg-slate-100 disabled:text-slate-600"
                            title="Giám đốc có thể chỉnh sửa tiêu đề điều lệnh">
 
-                                        <div class="p-2 bg-purple-50/50 rounded-lg border border-purple-100 space-y-1.5">
+                                        <div class="p-2 bg-purple-50/50 rounded-lg border border-slate-200 space-y-1.5">
                       <div class="text-[10px] text-purple-800 font-bold flex items-center gap-1">
                         <i class="fa-solid fa-wand-magic-sparkles text-purple-600"></i> Đề cử AI:
                       </div>
@@ -1723,7 +1729,7 @@
                            class="w-full text-xs font-bold text-slate-900 bg-white border border-slate-300 rounded px-2 py-1 focus:border-purple-600 focus:outline-none disabled:bg-slate-100 disabled:text-slate-600"
                            title="Giám đốc có thể chỉnh sửa tiêu đề điều lệnh">
 
-                                        <div class="p-2 bg-purple-50/50 rounded-lg border border-purple-100 space-y-1.5">
+                                        <div class="p-2 bg-purple-50/50 rounded-lg border border-slate-200 space-y-1.5">
                       <div class="text-[10px] text-purple-800 font-bold flex items-center gap-1">
                         <i class="fa-solid fa-wand-magic-sparkles text-purple-600"></i> Đề cử AI:
                       </div>
