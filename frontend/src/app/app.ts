@@ -1032,6 +1032,25 @@ export class App implements OnInit {
     }
   }
 
+  onMacroInputChange(type: 'gdp' | 'ir' | 'unemp' | 're', val: any) {
+    if (val === null || val === undefined || val === '') return;
+    const num = Number(val);
+    if (isNaN(num)) return;
+
+    if (type === 'gdp') {
+      this.gdpShock.set(num);
+    } else if (type === 'ir') {
+      this.irShock.set(Math.max(0, Math.round(num)));
+    } else if (type === 'unemp') {
+      this.unempShock.set(Math.max(0, num));
+    } else if (type === 're') {
+      this.reShock.set(num);
+    }
+
+    this.selectedPreset.set('CUSTOM');
+    this.runSimulation();
+  }
+
   applyPreset(preset: 'BASELINE' | 'ADVERSE' | 'SEVERE') {
     this.selectedPreset.set(preset);
     if (preset === 'BASELINE') {

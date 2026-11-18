@@ -345,11 +345,19 @@
               <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-2">
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-semibold text-slate-700">{{ t('shock_gdp') }}</span>
-                  <span class="font-bold text-blue-700 px-2 py-0.5 bg-white border border-slate-200 rounded text-xs">
-                    {{ gdpShock() > 0 ? '+' : '' }}{{ gdpShock() }}%
-                  </span>
+                  <div class="flex items-center bg-white border border-slate-300 hover:border-blue-400 focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-500 rounded px-1.5 py-0.5 transition-all shadow-2xs cursor-text">
+                    <input type="number"
+                           [ngModel]="gdpShock()"
+                           (ngModelChange)="onMacroInputChange('gdp', $event)"
+                           step="0.1"
+                           min="-10"
+                           max="10"
+                           class="w-12 text-xs font-bold text-blue-700 bg-transparent text-right outline-none focus:ring-0 p-0 border-none appearance-none"
+                           title="Nhập số phần trăm sốc GDP">
+                    <span class="text-xs font-bold text-blue-700 ml-0.5 select-none">%</span>
+                  </div>
                 </div>
-                <input type="range" min="-5.0" max="2.0" step="0.25"
+                <input type="range" min="-5.0" max="2.0" step="0.05"
                        [ngModel]="gdpShock()" (ngModelChange)="gdpShock.set($event); selectedPreset.set('CUSTOM'); runSimulation()"
                        class="w-full accent-blue-600 cursor-pointer">
                 <div class="flex justify-between text-[11px] text-slate-500">
@@ -363,11 +371,20 @@
               <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-2">
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-semibold text-slate-700">{{ t('shock_ir') }}</span>
-                  <span class="font-bold text-amber-700 px-2 py-0.5 bg-white border border-slate-200 rounded text-xs">
-                    +{{ irShock() }} bps
-                  </span>
+                  <div class="flex items-center bg-white border border-slate-300 hover:border-amber-400 focus-within:border-amber-600 focus-within:ring-1 focus-within:ring-amber-500 rounded px-1.5 py-0.5 transition-all shadow-2xs cursor-text">
+                    <span class="text-xs font-bold text-amber-700 select-none mr-0.5">+</span>
+                    <input type="number"
+                           [ngModel]="irShock()"
+                           (ngModelChange)="onMacroInputChange('ir', $event)"
+                           step="25"
+                           min="0"
+                           max="2000"
+                           class="w-14 text-xs font-bold text-amber-700 bg-transparent text-right outline-none focus:ring-0 p-0 border-none appearance-none"
+                           title="Nhập số bps sốc lãi suất">
+                    <span class="text-xs font-bold text-amber-700 ml-0.5 select-none">bps</span>
+                  </div>
                 </div>
-                <input type="range" min="0" max="600" step="25"
+                <input type="range" min="0" max="600" step="5"
                        [ngModel]="irShock()" (ngModelChange)="irShock.set($event); selectedPreset.set('CUSTOM'); runSimulation()"
                        class="w-full accent-amber-600 cursor-pointer">
                 <div class="flex justify-between text-[11px] text-slate-500">
@@ -381,11 +398,20 @@
               <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-2">
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-semibold text-slate-700">{{ t('shock_unemp') }}</span>
-                  <span class="font-bold text-emerald-700 px-2 py-0.5 bg-white border border-slate-200 rounded text-xs">
-                    +{{ unempShock() }}%
-                  </span>
+                  <div class="flex items-center bg-white border border-slate-300 hover:border-emerald-400 focus-within:border-emerald-600 focus-within:ring-1 focus-within:ring-emerald-500 rounded px-1.5 py-0.5 transition-all shadow-2xs cursor-text">
+                    <span class="text-xs font-bold text-emerald-700 select-none mr-0.5">+</span>
+                    <input type="number"
+                           [ngModel]="unempShock()"
+                           (ngModelChange)="onMacroInputChange('unemp', $event)"
+                           step="0.1"
+                           min="0"
+                           max="30"
+                           class="w-12 text-xs font-bold text-emerald-700 bg-transparent text-right outline-none focus:ring-0 p-0 border-none appearance-none"
+                           title="Nhập số phần trăm tăng thất nghiệp">
+                    <span class="text-xs font-bold text-emerald-700 ml-0.5 select-none">%</span>
+                  </div>
                 </div>
-                <input type="range" min="0.0" max="8.0" step="0.5"
+                <input type="range" min="0.0" max="8.0" step="0.1"
                        [ngModel]="unempShock()" (ngModelChange)="unempShock.set($event); selectedPreset.set('CUSTOM'); runSimulation()"
                        class="w-full accent-emerald-600 cursor-pointer">
                 <div class="flex justify-between text-[11px] text-slate-500">
@@ -399,11 +425,19 @@
               <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-2">
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-semibold text-slate-700">{{ t('shock_re') }}</span>
-                  <span class="font-bold text-rose-700 px-2 py-0.5 bg-white border border-slate-200 rounded text-xs">
-                    {{ reShock() }}%
-                  </span>
+                  <div class="flex items-center bg-white border border-slate-300 hover:border-rose-400 focus-within:border-rose-600 focus-within:ring-1 focus-within:ring-rose-500 rounded px-1.5 py-0.5 transition-all shadow-2xs cursor-text">
+                    <input type="number"
+                           [ngModel]="reShock()"
+                           (ngModelChange)="onMacroInputChange('re', $event)"
+                           step="1"
+                           min="-100"
+                           max="50"
+                           class="w-12 text-xs font-bold text-rose-700 bg-transparent text-right outline-none focus:ring-0 p-0 border-none appearance-none"
+                           title="Nhập số phần trăm sụt giảm giá BĐS">
+                    <span class="text-xs font-bold text-rose-700 ml-0.5 select-none">%</span>
+                  </div>
                 </div>
-                <input type="range" min="-50" max="0" step="5"
+                <input type="range" min="-50" max="0" step="1"
                        [ngModel]="reShock()" (ngModelChange)="reShock.set($event); selectedPreset.set('CUSTOM'); runSimulation()"
                        class="w-full accent-rose-600 cursor-pointer">
                 <div class="flex justify-between text-[11px] text-slate-500">
