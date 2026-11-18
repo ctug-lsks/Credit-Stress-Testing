@@ -342,7 +342,34 @@ export const TRANSLATIONS: { [lang: string]: { [key: string]: string } } = {
 })
 export class App implements OnInit {
   private http = inject(HttpClient);
-  readonly API_BASE = 'http://127.0.0.1:8000/api';
+  apiUrlOverride = signal<string>(typeof window !== 'undefined' ? localStorage.getItem('CUSTOM_API_BASE') || '' : '');
+  showApiConfigModal = signal<boolean>(false);
+
+  get API_BASE(): string {
+    const custom = this.apiUrlOverride();
+    if (custom && custom.trim()) {
+      return custom.trim().replace(/\/$/, '');
+    }
+    if (typeof window !== 'undefined') {
+      const host = window.location.hostname;
+      if (host === 'localhost' || host === '127.0.0.1') {
+        return 'http://127.0.0.1:8000/api';
+      }
+    }
+    return 'https://credit-stress-testing.onrender.com/api';
+  }
+
+  saveCustomApi(url: string) {
+    if (url && url.trim()) {
+      localStorage.setItem('CUSTOM_API_BASE', url.trim());
+      this.apiUrlOverride.set(url.trim());
+    } else {
+      localStorage.removeItem('CUSTOM_API_BASE');
+      this.apiUrlOverride.set('');
+    }
+    this.showApiConfigModal.set(false);
+    this.fetchInitialData();
+  }
 
   // Language and Auth State
   currentLang = signal<'vi' | 'en'>('vi');

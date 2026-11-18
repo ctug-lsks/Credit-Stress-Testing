@@ -32,6 +32,14 @@
             </a>
           }
 
+          <!-- API Server Connection Config -->
+          <button (click)="showApiConfigModal.set(true)"
+                  class="px-2.5 py-1 text-xs font-medium rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 shadow-sm flex items-center gap-1.5 transition-colors cursor-pointer"
+                  title="Cấu hình URL máy chủ Backend (Localhost / Render Cloud)">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span class="hidden sm:inline font-mono text-[11px]">{{ API_BASE.includes('127.0.0.1') ? 'Local API' : 'Cloud API' }}</span>
+          </button>
+
           <!-- Language Switcher Button -->
           <button (click)="toggleLanguage()"
                   class="px-2.5 py-1 text-xs font-medium rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 shadow-sm flex items-center space-x-1 transition-colors">
@@ -2735,6 +2743,66 @@
           <span class="text-slate-400">Kiểm tra tính toàn vẹn 100 hợp đồng danh mục IFRS 9</span>
           <button (click)="checkerContractModalOpen.set(false)" class="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-md cursor-pointer">
             {{ currentLang() === 'vi' ? 'Đóng Bảng Kê' : 'Close' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ============================================================== -->
+  <!-- MODAL CẤU HÌNH MÁY CHỦ BACKEND API (LOCAL / RENDER CLOUD) -->
+  <!-- ============================================================== -->
+  @if (showApiConfigModal()) {
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 animate-fade-in">
+      <div class="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-lg w-full p-6 text-slate-800">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <h3 class="font-bold text-base text-slate-900">Cấu Hình Kết Nối Backend API</h3>
+          </div>
+          <button (click)="showApiConfigModal.set(false)" class="text-slate-400 hover:text-slate-600 text-lg font-bold cursor-pointer">&times;</button>
+        </div>
+
+        <div class="my-4 space-y-3 text-sm">
+          <p class="text-xs text-slate-600">
+            Hệ thống hỗ trợ chuyển đổi linh hoạt giữa máy chủ máy cục bộ (Localhost) và máy chủ đám mây (Render Cloud).
+          </p>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">URL Hiện Tại Đang Sử Dụng:</label>
+            <div class="p-2.5 bg-slate-100 rounded border border-slate-200 font-mono text-xs text-blue-700 break-all">
+              {{ API_BASE }}
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Nhập URL Backend Mới (ví dụ trên Render):</label>
+            <input type="text" #customApiInput [value]="API_BASE"
+                   placeholder="https://credit-stress-testing.onrender.com/api"
+                   class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none font-mono">
+            <span class="text-[11px] text-slate-400 mt-1 block">Lưu ý: URL phải kết thúc bằng <code>/api</code>.</span>
+          </div>
+
+          <div class="flex items-center gap-2 pt-2">
+            <button (click)="saveCustomApi('http://127.0.0.1:8000/api')"
+                    class="px-2.5 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-700 rounded border border-slate-200 font-medium cursor-pointer">
+              Sử Dụng Localhost
+            </button>
+            <button (click)="saveCustomApi('https://credit-stress-testing.onrender.com/api')"
+                    class="px-2.5 py-1.5 text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 rounded border border-blue-200 font-medium cursor-pointer">
+              Sử Dụng Render Mặc Định
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+          <button (click)="showApiConfigModal.set(false)"
+                  class="px-4 py-2 text-xs text-slate-600 hover:bg-slate-100 rounded-lg font-medium cursor-pointer">
+            Hủy
+          </button>
+          <button (click)="saveCustomApi(customApiInput.value)"
+                  class="px-4 py-2 text-xs bg-blue-700 hover:bg-blue-800 text-white rounded-lg font-semibold shadow-xs cursor-pointer">
+            Lưu & Kết Nối Lại
           </button>
         </div>
       </div>
