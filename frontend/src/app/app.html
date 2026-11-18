@@ -977,7 +977,7 @@
                       @for (sec of getReviewSectorBreakdown(); track sec.sector_code) {
                         <div class="text-xs">
                           <div class="flex justify-between font-medium text-slate-700 mb-1">
-                            <span class="truncate max-w-[180px]">{{ sec.sector_name }} ({{ sec.contract_count }})</span>
+                            <span class="font-medium text-slate-800">{{ getSectorName(sec.sector_code) || sec.sector_name }} ({{ sec.contract_count }})</span>
                             <span class="font-bold text-slate-900 whitespace-nowrap">
                               {{ formatVND(sec.stressed_ecl) }}
                               <span class="text-rose-600 text-[11px] font-normal">(+{{ formatVND(sec.delta_provision) }})</span>
@@ -1432,31 +1432,31 @@
                   </span>
                 </div>
 
-                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-1">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                   @for (sec of currentSectorBreakdown(); track sec.sector_code) {
-                    <div class="p-3 rounded-xl border flex flex-col justify-between transition-all"
-                         [class]="sec.sector_code === 'REAL_ESTATE' ? 'bg-red-50/70 border-red-300 ring-1 ring-rose-200' : (sec.sector_code === 'CONSTRUCTION' ? 'bg-amber-50/50 border-amber-200' : 'bg-slate-50/70 border-slate-200 hover:border-slate-300')">
+                    <div class="p-3.5 rounded-xl border flex flex-col justify-between transition-all bg-white"
+                         [class]="sec.sector_code === 'REAL_ESTATE' ? 'border-red-300 shadow-2xs' : (sec.sector_code === 'CONSTRUCTION' ? 'border-amber-300 shadow-2xs' : 'border-slate-200 hover:border-slate-300 shadow-2xs')">
                       <div>
-                        <div class="flex items-center justify-between gap-1 mb-1">
-                          <span class="text-[11px] font-bold text-slate-800 flex items-center gap-1.5 truncate">
-                            <i class="fa-solid text-xs" [class]="getSectorBadgeClass(sec.sector_code).icon" [class.text-rose-600]="sec.sector_code === 'REAL_ESTATE'" [class.text-amber-600]="sec.sector_code === 'CONSTRUCTION'" [class.text-slate-500]="sec.sector_code !== 'REAL_ESTATE' && sec.sector_code !== 'CONSTRUCTION'"></i>
-                            <span class="truncate">{{ getSectorName(sec.sector_code) }}</span>
+                        <div class="flex items-center justify-between gap-2 mb-1.5">
+                          <span class="text-xs font-bold text-slate-900 flex items-center gap-1.5 whitespace-nowrap">
+                            <i class="fa-solid text-xs shrink-0" [class]="getSectorBadgeClass(sec.sector_code).icon" [class.text-red-600]="sec.sector_code === 'REAL_ESTATE'" [class.text-amber-600]="sec.sector_code === 'CONSTRUCTION'" [class.text-slate-600]="sec.sector_code !== 'REAL_ESTATE' && sec.sector_code !== 'CONSTRUCTION'"></i>
+                            <span>{{ getSectorName(sec.sector_code) }}</span>
                           </span>
-                          <span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded shrink-0 whitespace-nowrap"
-                                [class]="sec.sector_code === 'REAL_ESTATE' ? 'bg-rose-200/80 text-rose-800' : 'bg-slate-200/80 text-slate-700'">
+                          <span class="text-[10px] font-bold px-2 py-0.5 rounded shrink-0 whitespace-nowrap border"
+                                [class]="sec.sector_code === 'REAL_ESTATE' ? 'bg-rose-50 text-red-700 border-red-200' : 'bg-slate-100 text-slate-700 border-slate-200'">
                             {{ ((sec.stressed_ecl / (simulationResult()?.summary?.total_stressed_ecl || 1)) * 100).toFixed(1) }}% ECL
                           </span>
                         </div>
-                        <div class="text-base font-extrabold text-slate-900 mt-0.5">
+                        <div class="text-base font-extrabold text-slate-900 mt-1">
                           {{ formatVND(sec.stressed_ecl) }}
                         </div>
-                        <div class="text-[10px] font-semibold text-rose-600 mt-0.5">
+                        <div class="text-[11px] font-semibold text-rose-600 mt-0.5">
                           ΔPS: +{{ formatVND(sec.delta_provision) }}
                         </div>
                       </div>
-                      <div class="pt-2 mt-2 border-t border-slate-200/60 flex items-center justify-between text-[10px] text-slate-500">
+                      <div class="pt-2 mt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
                         <span>{{ sec.contract_count }} HĐ tín dụng</span>
-                        <span>Dư nợ: {{ formatVND(sec.ead) }}</span>
+                        <span class="font-medium text-slate-700">Dư nợ: {{ formatVND(sec.ead) }}</span>
                       </div>
                     </div>
                   }
