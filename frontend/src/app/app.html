@@ -9,7 +9,7 @@
 
         <!-- Brand and System Name -->
         <div class="flex items-center space-x-3">
-          <div class="w-9 h-9 rounded-lg bg-slate-800 flex items-center justify-center text-white font-bold text-sm shadow-xs">
+          <div class="w-9 h-9 rounded-lg bg-blue-700 flex items-center justify-center text-white font-bold text-sm shadow-sm">
             VR
           </div>
           <div>
@@ -35,9 +35,9 @@
           <!-- Language Switcher Button -->
           <button (click)="toggleLanguage()"
                   class="px-2.5 py-1 text-xs font-medium rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 shadow-sm flex items-center space-x-1 transition-colors">
-            <span [class.font-bold]="currentLang() === 'vi'" [class.text-slate-900]="currentLang() === 'vi'">VI</span>
+            <span [class.font-bold]="currentLang() === 'vi'" [class.text-blue-700]="currentLang() === 'vi'">VI</span>
             <span class="text-slate-300">|</span>
-            <span [class.font-bold]="currentLang() === 'en'" [class.text-slate-900]="currentLang() === 'en'">EN</span>
+            <span [class.font-bold]="currentLang() === 'en'" [class.text-blue-700]="currentLang() === 'en'">EN</span>
           </button>
 
           <!-- User Account Info (If logged in) -->
@@ -47,19 +47,19 @@
                 <span class="text-xs font-semibold text-slate-800">{{ currentUser()!.full_name }}</span>
               </div>
               <span class="px-2 py-0.5 rounded text-xs font-semibold border"
-                    [class]="currentUser()!.role === 'MAKER' ? 'bg-slate-100 text-slate-700 border-slate-300' :
-                            (currentUser()!.role === 'CHECKER' ? 'bg-amber-50/80 text-amber-800 border-amber-200' :
-                            (currentUser()!.role === 'APPROVER' ? 'bg-slate-100 text-slate-700 border-slate-300' : 'bg-slate-100 text-slate-700 border-slate-300'))">
+                    [class]="currentUser()!.role === 'MAKER' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                            (currentUser()!.role === 'CHECKER' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                            (currentUser()!.role === 'APPROVER' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-slate-100 text-slate-700 border-slate-300'))">
                 {{ getRoleLabel(currentUser()!.role) }}
               </span>
               <button (click)="logout()" title="{{ t('btn_logout') }}"
-                      class="px-2.5 py-1 text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 rounded-md transition-colors cursor-pointer">
+                      class="px-2.5 py-1 text-xs font-medium text-slate-600 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 rounded-md transition-colors">
                 {{ t('btn_logout') }}
               </button>
             </div>
           } @else {
             <button (click)="loginUsername.set('maker_an')"
-                    class="px-3 py-1 text-xs font-medium bg-slate-800 hover:bg-slate-900 text-white rounded-md shadow-xs">
+                    class="px-3 py-1 text-xs font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700 shadow-sm">
               {{ t('btn_login') }}
             </button>
           }
@@ -72,19 +72,19 @@
         <nav class="flex space-x-6 overflow-x-auto border-t border-slate-200 pt-1 pb-2">
           @if (canAccess('maker')) {
             <button (click)="setMakerView('simulation')"
-                    [class]="activeTab() === 'maker' && makerActiveView() === 'simulation' ? 'border-slate-800 text-slate-900 font-bold' : 'border-transparent text-slate-600 hover:text-slate-900'"
+                    [class]="activeTab() === 'maker' && makerActiveView() === 'simulation' ? 'border-blue-600 text-blue-700 font-semibold' : 'border-transparent text-slate-600 hover:text-slate-900'"
                     class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-calculator text-slate-500"></i>
+              <i class="fa-solid fa-calculator text-blue-600"></i>
               <span>{{ currentLang() === 'vi' ? 'Mô Phỏng Kịch Bản' : 'Stress Simulation' }}</span>
             </button>
             <button (click)="setMakerView('reports')"
-                    [class]="activeTab() === 'maker' && makerActiveView() === 'reports' ? 'border-slate-800 text-slate-900 font-bold' : 'border-transparent text-slate-600 hover:text-slate-900'"
+                    [class]="activeTab() === 'maker' && makerActiveView() === 'reports' ? 'border-blue-600 text-blue-700 font-semibold' : 'border-transparent text-slate-600 hover:text-slate-900'"
                     class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-folder-open text-slate-500"></i>
+              <i class="fa-solid fa-folder-open text-blue-600"></i>
               <span>{{ currentLang() === 'vi' ? 'Quản Lý Báo Cáo và Đề Án' : 'My Reports and Proposals' }}</span>
-              <span class="px-1.5 py-0.2 text-[10px] bg-slate-100 text-slate-700 border border-slate-200 rounded font-semibold">{{ allRuns().length }}</span>
+              <span class="px-1.5 py-0.2 text-[10px] bg-blue-100 text-blue-800 rounded font-bold">{{ allRuns().length }}</span>
               @if (recalcRuns().length > 0) {
-                <span class="px-1.5 py-0.2 text-[10px] bg-rose-100 text-rose-800 border border-rose-200 rounded-full font-semibold">
+                <span class="px-1.5 py-0.2 text-[10px] bg-rose-600 text-white rounded-full font-bold animate-pulse">
                   {{ recalcRuns().length }} {{ currentLang() === 'vi' ? 'cần sửa' : 'to revise' }}
                 </span>
               }
@@ -92,11 +92,11 @@
           }
           @if (canAccess('checker')) {
             <button (click)="activeTab.set('checker')"
-                    [class]="activeTab() === 'checker' ? 'border-slate-800 text-slate-900 font-bold' : 'border-transparent text-slate-600 hover:text-slate-900'"
-                    class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
+                    [class]="activeTab() === 'checker' ? 'border-amber-600 text-amber-700 font-semibold' : 'border-transparent text-slate-600 hover:text-slate-900'"
+                    class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5">
               {{ t('tab_checker') }}
               @if (submittedRunsCount() > 0) {
-                <span class="px-1.5 py-0.2 text-[10px] bg-amber-100 text-amber-800 border border-amber-200 rounded-full font-semibold">{{ submittedRunsCount() }}</span>
+                <span class="px-1.5 py-0.2 text-[10px] bg-amber-500 text-white rounded-full font-bold animate-pulse">{{ submittedRunsCount() }}</span>
               } @else if (allRuns().length > 0) {
                 <span class="px-1.5 py-0.2 text-[10px] bg-slate-100 text-slate-600 rounded font-semibold">{{ allRuns().length }}</span>
               }
@@ -104,24 +104,24 @@
           }
           @if (canAccess('approver')) {
             <button (click)="activeTab.set('approver')"
-                    [class]="activeTab() === 'approver' ? 'border-slate-800 text-slate-900 font-bold' : 'border-transparent text-slate-600 hover:text-slate-900'"
-                    class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
+                    [class]="activeTab() === 'approver' ? 'border-purple-600 text-purple-700 font-semibold' : 'border-transparent text-slate-600 hover:text-slate-900'"
+                    class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5">
               {{ t('tab_approver') }}
             </button>
           }
           <button (click)="activeTab.set('portfolio')"
-                  [class]="activeTab() === 'portfolio' ? 'border-slate-800 text-slate-900 font-bold' : 'border-transparent text-slate-600 hover:text-slate-900'"
+                  [class]="activeTab() === 'portfolio' ? 'border-rose-600 text-rose-700 font-semibold' : 'border-transparent text-slate-600 hover:text-slate-900'"
                   class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
-            <i class="fa-solid fa-triangle-exclamation text-slate-500"></i>
+            <i class="fa-solid fa-triangle-exclamation text-amber-500"></i>
             <span>{{ currentLang() === 'vi' ? 'Cảnh Báo Sớm và Danh Mục' : 'Early Warning and Portfolio' }}</span>
             @if (earlyWarningContracts().length > 0) {
-              <span class="px-1.5 py-0.2 text-[10px] bg-slate-100 text-slate-700 border border-slate-200 rounded-full font-semibold">
+              <span class="px-1.5 py-0.2 text-[10px] bg-rose-100 text-rose-700 rounded-full font-bold">
                 {{ earlyWarningContracts().length }} cảnh báo
               </span>
             }
           </button>
           <button (click)="openAuditTab()"
-                  [class]="activeTab() === 'audit' ? 'border-slate-800 text-slate-900 font-bold' : 'border-transparent text-slate-600 hover:text-slate-900'"
+                  [class]="activeTab() === 'audit' ? 'border-blue-600 text-blue-700 font-semibold' : 'border-transparent text-slate-600 hover:text-slate-900'"
                   class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
             {{ t('tab_audit') }}
           </button>
@@ -249,25 +249,25 @@
 
           <!-- RECALCULATION REQUIRED ALERT BANNER (COMPACT) -->
           @if (recalcRuns().length > 0) {
-            <div class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 shadow-2xs space-y-1.5">
+            <div class="bg-rose-50 border border-rose-300 rounded-xl p-2.5 shadow-xs space-y-1.5">
               @for (run of recalcRuns(); track run.id) {
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-white px-3 py-2 rounded-lg border border-slate-200 text-xs">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-white px-3 py-2 rounded-lg border border-rose-200 text-xs">
                   <div class="flex items-center gap-2 flex-wrap min-w-0">
-                    <span class="inline-flex items-center gap-1 text-[11px] font-bold text-rose-800 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full shrink-0">
+                    <span class="inline-flex items-center gap-1 text-[11px] font-bold text-rose-700 bg-rose-100 px-2 py-0.5 rounded-full shrink-0">
                       <i class="fa-solid fa-triangle-exclamation"></i>
                       <span>{{ currentLang() === 'vi' ? 'Cần tính lại' : 'Recalculate' }}</span>
                     </span>
-                    <span class="font-bold text-slate-800 font-mono shrink-0">{{ run.run_code }}</span>
+                    <span class="font-bold text-rose-800 font-mono shrink-0">{{ run.run_code }}</span>
                     <span class="font-medium text-slate-800 truncate">{{ run.run_name }}</span>
                     @if (run.rejection_reason) {
-                      <span class="text-rose-800 text-[11px] italic truncate max-w-lg">
+                      <span class="text-rose-700 text-[11px] italic truncate max-w-lg">
                         — "{{ run.rejection_reason }}"
                       </span>
                     }
                   </div>
                   <button (click)="editRunProposal(run)"
-                          class="px-3 py-1 bg-slate-800 hover:bg-slate-900 text-white text-xs font-semibold rounded-md shadow-2xs transition-colors inline-flex items-center gap-1.5 cursor-pointer shrink-0">
-                    <i class="fa-solid fa-rotate-right"></i>
+                          class="px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-md shadow-xs transition-colors inline-flex items-center gap-1.5 cursor-pointer shrink-0">
+                    <i class="fa-solid fa-bolt"></i>
                     <span>{{ currentLang() === 'vi' ? 'Tính Lại Ngay' : 'Recalculate Now' }}</span>
                   </button>
                 </div>
@@ -277,14 +277,14 @@
 
           <!-- In-place Overwrite Notification Banner (Compact) -->
           @if (editingRun(); as editing) {
-            <div class="px-3 py-2 bg-amber-50/60 border border-amber-200 rounded-xl flex items-center justify-between gap-2.5 text-xs text-amber-900 shadow-2xs">
+            <div class="px-3 py-2 bg-amber-50 border border-amber-300 rounded-xl flex items-center justify-between gap-2.5 text-xs text-amber-900 shadow-xs">
               <div class="flex items-center gap-2 flex-wrap">
                 <i class="fa-solid fa-arrows-rotate text-amber-700"></i>
                 <span class="font-semibold">{{ currentLang() === 'vi' ? 'Đang chỉnh sửa đề án:' : 'Editing proposal:' }}</span>
-                <span class="font-mono text-xs font-bold text-amber-900 bg-white border border-amber-200 px-1.5 py-0.5 rounded">{{ editing.run_code }}</span>
+                <span class="font-mono text-xs font-bold text-amber-800 bg-white border border-amber-300 px-1.5 py-0.5 rounded">{{ editing.run_code }}</span>
                 <span class="text-amber-800 font-medium">({{ editing.run_name }})</span>
               </div>
-              <button type="button" (click)="cancelEditingRun()" class="px-2 py-1 bg-white hover:bg-amber-50 text-amber-900 border border-amber-200 rounded-md font-semibold text-xs transition-colors cursor-pointer shrink-0 inline-flex items-center gap-1">
+              <button type="button" (click)="cancelEditingRun()" class="px-2 py-1 bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-md font-semibold text-xs transition-colors cursor-pointer shrink-0 inline-flex items-center gap-1">
                 <i class="fa-solid fa-xmark text-slate-400"></i>
                 <span>{{ currentLang() === 'vi' ? 'Hủy / Tạo mới' : 'Cancel' }}</span>
               </button>
@@ -300,16 +300,16 @@
             </div>
             <div class="flex items-center space-x-2">
               <button (click)="openCalcDetail('all')"
-                      class="px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold rounded-md border border-slate-300 transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer">
-                <i class="fa-solid fa-calculator text-[11px] text-slate-500"></i>
+                      class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold rounded-md border border-blue-200 transition-colors flex items-center gap-1.5 shadow-2xs">
+                <i class="fa-solid fa-calculator text-[11px]"></i>
                 <span>{{ t('btn_methodology_detail') }}</span>
               </button>
               <button (click)="runSimulation()" [disabled]="isLoading()"
-                      class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-md border border-slate-300 transition-colors cursor-pointer">
+                      class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-md border border-slate-300 transition-colors">
                 {{ isLoading() ? '...' : t('btn_recalculate') }}
               </button>
               <button (click)="openSaveModal()"
-                      class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-md shadow-xs transition-colors cursor-pointer">
+                      class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-md shadow-sm transition-colors">
                 {{ t('btn_submit_checker') }}
               </button>
             </div>
@@ -342,25 +342,25 @@
             <!-- 4 Macroeconomic Transmission Sliders (Bám sát 4 kênh vĩ mô trong Báo cáo) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <!-- Channel 1: GDP -->
-              <div class="bg-slate-50/80 p-3.5 rounded-lg border border-slate-200 space-y-2">
+              <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-2">
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-semibold text-slate-700">{{ t('shock_gdp') }}</span>
-                  <div class="flex items-center bg-white border border-slate-300 hover:border-slate-400 focus-within:border-slate-600 focus-within:ring-1 focus-within:ring-slate-400 rounded px-1.5 py-0.5 transition-all shadow-2xs cursor-text">
+                  <div class="flex items-center bg-white border border-slate-300 hover:border-blue-400 focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-500 rounded px-1.5 py-0.5 transition-all shadow-2xs cursor-text">
                     <input type="number"
                            [ngModel]="gdpShock()"
                            (ngModelChange)="onMacroInputChange('gdp', $event)"
                            step="0.1"
                            min="-10"
                            max="10"
-                           class="w-12 text-xs font-bold text-slate-800 bg-transparent text-right outline-none focus:ring-0 p-0 border-none appearance-none"
+                           class="w-12 text-xs font-bold text-blue-700 bg-transparent text-right outline-none focus:ring-0 p-0 border-none appearance-none"
                            title="Nhập số phần trăm sốc GDP">
-                    <span class="text-xs font-semibold text-slate-500 ml-0.5 select-none">%</span>
+                    <span class="text-xs font-bold text-blue-700 ml-0.5 select-none">%</span>
                   </div>
                 </div>
                 <input type="range" min="-5.0" max="2.0" step="0.05"
                        [ngModel]="gdpShock()" (ngModelChange)="gdpShock.set($event); selectedPreset.set('CUSTOM'); runSimulation()"
-                       class="w-full accent-slate-700 cursor-pointer">
-                <div class="flex justify-between text-[11px] text-slate-400 font-medium">
+                       class="w-full accent-blue-600 cursor-pointer">
+                <div class="flex justify-between text-[11px] text-slate-500">
                   <span>-5.0%</span>
                   <span>0.0%</span>
                   <span>+2.0%</span>
@@ -368,26 +368,26 @@
               </div>
 
               <!-- Channel 2: Interest Rate -->
-              <div class="bg-slate-50/80 p-3.5 rounded-lg border border-slate-200 space-y-2">
+              <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-2">
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-semibold text-slate-700">{{ t('shock_ir') }}</span>
-                  <div class="flex items-center bg-white border border-slate-300 hover:border-slate-400 focus-within:border-slate-600 focus-within:ring-1 focus-within:ring-slate-400 rounded px-1.5 py-0.5 transition-all shadow-2xs cursor-text">
-                    <span class="text-xs font-semibold text-slate-500 select-none mr-0.5">+</span>
+                  <div class="flex items-center bg-white border border-slate-300 hover:border-amber-400 focus-within:border-amber-600 focus-within:ring-1 focus-within:ring-amber-500 rounded px-1.5 py-0.5 transition-all shadow-2xs cursor-text">
+                    <span class="text-xs font-bold text-amber-700 select-none mr-0.5">+</span>
                     <input type="number"
                            [ngModel]="irShock()"
                            (ngModelChange)="onMacroInputChange('ir', $event)"
                            step="25"
                            min="0"
                            max="2000"
-                           class="w-14 text-xs font-bold text-slate-800 bg-transparent text-right outline-none focus:ring-0 p-0 border-none appearance-none"
+                           class="w-14 text-xs font-bold text-amber-700 bg-transparent text-right outline-none focus:ring-0 p-0 border-none appearance-none"
                            title="Nhập số bps sốc lãi suất">
-                    <span class="text-xs font-semibold text-slate-500 ml-0.5 select-none">bps</span>
+                    <span class="text-xs font-bold text-amber-700 ml-0.5 select-none">bps</span>
                   </div>
                 </div>
                 <input type="range" min="0" max="600" step="5"
                        [ngModel]="irShock()" (ngModelChange)="irShock.set($event); selectedPreset.set('CUSTOM'); runSimulation()"
-                       class="w-full accent-slate-700 cursor-pointer">
-                <div class="flex justify-between text-[11px] text-slate-400 font-medium">
+                       class="w-full accent-amber-600 cursor-pointer">
+                <div class="flex justify-between text-[11px] text-slate-500">
                   <span>0 bps</span>
                   <span>+300 bps</span>
                   <span>+600 bps</span>
@@ -395,26 +395,26 @@
               </div>
 
               <!-- Channel 3: Unemployment Rate -->
-              <div class="bg-slate-50/80 p-3.5 rounded-lg border border-slate-200 space-y-2">
+              <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-2">
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-semibold text-slate-700">{{ t('shock_unemp') }}</span>
-                  <div class="flex items-center bg-white border border-slate-300 hover:border-slate-400 focus-within:border-slate-600 focus-within:ring-1 focus-within:ring-slate-400 rounded px-1.5 py-0.5 transition-all shadow-2xs cursor-text">
-                    <span class="text-xs font-semibold text-slate-500 select-none mr-0.5">+</span>
+                  <div class="flex items-center bg-white border border-slate-300 hover:border-emerald-400 focus-within:border-emerald-600 focus-within:ring-1 focus-within:ring-emerald-500 rounded px-1.5 py-0.5 transition-all shadow-2xs cursor-text">
+                    <span class="text-xs font-bold text-emerald-700 select-none mr-0.5">+</span>
                     <input type="number"
                            [ngModel]="unempShock()"
                            (ngModelChange)="onMacroInputChange('unemp', $event)"
                            step="0.1"
                            min="0"
                            max="30"
-                           class="w-12 text-xs font-bold text-slate-800 bg-transparent text-right outline-none focus:ring-0 p-0 border-none appearance-none"
+                           class="w-12 text-xs font-bold text-emerald-700 bg-transparent text-right outline-none focus:ring-0 p-0 border-none appearance-none"
                            title="Nhập số phần trăm tăng thất nghiệp">
-                    <span class="text-xs font-semibold text-slate-500 ml-0.5 select-none">%</span>
+                    <span class="text-xs font-bold text-emerald-700 ml-0.5 select-none">%</span>
                   </div>
                 </div>
                 <input type="range" min="0.0" max="8.0" step="0.1"
                        [ngModel]="unempShock()" (ngModelChange)="unempShock.set($event); selectedPreset.set('CUSTOM'); runSimulation()"
-                       class="w-full accent-slate-700 cursor-pointer">
-                <div class="flex justify-between text-[11px] text-slate-400 font-medium">
+                       class="w-full accent-emerald-600 cursor-pointer">
+                <div class="flex justify-between text-[11px] text-slate-500">
                   <span>0.0%</span>
                   <span>+4.0%</span>
                   <span>+8.0%</span>
@@ -422,25 +422,25 @@
               </div>
 
               <!-- Channel 4: Real Estate Collateral -->
-              <div class="bg-slate-50/80 p-3.5 rounded-lg border border-slate-200 space-y-2">
+              <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-2">
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-semibold text-slate-700">{{ t('shock_re') }}</span>
-                  <div class="flex items-center bg-white border border-slate-300 hover:border-slate-400 focus-within:border-slate-600 focus-within:ring-1 focus-within:ring-slate-400 rounded px-1.5 py-0.5 transition-all shadow-2xs cursor-text">
+                  <div class="flex items-center bg-white border border-slate-300 hover:border-rose-400 focus-within:border-rose-600 focus-within:ring-1 focus-within:ring-rose-500 rounded px-1.5 py-0.5 transition-all shadow-2xs cursor-text">
                     <input type="number"
                            [ngModel]="reShock()"
                            (ngModelChange)="onMacroInputChange('re', $event)"
                            step="1"
                            min="-100"
                            max="50"
-                           class="w-12 text-xs font-bold text-slate-800 bg-transparent text-right outline-none focus:ring-0 p-0 border-none appearance-none"
+                           class="w-12 text-xs font-bold text-rose-700 bg-transparent text-right outline-none focus:ring-0 p-0 border-none appearance-none"
                            title="Nhập số phần trăm sụt giảm giá BĐS">
-                    <span class="text-xs font-semibold text-slate-500 ml-0.5 select-none">%</span>
+                    <span class="text-xs font-bold text-rose-700 ml-0.5 select-none">%</span>
                   </div>
                 </div>
                 <input type="range" min="-50" max="0" step="1"
                        [ngModel]="reShock()" (ngModelChange)="reShock.set($event); selectedPreset.set('CUSTOM'); runSimulation()"
-                       class="w-full accent-slate-700 cursor-pointer">
-                <div class="flex justify-between text-[11px] text-slate-400 font-medium">
+                       class="w-full accent-rose-600 cursor-pointer">
+                <div class="flex justify-between text-[11px] text-slate-500">
                   <span>-50%</span>
                   <span>-25%</span>
                   <span>0%</span>
@@ -454,10 +454,10 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
               
               <!-- EAD Card -->
-              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs relative hover:border-slate-400 transition-colors flex flex-col justify-start">
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
                 <div class="flex items-start justify-between gap-2">
-                  <div class="text-xs text-slate-700 font-semibold">{{ t('kpi_ead') }}</div>
-                  <button (click)="openCalcDetail('ead')" class="text-xs text-slate-500 hover:text-slate-800 font-medium underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
+                  <div class="text-xs text-slate-800 font-semibold">{{ t('kpi_ead') }}</div>
+                  <button (click)="openCalcDetail('ead')" class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
                     {{ currentLang() === 'vi' ? 'Chi tiết' : 'Details' }}
                   </button>
                 </div>
@@ -467,50 +467,50 @@
               </div>
 
               <!-- Stressed ECL Card -->
-              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs relative hover:border-slate-400 transition-colors flex flex-col justify-start">
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
                 <div class="flex items-start justify-between gap-2">
-                  <div class="text-xs text-slate-700 font-semibold">{{ t('kpi_ecl_stress') }}</div>
-                  <button (click)="openCalcDetail('ecl')" class="text-xs text-slate-500 hover:text-slate-800 font-medium underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
+                  <div class="text-xs text-slate-800 font-semibold">{{ t('kpi_ecl_stress') }}</div>
+                  <button (click)="openCalcDetail('ecl')" class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
                     {{ currentLang() === 'vi' ? 'Chi tiết' : 'Details' }}
                   </button>
                 </div>
-                <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight text-slate-800 whitespace-nowrap overflow-hidden text-ellipsis">
+                <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight text-amber-700 whitespace-nowrap overflow-hidden text-ellipsis">
                   {{ formatVND(simulationResult()!.summary.total_stressed_ecl) }}
                 </div>
               </div>
 
               <!-- Delta Provision Card -->
-              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs relative hover:border-slate-400 transition-colors flex flex-col justify-start">
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
                 <div class="flex items-start justify-between gap-2">
-                  <div class="text-xs text-slate-700 font-semibold">{{ t('kpi_delta_ps') }}</div>
-                  <button (click)="openCalcDetail('deltaps')" class="text-xs text-slate-500 hover:text-slate-800 font-medium underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
+                  <div class="text-xs text-rose-800 font-semibold">{{ t('kpi_delta_ps') }}</div>
+                  <button (click)="openCalcDetail('deltaps')" class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
                     {{ currentLang() === 'vi' ? 'Chi tiết' : 'Details' }}
                   </button>
                 </div>
-                <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight text-rose-800 whitespace-nowrap overflow-hidden text-ellipsis">
+                <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight text-rose-700 whitespace-nowrap overflow-hidden text-ellipsis">
                   +{{ formatVND(simulationResult()!.summary.total_delta_provision) }}
                 </div>
               </div>
 
               <!-- CAR Ratio Card -->
-              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs relative hover:border-slate-400 transition-colors flex flex-col justify-start">
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
                 <div class="flex items-start justify-between gap-2">
-                  <div class="text-xs text-slate-700 font-semibold">{{ t('kpi_car') }}</div>
-                  <button (click)="openCalcDetail('car')" class="text-xs text-slate-500 hover:text-slate-800 font-medium underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
+                  <div class="text-xs text-slate-800 font-semibold">{{ t('kpi_car') }}</div>
+                  <button (click)="openCalcDetail('car')" class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
                     {{ currentLang() === 'vi' ? 'Chi tiết' : 'Details' }}
                   </button>
                 </div>
                 <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight whitespace-nowrap overflow-hidden text-ellipsis"
-                     [class]="simulationResult()!.summary.is_capital_adequate ? 'text-slate-800' : 'text-rose-800'">
+                     [class]="simulationResult()!.summary.is_capital_adequate ? 'text-emerald-700' : 'text-rose-700'">
                   {{ formatPercent(simulationResult()!.summary.stressed_car) }}
                 </div>
               </div>
 
               <!-- NPL Ratio Card -->
-              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs relative hover:border-slate-400 transition-colors flex flex-col justify-start">
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
                 <div class="flex items-start justify-between gap-2">
-                  <div class="text-xs text-slate-700 font-semibold">{{ t('kpi_npl') }}</div>
-                  <button (click)="openCalcDetail('npl')" class="text-xs text-slate-500 hover:text-slate-800 font-medium underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
+                  <div class="text-xs text-slate-800 font-semibold">{{ t('kpi_npl') }}</div>
+                  <button (click)="openCalcDetail('npl')" class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
                     {{ currentLang() === 'vi' ? 'Chi tiết' : 'Details' }}
                   </button>
                 </div>
@@ -537,21 +537,21 @@
                         <span>{{ getSectorName(sec.sector_code) }} ({{ sec.contract_count }})</span>
                         <span class="font-bold text-slate-900">
                           {{ formatVND(sec.stressed_ecl) }}
-                          <span class="text-rose-800 font-normal text-[11px]">(+{{ formatVND(sec.delta_provision) }})</span>
+                          <span class="text-rose-600 font-normal text-[11px]">(+{{ formatVND(sec.delta_provision) }})</span>
                         </span>
                       </div>
                       <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden flex">
-                        <div class="h-full bg-slate-300"
+                        <div class="h-full bg-slate-400"
                              [style.width.%]="(sec.baseline_ecl / (sec.stressed_ecl || 1)) * 100"></div>
-                        <div class="h-full bg-slate-600"
+                        <div class="h-full bg-rose-500"
                              [style.width.%]="(sec.delta_provision / (sec.stressed_ecl || 1)) * 100"></div>
                       </div>
                     </div>
                   }
                 </div>
                 <div class="pt-2 border-t border-slate-100 flex items-center gap-4 text-[11px] text-slate-500">
-                  <span class="flex items-center gap-1.5"><span class="w-2.5 h-2 bg-slate-300 rounded-xs"></span> {{ t('kpi_ecl_base') }}</span>
-                  <span class="flex items-center gap-1.5"><span class="w-2.5 h-2 bg-slate-600 rounded-xs"></span> {{ t('kpi_delta_ps') }}</span>
+                  <span class="flex items-center gap-1.5"><span class="w-2.5 h-2 bg-slate-400 rounded-xs"></span> {{ t('kpi_ecl_base') }}</span>
+                  <span class="flex items-center gap-1.5"><span class="w-2.5 h-2 bg-rose-500 rounded-xs"></span> {{ t('kpi_delta_ps') }}</span>
                 </div>
               </div>
 
@@ -566,7 +566,7 @@
                     <div class="text-xs font-bold text-slate-700 h-9 flex items-center justify-center text-center leading-snug px-1">
                       {{ t('stage_1') }}
                     </div>
-                    <div class="mt-1.5 text-2xl font-black text-slate-800">
+                    <div class="mt-1.5 text-2xl font-black text-emerald-700">
                       {{ simulationResult()!.stage_migration.post_stress[1] }}
                     </div>
                   </div>
@@ -575,7 +575,7 @@
                     <div class="text-xs font-bold text-slate-700 h-9 flex items-center justify-center text-center leading-snug px-1">
                       {{ t('stage_2') }}
                     </div>
-                    <div class="mt-1.5 text-2xl font-black text-slate-800">
+                    <div class="mt-1.5 text-2xl font-black text-amber-700">
                       {{ simulationResult()!.stage_migration.post_stress[2] }}
                     </div>
                   </div>
@@ -584,7 +584,7 @@
                     <div class="text-xs font-bold text-slate-700 h-9 flex items-center justify-center text-center leading-snug px-1">
                       {{ t('stage_3') }}
                     </div>
-                    <div class="mt-1.5 text-2xl font-black text-rose-800">
+                    <div class="mt-1.5 text-2xl font-black text-rose-700">
                       {{ simulationResult()!.stage_migration.post_stress[3] }}
                     </div>
                   </div>
@@ -594,7 +594,7 @@
             </div>
           } @else {
             <div class="bg-white p-8 rounded-xl border border-slate-200 text-center space-y-3">
-              <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-slate-100 text-slate-700">
+              <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-50 text-blue-600">
                 <i class="fa-solid fa-spinner fa-spin text-xl"></i>
               </div>
               <div class="text-sm font-bold text-slate-800">
@@ -626,32 +626,35 @@
                 </div>
               </div>
 
-              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-1 bg-slate-50/60">
-                <div class="text-[11px] font-semibold text-slate-700 uppercase tracking-wide flex items-center justify-between">
+              <div class="bg-white p-4 rounded-xl border border-rose-200 shadow-2xs space-y-1 bg-rose-50/40">
+                <div class="text-[11px] font-semibold text-rose-700 uppercase tracking-wide flex items-center justify-between">
                   <span>{{ currentLang() === 'vi' ? 'Cần Tính Lại' : 'Recalculation Req.' }}</span>
+                  @if (recalcRuns().length > 0) {
+                    <span class="w-2 h-2 rounded-full bg-rose-600 animate-ping"></span>
+                  }
                 </div>
-                <div class="text-2xl font-black text-rose-800">{{ recalcRuns().length }}</div>
-                <div class="text-[10px] text-slate-500 font-medium">
+                <div class="text-2xl font-black text-rose-700">{{ recalcRuns().length }}</div>
+                <div class="text-[10px] text-rose-600 font-medium">
                   {{ recalcRuns().length > 0 ? (currentLang() === 'vi' ? 'Trưởng phòng yêu cầu sửa' : 'Checker requested') : (currentLang() === 'vi' ? 'Không có tồn đọng' : 'None') }}
                 </div>
               </div>
 
-              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-1 bg-slate-50/60">
-                <div class="text-[11px] font-semibold text-slate-700 uppercase tracking-wide">
+              <div class="bg-white p-4 rounded-xl border border-amber-200 shadow-2xs space-y-1 bg-amber-50/40">
+                <div class="text-[11px] font-semibold text-amber-700 uppercase tracking-wide">
                   {{ currentLang() === 'vi' ? 'Chờ Thẩm Định' : 'Pending Review' }}
                 </div>
-                <div class="text-2xl font-black text-slate-800">{{ submittedRunsCount() }}</div>
-                <div class="text-[10px] text-slate-500 font-medium">
+                <div class="text-2xl font-black text-amber-700">{{ submittedRunsCount() }}</div>
+                <div class="text-[10px] text-amber-600 font-medium">
                   {{ currentLang() === 'vi' ? 'Hồ sơ đã gửi Checker' : 'Forwarded to Checker' }}
                 </div>
               </div>
 
-              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-1 bg-slate-50/60">
-                <div class="text-[11px] font-semibold text-slate-700 uppercase tracking-wide">
+              <div class="bg-white p-4 rounded-xl border border-emerald-200 shadow-2xs space-y-1 bg-emerald-50/40">
+                <div class="text-[11px] font-semibold text-emerald-700 uppercase tracking-wide">
                   {{ currentLang() === 'vi' ? 'Đã Phê Duyệt' : 'Approved' }}
                 </div>
-                <div class="text-2xl font-black text-slate-800">{{ approvedRunsCount() }}</div>
-                <div class="text-[10px] text-slate-500 font-medium">
+                <div class="text-2xl font-black text-emerald-700">{{ approvedRunsCount() }}</div>
+                <div class="text-[10px] text-emerald-600 font-medium">
                   {{ currentLang() === 'vi' ? 'Đã ký số ban hành' : 'CRO Authorized' }}
                 </div>
               </div>
@@ -663,10 +666,10 @@
             <div class="p-4 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3">
               <div class="flex items-center gap-3">
                 <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wide flex items-center gap-2">
-                  <i class="fa-solid fa-folder-tree text-slate-500"></i>
+                  <i class="fa-solid fa-folder-tree text-blue-600"></i>
                   <span>{{ currentLang() === 'vi' ? 'Danh Sách Báo Cáo và Đề Án Kiểm Định' : 'Stress Scenarios and Proposal Workspace' }}</span>
                 </h3>
-                <button (click)="makerActiveView.set('simulation')" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg shadow-2xs transition-colors inline-flex items-center gap-1.5 cursor-pointer shrink-0">
+                <button (click)="makerActiveView.set('simulation')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow-xs transition-colors inline-flex items-center gap-1.5 cursor-pointer shrink-0">
                   <i class="fa-solid fa-plus"></i>
                   <span>{{ currentLang() === 'vi' ? 'Tạo Kịch Bản Mới' : 'Create New Scenario' }}</span>
                 </button>
@@ -677,36 +680,36 @@
                 <div class="relative w-full sm:w-56">
                   <input type="text" [ngModel]="makerSearchQuery()" (ngModelChange)="makerSearchQuery.set($event)"
                          placeholder="{{ currentLang() === 'vi' ? 'Tìm mã đề án, tên đề án...' : 'Search run code, title...' }}"
-                         class="w-full pl-8 pr-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-slate-400 bg-slate-50 text-slate-800">
+                         class="w-full pl-8 pr-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-slate-50 text-slate-800">
                   <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
                 </div>
 
                 <div class="flex flex-wrap items-center gap-1">
                   <button type="button" (click)="makerRunFilter.set('ALL')"
                           class="px-2 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
-                          [class]="makerRunFilter() === 'ALL' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'">
+                          [class]="makerRunFilter() === 'ALL' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'">
                     {{ currentLang() === 'vi' ? 'Tất cả' : 'All' }} ({{ allRuns().length }})
                   </button>
                   <button type="button" (click)="makerRunFilter.set('RECALCULATE')"
                           class="px-2 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer flex items-center gap-1"
-                          [class]="makerRunFilter() === 'RECALCULATE' ? 'bg-slate-800 text-white border-slate-800' : 'bg-rose-50 text-rose-800 border-rose-200 hover:bg-rose-100'">
+                          [class]="makerRunFilter() === 'RECALCULATE' ? 'bg-rose-700 text-white border-rose-700' : 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'">
                     <i class="fa-solid fa-triangle-exclamation text-[10px]"></i>
                     <span>{{ currentLang() === 'vi' ? 'Cần tính lại' : 'Recalculate' }}</span>
-                    <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-rose-100 text-rose-800 border border-rose-200 font-semibold">{{ recalcRuns().length }}</span>
+                    <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-rose-600 text-white font-bold">{{ recalcRuns().length }}</span>
                   </button>
                   <button type="button" (click)="makerRunFilter.set('SUBMITTED')"
                           class="px-2 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
-                          [class]="makerRunFilter() === 'SUBMITTED' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'">
+                          [class]="makerRunFilter() === 'SUBMITTED' ? 'bg-amber-600 text-white border-amber-600' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'">
                     {{ currentLang() === 'vi' ? 'Chờ thẩm định' : 'Pending Review' }}
                   </button>
                   <button type="button" (click)="makerRunFilter.set('PENDING')"
                           class="px-2 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
-                          [class]="makerRunFilter() === 'PENDING' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'">
+                          [class]="makerRunFilter() === 'PENDING' ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'">
                     {{ currentLang() === 'vi' ? 'Chờ phê duyệt' : 'Pending Approval' }}
                   </button>
                   <button type="button" (click)="makerRunFilter.set('APPROVED')"
                           class="px-2 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
-                          [class]="makerRunFilter() === 'APPROVED' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'">
+                          [class]="makerRunFilter() === 'APPROVED' ? 'bg-emerald-700 text-white border-emerald-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'">
                     {{ currentLang() === 'vi' ? 'Đã phê duyệt' : 'Approved' }}
                   </button>
                 </div>
@@ -749,30 +752,30 @@
                           <span>{{ currentLang() === 'vi' ? 'Lãi suất:' : 'IR:' }} <strong class="text-amber-700">+{{ formatShock(run.custom_ir_shock, 10000, 0) }} bps</strong></span>
                         </div>
                         <div class="space-y-0.5 mt-0.5">
-                          <span>{{ currentLang() === 'vi' ? 'Thất nghiệp:' : 'Unemp:' }} <strong class="text-slate-800">+{{ formatShock(run.custom_unemp_shock, 100, 1) }}%</strong></span> |
-                          <span>{{ currentLang() === 'vi' ? 'BĐS:' : 'RE:' }} <strong class="text-slate-800">{{ formatShock(run.custom_re_shock, 100, 1) }}%</strong></span>
+                          <span>{{ currentLang() === 'vi' ? 'Thất nghiệp:' : 'Unemp:' }} <strong class="text-emerald-700">+{{ formatShock(run.custom_unemp_shock, 100, 1) }}%</strong></span> |
+                          <span>{{ currentLang() === 'vi' ? 'BĐS:' : 'RE:' }} <strong class="text-rose-700">{{ formatShock(run.custom_re_shock, 100, 1) }}%</strong></span>
                         </div>
                       </td>
-                      <td class="p-3 font-bold text-slate-800 whitespace-nowrap">+{{ formatVND(run.total_delta_provision) }}</td>
+                      <td class="p-3 font-bold text-rose-700 whitespace-nowrap">+{{ formatVND(run.total_delta_provision) }}</td>
                       <td class="p-3 whitespace-nowrap">
-                        <span class="font-bold" [class]="(run.car_impact?.stressed_car || 0) >= 0.08 ? 'text-slate-800' : 'text-rose-800'">
+                        <span class="font-bold" [class]="(run.car_impact?.stressed_car || 0) >= 0.08 ? 'text-emerald-700' : 'text-rose-700'">
                           {{ formatPercent(run.car_impact?.stressed_car) }}
                         </span>
                       </td>
                       <td class="p-3 whitespace-nowrap">
                         <span class="inline-block whitespace-nowrap px-2.5 py-1 rounded text-[11px] font-semibold"
-                              [class]="run.status === 'APPROVED' ? 'bg-slate-100 text-slate-700 border border-slate-200' :
-                                      (run.status === 'PENDING_APPROVAL' ? 'bg-slate-100 text-slate-700 border border-slate-200' :
-                                      (run.status === 'SUBMITTED' ? 'bg-amber-50 text-amber-800 border border-amber-200' :
-                                      (run.status === 'RECALCULATION_REQUESTED' ? 'bg-rose-50 text-rose-800 border border-rose-200 font-semibold' : 'bg-slate-100 text-slate-700 border border-slate-200')))">
+                              [class]="run.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                                      (run.status === 'PENDING_APPROVAL' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
+                                      (run.status === 'SUBMITTED' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                                      (run.status === 'RECALCULATION_REQUESTED' ? 'bg-rose-100 text-rose-800 border border-rose-300 font-bold' : 'bg-slate-100 text-slate-700 border border-slate-200')))">
                           {{ getStatusLabel(run.status) }}
                         </span>
                       </td>
                       <td class="p-3 text-right whitespace-nowrap space-x-1.5">
                         @if (run.status === 'RECALCULATION_REQUESTED') {
                           <button type="button" (click)="editRunProposal(run)"
-                                  class="px-2.5 py-1 bg-slate-800 hover:bg-slate-900 text-white font-semibold text-[11px] rounded shadow-2xs transition-colors cursor-pointer inline-flex items-center gap-1">
-                            <i class="fa-solid fa-rotate-right"></i>
+                                  class="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white font-bold text-[11px] rounded shadow-xs transition-colors cursor-pointer inline-flex items-center gap-1">
+                            <i class="fa-solid fa-bolt"></i>
                             <span>{{ currentLang() === 'vi' ? 'Tính Lại Ngay' : 'Recalculate' }}</span>
                           </button>
                           <button type="button" (click)="openRenameModal(run)"
@@ -782,7 +785,7 @@
                           </button>
                         } @else if (run.status === 'DRAFT') {
                           <button type="button" (click)="editRunProposal(run)"
-                                  class="px-2.5 py-1 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-[11px] rounded border border-slate-300 transition-colors cursor-pointer inline-flex items-center gap-1">
+                                  class="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-[11px] rounded border border-blue-200 transition-colors cursor-pointer inline-flex items-center gap-1">
                             <i class="fa-solid fa-pen-to-square"></i>
                             <span>{{ currentLang() === 'vi' ? 'Chỉnh Sửa' : 'Edit' }}</span>
                           </button>
@@ -792,13 +795,13 @@
                             <span>{{ currentLang() === 'vi' ? 'Đổi Tên' : 'Rename' }}</span>
                           </button>
                           <button type="button" (click)="deleteRun(run)"
-                                  class="px-2 py-1 bg-white hover:bg-rose-50 text-rose-800 font-semibold text-[11px] rounded border border-rose-200 transition-colors cursor-pointer inline-flex items-center gap-1">
-                            <i class="fa-solid fa-trash-can text-rose-400"></i>
+                                  class="px-2 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold text-[11px] rounded border border-rose-200 transition-colors cursor-pointer inline-flex items-center gap-1">
+                            <i class="fa-solid fa-trash-can"></i>
                             <span>{{ currentLang() === 'vi' ? 'Xóa' : 'Delete' }}</span>
                           </button>
                         } @else if (run.status === 'SUBMITTED') {
                           <button type="button" (click)="executeWorkflow(run.id, 'CANCEL_SUBMIT', 'Chuyên viên rút hồ sơ về bản nháp để hiệu chỉnh lại.')"
-                                  class="px-2 py-1 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-[11px] rounded border border-slate-300 transition-colors cursor-pointer inline-flex items-center gap-1">
+                                  class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 font-semibold text-[11px] rounded border border-amber-300 transition-colors cursor-pointer inline-flex items-center gap-1">
                             <i class="fa-solid fa-undo"></i>
                             <span>{{ currentLang() === 'vi' ? 'Rút Về Nháp Để Sửa' : 'Withdraw' }}</span>
                           </button>
@@ -851,17 +854,17 @@
                 </button>
                 <button (click)="checkerRunFilter.set('SUBMITTED')"
                         class="px-2.5 py-1 rounded-md text-[11px] font-semibold transition-colors cursor-pointer"
-                        [class]="checkerRunFilter() === 'SUBMITTED' ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'">
+                        [class]="checkerRunFilter() === 'SUBMITTED' ? 'bg-amber-600 text-white' : 'bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200'">
                   {{ currentLang() === 'vi' ? 'Chờ thẩm định' : 'Pending Review' }} ({{ submittedRunsCount() }})
                 </button>
                 <button (click)="checkerRunFilter.set('PENDING')"
                         class="px-2.5 py-1 rounded-md text-[11px] font-semibold transition-colors cursor-pointer"
-                        [class]="checkerRunFilter() === 'PENDING' ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200'">
+                        [class]="checkerRunFilter() === 'PENDING' ? 'bg-purple-600 text-white' : 'bg-purple-50 text-purple-800 hover:bg-purple-100 border border-purple-200'">
                   {{ currentLang() === 'vi' ? 'Chờ phê duyệt' : 'Pending Approval' }} ({{ approverRuns().length }})
                 </button>
                 <button (click)="checkerRunFilter.set('RECALCULATE')"
                         class="px-2.5 py-1 rounded-md text-[11px] font-semibold transition-colors cursor-pointer"
-                        [class]="checkerRunFilter() === 'RECALCULATE' ? 'bg-slate-800 text-white' : 'bg-rose-50 text-rose-800 hover:bg-rose-100 border border-rose-200'">
+                        [class]="checkerRunFilter() === 'RECALCULATE' ? 'bg-rose-600 text-white' : 'bg-rose-50 text-rose-800 hover:bg-rose-100 border border-rose-200'">
                   {{ currentLang() === 'vi' ? 'Yêu cầu tính lại' : 'Recalculation' }} ({{ recalcRuns().length }})
                 </button>
               </div>
@@ -882,19 +885,19 @@
                 <tbody class="divide-y divide-slate-100">
                   @for (run of filteredCheckerRuns(); track run.id) {
                     <tr class="hover:bg-slate-50 cursor-pointer transition-colors"
-                        [class.bg-slate-100]="selectedRunToReview()?.id === run.id"
+                        [class.bg-blue-50]="selectedRunToReview()?.id === run.id"
                         (click)="selectRunForReview(run)">
-                      <td class="p-3 font-bold text-slate-800 whitespace-nowrap font-mono">{{ run.run_code }}</td>
+                      <td class="p-3 font-bold text-blue-700 whitespace-nowrap font-mono">{{ run.run_code }}</td>
                       <td class="p-3 font-medium text-slate-900 min-w-[200px]">{{ run.run_name }}</td>
                       <td class="p-3 text-slate-600 whitespace-nowrap">{{ run.maker_name }}</td>
                       <td class="p-3 text-slate-600 whitespace-nowrap">{{ run.scenario_name }}</td>
-                      <td class="p-3 font-bold text-slate-800 whitespace-nowrap">+{{ formatVND(run.total_delta_provision) }}</td>
+                      <td class="p-3 font-bold text-rose-700 whitespace-nowrap">+{{ formatVND(run.total_delta_provision) }}</td>
                       <td class="p-3 whitespace-nowrap">
                         <span class="inline-block whitespace-nowrap px-2.5 py-1 rounded text-[11px] font-semibold"
-                              [class]="run.status === 'APPROVED' ? 'bg-slate-100 text-slate-700 border border-slate-200' :
-                                      (run.status === 'PENDING_APPROVAL' ? 'bg-slate-100 text-slate-700 border border-slate-200' :
-                                      (run.status === 'SUBMITTED' ? 'bg-amber-50 text-amber-800 border border-amber-200' :
-                                      (run.status === 'RECALCULATION_REQUESTED' ? 'bg-rose-50 text-rose-800 border border-rose-200 font-semibold' : 'bg-slate-100 text-slate-700 border border-slate-200')))">
+                              [class]="run.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                                      (run.status === 'PENDING_APPROVAL' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
+                                      (run.status === 'SUBMITTED' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                                      (run.status === 'RECALCULATION_REQUESTED' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-slate-100 text-slate-700 border border-slate-200')))">
                           {{ getStatusLabel(run.status) }}
                         </span>
                       </td>
@@ -918,12 +921,12 @@
               <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-3">
                 <div>
                   <div class="flex items-center gap-2">
-                    <span class="text-xs font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 font-mono">{{ selectedRunToReview()!.run_code }}</span>
+                    <span class="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">{{ selectedRunToReview()!.run_code }}</span>
                     <span class="px-2 py-0.5 rounded text-[10px] font-semibold"
-                          [class]="selectedRunToReview()!.status === 'APPROVED' ? 'bg-slate-100 text-slate-700 border border-slate-200' :
-                                  (selectedRunToReview()!.status === 'PENDING_APPROVAL' ? 'bg-slate-100 text-slate-700 border border-slate-200' :
-                                  (selectedRunToReview()!.status === 'SUBMITTED' ? 'bg-amber-50 text-amber-800 border border-amber-200' :
-                                  (selectedRunToReview()!.status === 'RECALCULATION_REQUESTED' ? 'bg-rose-50 text-rose-800 border border-rose-200 font-semibold' : 'bg-slate-100 text-slate-700 border border-slate-200')))">
+                          [class]="selectedRunToReview()!.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                                  (selectedRunToReview()!.status === 'PENDING_APPROVAL' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
+                                  (selectedRunToReview()!.status === 'SUBMITTED' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                                  (selectedRunToReview()!.status === 'RECALCULATION_REQUESTED' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-slate-100 text-slate-700 border border-slate-200')))">
                       {{ getStatusLabel(selectedRunToReview()!.status) }}
                     </span>
                   </div>
@@ -935,39 +938,39 @@
                 </div>
                 <div class="flex items-center space-x-2">
                   @if (selectedRunToReview()!.status === 'APPROVED') {
-                    <span class="px-3 py-1.5 bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold rounded-md flex items-center gap-1.5">
-                      <i class="fa-solid fa-circle-check text-slate-600"></i>
+                    <span class="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold rounded-md flex items-center gap-1.5">
+                      <i class="fa-solid fa-circle-check"></i>
                       <span>{{ currentLang() === 'vi' ? 'Đã được Giám đốc phê duyệt chính thức' : 'Officially Approved by Director' }}</span>
                     </span>
                   } @else if (selectedRunToReview()!.status === 'PENDING_APPROVAL') {
                     <button (click)="submitCheckerFeedback('CANCEL_FORWARD')"
-                            class="px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs">
-                      <i class="fa-solid fa-undo text-slate-400"></i>
-                      <span>{{ currentLang() === 'vi' ? 'Hủy chuyển duyệt (Rút lại)' : 'Cancel Forward' }}</span>
+                            class="px-3.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 cursor-pointer">
+                      <i class="fa-solid fa-undo"></i>
+                      <span>{{ currentLang() === 'vi' ? 'Hủy chuyển duyệt (Rút lại hồ sơ)' : 'Cancel Forward' }}</span>
                     </button>
-                    <span class="px-3 py-1.5 bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold rounded-md flex items-center gap-1.5">
-                      <i class="fa-solid fa-clock text-slate-500"></i>
+                    <span class="px-3 py-1.5 bg-purple-50 text-purple-700 border border-purple-200 text-xs font-semibold rounded-md flex items-center gap-1.5">
+                      <i class="fa-solid fa-clock"></i>
                       <span>{{ currentLang() === 'vi' ? 'Đã chuyển Giám đốc phê duyệt' : 'Pending Executive Approval' }}</span>
                     </span>
                   } @else if (selectedRunToReview()!.status === 'RECALCULATION_REQUESTED') {
                     <button (click)="submitCheckerFeedback('CANCEL_RECALCULATE')"
-                            class="px-3.5 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs">
-                      <i class="fa-solid fa-undo text-slate-400"></i>
+                            class="px-3.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 cursor-pointer">
+                      <i class="fa-solid fa-undo"></i>
                       <span>{{ currentLang() === 'vi' ? 'Hủy yêu cầu tính lại' : 'Cancel Recalculate' }}</span>
                     </button>
-                    <span class="px-3 py-1.5 bg-rose-50 text-rose-800 border border-rose-200 text-xs font-semibold rounded-md flex items-center gap-1.5">
+                    <span class="px-3 py-1.5 bg-rose-50 text-rose-700 border border-rose-200 text-xs font-semibold rounded-md flex items-center gap-1.5">
                       <i class="fa-solid fa-rotate-left"></i>
                       <span>{{ currentLang() === 'vi' ? 'Đã trả về Chuyên viên tính lại' : 'Returned to Maker' }}</span>
                     </span>
                   } @else {
                     <button (click)="submitCheckerFeedback('RECALCULATE')"
-                            class="px-3.5 py-1.5 bg-white hover:bg-rose-50 text-rose-800 border border-rose-300 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs">
+                            class="px-3.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 cursor-pointer">
                       <i class="fa-solid fa-rotate-left"></i>
-                      {{ currentLang() === 'vi' ? 'Không Duyệt — Yêu Cầu Tính Lại' : t('btn_request_recalc') }}
+                      {{ currentLang() === 'vi' ? 'Yêu cầu Tính lại' : t('btn_request_recalc') }}
                     </button>
                     <button (click)="submitCheckerFeedback('FORWARD_APPROVER')"
-                            class="px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-md shadow-2xs transition-colors flex items-center gap-1.5 cursor-pointer">
-                      <i class="fa-solid fa-check-double text-slate-400"></i>
+                            class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-md shadow-sm transition-colors flex items-center gap-1.5 cursor-pointer">
+                      <i class="fa-solid fa-check-double"></i>
                       {{ currentLang() === 'vi' ? 'Xác nhận và Chuyển Phê duyệt' : t('btn_forward_approver') }}
                     </button>
                   }
@@ -976,8 +979,8 @@
 
               <!-- Rejection Notice (if recalculation requested) -->
               @if (selectedRunToReview()!.rejection_reason) {
-                <div class="p-3 bg-rose-50/70 border border-rose-200 rounded-lg text-xs text-rose-900 space-y-1">
-                  <div class="font-bold flex items-center gap-1.5 text-rose-800">
+                <div class="p-3 bg-rose-50 border border-rose-200 rounded-lg text-xs text-rose-800 space-y-1">
+                  <div class="font-bold flex items-center gap-1.5 text-rose-700">
                     <i class="fa-solid fa-triangle-exclamation"></i>
                     {{ currentLang() === 'vi' ? 'Ý kiến phản hồi từ Trưởng phòng Quản lý rủi ro:' : 'Recalculation Request Note:' }}
                   </div>
@@ -987,41 +990,41 @@
 
               <!-- 4 Financial Metrics of this Run -->
               <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div class="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200">
+                <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
                   <div class="text-xs text-slate-600 font-semibold">{{ t('kpi_ead') }}</div>
                   <div class="text-xl font-bold text-slate-900 mt-1">{{ formatVND(selectedRunToReview()!.total_ead) }}</div>
                 </div>
 
-                <div class="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200">
+                <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
                   <div class="text-xs text-slate-600 font-semibold">{{ t('kpi_ecl_stress') }}</div>
-                  <div class="text-xl font-bold text-slate-800 mt-1">{{ formatVND(selectedRunToReview()!.total_stressed_ecl) }}</div>
+                  <div class="text-xl font-bold text-amber-700 mt-1">{{ formatVND(selectedRunToReview()!.total_stressed_ecl) }}</div>
                 </div>
 
-                <div class="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200">
-                  <div class="text-xs text-slate-600 font-semibold">{{ t('kpi_delta_ps') }}</div>
-                  <div class="text-xl font-bold text-rose-800 mt-1">+{{ formatVND(selectedRunToReview()!.total_delta_provision) }}</div>
+                <div class="p-3.5 rounded-xl bg-rose-50/50 border border-rose-200">
+                  <div class="text-xs text-rose-800 font-semibold">{{ t('kpi_delta_ps') }}</div>
+                  <div class="text-xl font-bold text-rose-700 mt-1">+{{ formatVND(selectedRunToReview()!.total_delta_provision) }}</div>
                 </div>
 
-                <div class="p-3.5 rounded-xl bg-slate-50/80 border border-slate-200">
+                <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
                   <div class="text-xs text-slate-600 font-semibold">{{ t('kpi_car_stress') }}</div>
                   <div class="text-xl font-bold mt-1"
-                       [class]="(selectedRunToReview()!.car_impact?.is_capital_adequate ?? true) ? 'text-slate-800' : 'text-rose-800'">
+                       [class]="(selectedRunToReview()!.car_impact?.is_capital_adequate ?? true) ? 'text-emerald-700' : 'text-rose-700'">
                     {{ selectedRunToReview()!.car_impact ? formatPercent(selectedRunToReview()!.car_impact!.stressed_car) : '19.41%' }}
                   </div>
                 </div>
               </div>
 
               <!-- Macro Shocks Applied in this Run -->
-              <div class="p-3 rounded-lg bg-slate-50 border border-slate-200 flex flex-wrap items-center justify-between text-xs gap-2">
-                <span class="font-semibold text-slate-700 flex items-center gap-1.5">
-                  <i class="fa-solid fa-sliders text-slate-500"></i>
+              <div class="p-3 rounded-lg bg-blue-50/40 border border-blue-100 flex flex-wrap items-center justify-between text-xs gap-2">
+                <span class="font-semibold text-blue-900 flex items-center gap-1.5">
+                  <i class="fa-solid fa-sliders text-blue-600"></i>
                   <span>{{ currentLang() === 'vi' ? 'Tham số Cú sốc Vĩ mô của phiên này:' : 'Applied Macro Shock Parameters:' }}</span>
                 </span>
                 <div class="flex items-center gap-3 text-slate-700 font-medium">
-                  <span>ΔGDP: <strong class="text-slate-800">{{ formatShock(selectedRunToReview()!.custom_gdp_shock, 100, 1) }}%</strong></span>
-                  <span>ΔLãi suất: <strong class="text-slate-800">+{{ formatShock(selectedRunToReview()!.custom_ir_shock, 10000, 0) }} bps</strong></span>
-                  <span>ΔThất nghiệp: <strong class="text-slate-800">+{{ formatShock(selectedRunToReview()!.custom_unemp_shock, 100, 1) }}%</strong></span>
-                  <span>ΔGiá BĐS: <strong class="text-slate-800">{{ formatShock(selectedRunToReview()!.custom_re_shock, 100, 1) }}%</strong></span>
+                  <span>ΔGDP: <strong class="text-blue-700">{{ formatShock(selectedRunToReview()!.custom_gdp_shock, 100, 1) }}%</strong></span>
+                  <span>ΔLãi suất: <strong class="text-amber-700">+{{ formatShock(selectedRunToReview()!.custom_ir_shock, 10000, 0) }} bps</strong></span>
+                  <span>ΔThất nghiệp: <strong class="text-emerald-700">+{{ formatShock(selectedRunToReview()!.custom_unemp_shock, 100, 1) }}%</strong></span>
+                  <span>ΔGiá BĐS: <strong class="text-rose-700">{{ formatShock(selectedRunToReview()!.custom_re_shock, 100, 1) }}%</strong></span>
                 </div>
               </div>
 
@@ -1121,15 +1124,15 @@
                   <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-3">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-2 gap-2">
                       <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 rounded-full bg-slate-700"></div>
+                        <div class="w-2 h-2 rounded-full bg-rose-600"></div>
                         <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wide">
                           {{ currentLang() === 'vi' ? 'Top Khoản Vay Rủi Ro Nhất Cần Lưu Ý' : 'Top Stressed High-Risk Loans' }}
                         </h4>
                       </div>
                       <button type="button"
                               (click)="checkerContractModalOpen.set(true)"
-                              class="text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-1 hover:underline cursor-pointer">
-                        <i class="fa-solid fa-table-list text-slate-400"></i>
+                              class="text-xs font-semibold text-blue-700 hover:text-blue-800 flex items-center gap-1 hover:underline cursor-pointer">
+                        <i class="fa-solid fa-table-list"></i>
                         <span>{{ currentLang() === 'vi' ? 'Xem Bảng Kê 100 Hợp Đồng Chi Tiết' : 'View Full 100 Contracts List' }}</span>
                       </button>
                     </div>
@@ -1150,20 +1153,20 @@
                         <tbody class="divide-y divide-slate-100">
                           @for (loan of selectedReviewDetail()!.top_risk_loans; track loan.contract_id) {
                             <tr class="hover:bg-slate-50 transition-colors">
-                              <td class="p-2.5 font-bold text-slate-800 whitespace-nowrap font-mono">{{ loan.contract_id }}</td>
+                              <td class="p-2.5 font-bold text-blue-700 whitespace-nowrap font-mono">{{ loan.contract_id }}</td>
                               <td class="p-2.5 font-medium text-slate-900">{{ loan.customer_name }}</td>
                               <td class="p-2.5 text-slate-600 whitespace-nowrap">{{ loan.sector_name_vn }}</td>
                               <td class="p-2.5 font-bold text-slate-900 whitespace-nowrap">{{ formatVND(loan.original_ead) }}</td>
                               <td class="p-2.5 text-center whitespace-nowrap">
                                 <span class="px-2 py-0.5 rounded text-[10px] font-bold"
-                                      [class]="loan.stressed_stage === 3 ? 'bg-rose-50 text-rose-800 border border-rose-200' : (loan.stressed_stage === 2 ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-slate-100 text-slate-700 border border-slate-200')">
+                                      [class]="loan.stressed_stage === 3 ? 'bg-rose-100 text-rose-800' : (loan.stressed_stage === 2 ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800')">
                                   N{{ loan.baseline_stage }} → N{{ loan.stressed_stage }}
                                 </span>
                               </td>
-                              <td class="p-2.5 text-center whitespace-nowrap font-bold text-slate-800">
+                              <td class="p-2.5 text-center whitespace-nowrap font-bold text-rose-700">
                                 {{ (loan.stressed_pd * 100).toFixed(2) }}%
                               </td>
-                              <td class="p-2.5 text-right whitespace-nowrap font-bold text-slate-800">
+                              <td class="p-2.5 text-right whitespace-nowrap font-bold text-rose-700">
                                 +{{ formatVND(loan.delta_provision) }}
                               </td>
                             </tr>
@@ -1182,7 +1185,7 @@
                     {{ currentLang() === 'vi' ? 'Phiếu Kiểm Tra và Thẩm Định Nghiệp Vụ (Bấm chọn hoặc bỏ chọn từng tiêu chí):' : 'Four-Eyes Review Checklist (Tick/Untick checkpoints):' }}
                   </div>
                   <span class="text-[11px] font-semibold"
-                        [class]="(checkerCheckDataIntegrity() && checkerCheckEconomicLogic() && checkerCheckCapitalAdequacy()) ? 'text-slate-800' : 'text-rose-800'">
+                        [class]="(checkerCheckDataIntegrity() && checkerCheckEconomicLogic() && checkerCheckCapitalAdequacy()) ? 'text-emerald-700' : 'text-rose-700'">
                     {{ (checkerCheckDataIntegrity() ? 1 : 0) + (checkerCheckEconomicLogic() ? 1 : 0) + (checkerCheckCapitalAdequacy() ? 1 : 0) }}/3 {{ currentLang() === 'vi' ? 'tiêu chuẩn đạt' : 'passed' }}
                   </span>
                 </div>
@@ -1190,17 +1193,17 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
                   <!-- Checkpoint 1 -->
                   <label class="p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-2 select-none"
-                         [class]="checkerCheckDataIntegrity() ? 'bg-slate-50/80 border-slate-300 shadow-2xs' : 'bg-rose-50/40 border-rose-200'">
+                         [class]="checkerCheckDataIntegrity() ? 'bg-emerald-50/50 border-emerald-300 shadow-xs' : 'bg-rose-50/40 border-rose-300'">
                     <div class="flex items-start justify-between gap-2">
                       <div class="font-bold text-slate-900 flex items-center gap-2">
                         <input type="checkbox"
                                [checked]="checkerCheckDataIntegrity()"
                                (change)="checkerCheckDataIntegrity.set(!checkerCheckDataIntegrity())"
-                               class="w-4 h-4 text-slate-700 rounded border-slate-300 focus:ring-slate-400 cursor-pointer">
+                               class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer">
                         <span>1. {{ currentLang() === 'vi' ? 'Tính Toàn Vẹn Dữ Liệu' : 'Data Integrity and Quality' }}</span>
                       </div>
                       <i class="fa-solid"
-                         [class]="checkerCheckDataIntegrity() ? 'fa-circle-check text-slate-700 text-base' : 'fa-circle-xmark text-rose-800 text-base'"></i>
+                         [class]="checkerCheckDataIntegrity() ? 'fa-circle-check text-emerald-600 text-base' : 'fa-circle-xmark text-rose-600 text-base'"></i>
                     </div>
                     <p class="text-[11px] text-slate-600 leading-relaxed">
                       {{ currentLang() === 'vi' ? 'Kiểm tra 100 hợp đồng từ Core Banking, số liệu EAD và định giá tài sản bảo đảm chuẩn hóa.' : 'Verify 100 contracts, EAD values and collateral evaluation from Core Banking.' }}
@@ -1209,17 +1212,17 @@
 
                   <!-- Checkpoint 2 -->
                   <label class="p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-2 select-none"
-                         [class]="checkerCheckEconomicLogic() ? 'bg-slate-50/80 border-slate-300 shadow-2xs' : 'bg-rose-50/40 border-rose-200'">
+                         [class]="checkerCheckEconomicLogic() ? 'bg-emerald-50/50 border-emerald-300 shadow-xs' : 'bg-rose-50/40 border-rose-300'">
                     <div class="flex items-start justify-between gap-2">
                       <div class="font-bold text-slate-900 flex items-center gap-2">
                         <input type="checkbox"
                                [checked]="checkerCheckEconomicLogic()"
                                (change)="checkerCheckEconomicLogic.set(!checkerCheckEconomicLogic())"
-                               class="w-4 h-4 text-slate-700 rounded border-slate-300 focus:ring-slate-400 cursor-pointer">
+                               class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer">
                         <span>2. {{ currentLang() === 'vi' ? 'Tính Logic Kinh Tế' : 'Economic Sensitivity Logic' }}</span>
                       </div>
                       <i class="fa-solid"
-                         [class]="checkerCheckEconomicLogic() ? 'fa-circle-check text-slate-700 text-base' : 'fa-circle-xmark text-rose-800 text-base'"></i>
+                         [class]="checkerCheckEconomicLogic() ? 'fa-circle-check text-emerald-600 text-base' : 'fa-circle-xmark text-rose-600 text-base'"></i>
                     </div>
                     <p class="text-[11px] text-slate-600 leading-relaxed">
                       {{ currentLang() === 'vi' ? 'Hệ số nhạy cảm ngành và mức tăng PD/LGD phản ánh đúng kịch bản vĩ mô đặt ra.' : 'Industry sensitivities and PD/LGD shock response align with macroeconomic conditions.' }}
@@ -1228,17 +1231,17 @@
 
                   <!-- Checkpoint 3 -->
                   <label class="p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-2 select-none"
-                         [class]="checkerCheckCapitalAdequacy() ? 'bg-slate-50/80 border-slate-300 shadow-2xs' : 'bg-rose-50/40 border-rose-200'">
+                         [class]="checkerCheckCapitalAdequacy() ? 'bg-emerald-50/50 border-emerald-300 shadow-xs' : 'bg-rose-50/40 border-rose-300'">
                     <div class="flex items-start justify-between gap-2">
                       <div class="font-bold text-slate-900 flex items-center gap-2">
                         <input type="checkbox"
                                [checked]="checkerCheckCapitalAdequacy()"
                                (change)="checkerCheckCapitalAdequacy.set(!checkerCheckCapitalAdequacy())"
-                               class="w-4 h-4 text-slate-700 rounded border-slate-300 focus:ring-slate-400 cursor-pointer">
+                               class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer">
                         <span>3. {{ currentLang() === 'vi' ? 'Điều Kiện Trình Phê Duyệt' : 'Readiness for Approval' }}</span>
                       </div>
                       <i class="fa-solid"
-                         [class]="checkerCheckCapitalAdequacy() ? 'fa-circle-check text-slate-700 text-base' : 'fa-circle-xmark text-rose-800 text-base'"></i>
+                         [class]="checkerCheckCapitalAdequacy() ? 'fa-circle-check text-emerald-600 text-base' : 'fa-circle-xmark text-rose-600 text-base'"></i>
                     </div>
                     <p class="text-[11px] text-slate-600 leading-relaxed">
                       {{ currentLang() === 'vi' ? 'Mức trích lập bổ sung và mức xói mòn vốn đệm CAR đáp ứng giới hạn an toàn quy định.' : 'Required additional provisions and stressed CAR ratio comply with capital regulations.' }}
@@ -1250,7 +1253,7 @@
               <!-- Ô NHẬN XÉT FEEDBACK CỦA TRƯỞNG PHÒNG QUẢN LÝ RỦI RO KHI THẨM ĐỊNH HOẶC KHÔNG DUYỆT -->
               <div class="p-4 rounded-xl border border-slate-200 bg-white shadow-xs space-y-3">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
-                  <div class="w-2.5 h-2.5 rounded-full bg-slate-700"></div>
+                  <div class="w-2.5 h-2.5 rounded-full bg-amber-600"></div>
                   <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wide">
                     {{ currentLang() === 'vi' ? 'Ý Kiến Thẩm Định và Phản Hồi của Trưởng Phòng Quản Lý Rủi Ro' : 'Risk Management Head Review and Feedback Notes' }}
                   </h4>
@@ -1358,16 +1361,16 @@
                 <div class="flex items-center gap-2">
                   @if (selectedApproverRun()!.status === 'APPROVED') {
                     <button (click)="executeWorkflow(selectedApproverRun()!.id, 'CANCEL_APPROVE', 'Giám đốc Khối Quản lý rủi ro / CEO đã hủy ký số phê duyệt đề án, chuyển lại trạng thái chờ xem xét.')"
-                            class="px-4 py-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-semibold rounded-lg shadow-2xs transition-all flex items-center gap-2 cursor-pointer">
-                      <i class="fa-solid fa-undo text-slate-400"></i>
+                            class="px-4 py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 text-xs font-bold rounded-lg shadow-sm transition-all flex items-center gap-2 cursor-pointer">
+                      <i class="fa-solid fa-undo"></i>
                       <span>{{ currentLang() === 'vi' ? 'Hủy Phê Duyệt (Thu Hồi Ký Số)' : 'Revoke Approval' }}</span>
                     </button>
-                    <span class="px-3 py-2 bg-slate-100 text-slate-700 border border-slate-200 text-xs font-semibold rounded-lg flex items-center gap-1.5">
-                      <i class="fa-solid fa-circle-check text-slate-600"></i> {{ currentLang() === 'vi' ? 'Đề án đã phê duyệt' : 'Approved' }}
+                    <span class="px-3 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold rounded-lg flex items-center gap-1.5">
+                      <i class="fa-solid fa-circle-check"></i> {{ currentLang() === 'vi' ? 'Đề án đã phê duyệt' : 'Approved' }}
                     </span>
                   } @else {
                     <button (click)="executeWorkflow(selectedApproverRun()!.id, 'APPROVE', 'Giám đốc Khối Quản lý rủi ro / CEO Lê Hoàng Cường đã ký số phê duyệt đề án.')"
-                            class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg shadow-2xs transition-all flex items-center gap-2 cursor-pointer">
+                            class="px-5 py-2.5 bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold rounded-lg shadow-sm transition-all flex items-center gap-2 cursor-pointer">
                       <i class="fa-solid fa-file-signature text-sm"></i>
                       <span>{{ t('btn_sign_approve') }}</span>
                     </button>
@@ -1389,28 +1392,28 @@
                     <button type="button"
                             (click)="selectedApproverRun.set(run)"
                             class="p-3 text-left rounded-lg border transition-all cursor-pointer shadow-2xs hover:shadow-xs flex flex-col justify-between"
-                            [class]="selectedApproverRun()?.id === run.id ? 'bg-slate-100 border-slate-400 ring-1 ring-slate-300' : 'bg-slate-50 border-slate-200 hover:bg-slate-100/70'">
+                            [class]="selectedApproverRun()?.id === run.id ? 'bg-purple-50/70 border-purple-400 ring-1 ring-purple-300' : 'bg-slate-50 border-slate-200 hover:bg-slate-100/70'">
                       <div class="flex items-center justify-between gap-1 mb-1">
-                        <span class="font-bold text-xs" [class]="selectedApproverRun()?.id === run.id ? 'text-slate-900' : 'text-slate-800'">
+                        <span class="font-bold text-xs" [class]="selectedApproverRun()?.id === run.id ? 'text-purple-900' : 'text-slate-900'">
                           {{ run.run_code }}
                         </span>
-                        <span class="px-2 py-0.5 rounded text-[10px] font-semibold"
-                              [class]="run.status === 'APPROVED' ? 'bg-slate-100 text-slate-700 border border-slate-200' :
-                                      (run.status === 'PENDING_APPROVAL' ? 'bg-slate-100 text-slate-700 border border-slate-200' : 'bg-amber-50 text-amber-800 border border-amber-200')">
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold"
+                              [class]="run.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800' :
+                                      (run.status === 'PENDING_APPROVAL' ? 'bg-purple-100 text-purple-800 border border-purple-300' : 'bg-amber-100 text-amber-800')">
                           {{ getStatusLabel(run.status) }}
                         </span>
                       </div>
                       <div class="text-xs font-semibold text-slate-800 truncate">{{ run.run_name }}</div>
                       <div class="text-[11px] text-slate-500 mt-1 flex justify-between">
                         <span>Lập bởi: <strong class="text-slate-700">{{ run.maker_name }}</strong></span>
-                        <span class="text-slate-800 font-bold">+{{ formatVND(run.total_delta_provision) }}</span>
+                        <span class="text-rose-700 font-bold">+{{ formatVND(run.total_delta_provision) }}</span>
                       </div>
                     </button>
                   }
                 </div>
               } @else {
                 <div class="p-6 bg-slate-50 rounded-xl border border-dashed border-slate-300 text-center space-y-2">
-                  <div class="w-10 h-10 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-600 text-base">
+                  <div class="w-10 h-10 mx-auto rounded-full bg-amber-100/70 flex items-center justify-center text-amber-700 text-base">
                     <i class="fa-solid fa-hourglass-half"></i>
                   </div>
                   <div class="text-xs font-bold text-slate-800">Chưa có đề án nào được Trưởng phòng Quản lý rủi ro thẩm định đạt và chuyển lên</div>
@@ -1423,41 +1426,41 @@
 
             <!-- Proposal Context Card for Board / Director -->
             @if (selectedApproverRun()) {
-              <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3">
-                <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+              <div class="p-4 rounded-xl bg-purple-50/40 border border-purple-200 space-y-3">
+                <div class="flex items-center justify-between border-b border-purple-100 pb-2">
                   <div class="flex items-center gap-2">
-                    <span class="w-2.5 h-2.5 rounded-full bg-slate-700"></span>
-                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wide">
+                    <span class="w-2.5 h-2.5 rounded-full bg-purple-700"></span>
+                    <h3 class="text-xs font-bold text-purple-900 uppercase tracking-wide">
                       Bối Cảnh Kịch Bản và Tờ Trình Thẩm Định
                     </h3>
                   </div>
-                  <span class="text-xs font-bold text-slate-800 bg-white px-2.5 py-0.5 rounded border border-slate-200">
+                  <span class="text-xs font-bold text-purple-800 bg-white px-2.5 py-0.5 rounded border border-purple-200">
                     {{ selectedApproverRun()!.run_code }} • {{ selectedApproverRun()!.scenario_name }}
                   </span>
                 </div>
 
                 <!-- 4 Macroeconomic Shocks of this proposal -->
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                  <div class="p-2 bg-white rounded-lg border border-slate-200">
+                  <div class="p-2 bg-white rounded-lg border border-purple-100">
                     <span class="text-slate-500 text-[11px]">Cú sốc GDP:</span>
-                    <div class="font-bold text-slate-800 text-sm">{{ formatShock(selectedApproverRun()!.custom_gdp_shock, 100, 1) }}%</div>
+                    <div class="font-bold text-blue-700 text-sm">{{ formatShock(selectedApproverRun()!.custom_gdp_shock, 100, 1) }}%</div>
                   </div>
-                  <div class="p-2 bg-white rounded-lg border border-slate-200">
+                  <div class="p-2 bg-white rounded-lg border border-purple-100">
                     <span class="text-slate-500 text-[11px]">Cú sốc Lãi suất:</span>
-                    <div class="font-bold text-slate-800 text-sm">+{{ formatShock(selectedApproverRun()!.custom_ir_shock, 10000, 0) }} bps</div>
+                    <div class="font-bold text-amber-700 text-sm">+{{ formatShock(selectedApproverRun()!.custom_ir_shock, 10000, 0) }} bps</div>
                   </div>
-                  <div class="p-2 bg-white rounded-lg border border-slate-200">
+                  <div class="p-2 bg-white rounded-lg border border-purple-100">
                     <span class="text-slate-500 text-[11px]">Cú sốc Thất nghiệp:</span>
-                    <div class="font-bold text-slate-800 text-sm">+{{ formatShock(selectedApproverRun()!.custom_unemp_shock, 100, 1) }}%</div>
+                    <div class="font-bold text-emerald-700 text-sm">+{{ formatShock(selectedApproverRun()!.custom_unemp_shock, 100, 1) }}%</div>
                   </div>
-                  <div class="p-2 bg-white rounded-lg border border-slate-200">
+                  <div class="p-2 bg-white rounded-lg border border-purple-100">
                     <span class="text-slate-500 text-[11px]">Cú sốc Bất động sản:</span>
-                    <div class="font-bold text-slate-800 text-sm">{{ formatShock(selectedApproverRun()!.custom_re_shock, 100, 1) }}%</div>
+                    <div class="font-bold text-rose-700 text-sm">{{ formatShock(selectedApproverRun()!.custom_re_shock, 100, 1) }}%</div>
                   </div>
                 </div>
 
                 <!-- Checker Endorsement Note (Ý kiến thẩm định của Trưởng phòng) -->
-                <div class="p-3 bg-white rounded-lg border border-slate-200 text-xs space-y-1">
+                <div class="p-3 bg-white rounded-lg border border-purple-100 text-xs space-y-1">
                   <div class="font-bold text-slate-800 flex items-center justify-between">
                     <span>Ý kiến xác nhận của Trưởng phòng Quản lý rủi ro:</span>
                     <span class="font-medium text-slate-600">{{ selectedApproverRun()!.checker_name || 'Trần Thị Bình' }}</span>
@@ -1645,15 +1648,15 @@
                   <div class="flex items-center justify-between pb-1 border-b border-slate-200/60">
                     <div class="flex items-center gap-1.5">
                       <span class="px-2 py-0.5 rounded text-[10px] font-bold transition-colors"
-                            [class]="directive1Active() ? 'bg-slate-100 text-slate-700 border border-slate-200' : 'bg-slate-200 text-slate-500'">
+                            [class]="directive1Active() ? 'bg-purple-100 text-purple-800' : 'bg-slate-200 text-slate-500'">
                         Quyết định 1
                       </span>
                       @if (!directive1Active()) {
-                        <span class="text-[10px] text-slate-500 font-semibold italic">(Không áp dụng)</span>
+                        <span class="text-[10px] text-slate-600 font-semibold italic">(Không áp dụng)</span>
                       }
                     </div>
-                    <label class="flex items-center gap-1.5 cursor-pointer text-[11px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">
-                      <input type="checkbox" [checked]="directive1Active()" (change)="directive1Active.set(!directive1Active())" class="accent-slate-700 cursor-pointer w-3.5 h-3.5">
+                    <label class="flex items-center gap-1.5 cursor-pointer text-[11px] font-semibold text-slate-700 hover:text-purple-700 transition-colors">
+                      <input type="checkbox" [checked]="directive1Active()" (change)="directive1Active.set(!directive1Active())" class="accent-purple-600 cursor-pointer w-3.5 h-3.5">
                       <span>Áp dụng</span>
                     </label>
                   </div>
@@ -1666,13 +1669,13 @@
                     <!-- Editable Title -->
                     <input type="text" [ngModel]="directive1Title()" (ngModelChange)="directive1Title.set($event)"
                            [disabled]="!directive1Active()"
-                           class="w-full text-xs font-bold text-slate-900 bg-white border border-slate-300 rounded px-2 py-1 focus:border-slate-500 focus:outline-none disabled:bg-slate-100 disabled:text-slate-600"
+                           class="w-full text-xs font-bold text-slate-900 bg-white border border-slate-300 rounded px-2 py-1 focus:border-purple-600 focus:outline-none disabled:bg-slate-100 disabled:text-slate-600"
                            title="Giám đốc có thể chỉnh sửa tiêu đề điều lệnh">
 
                     <!-- AI Presets -->
-                    <div class="p-2 bg-slate-50 rounded-lg border border-slate-200 space-y-1.5">
-                      <div class="text-[10px] text-slate-700 font-bold flex items-center gap-1">
-                        <i class="fa-solid fa-wand-magic-sparkles text-slate-500"></i> Đề cử AI:
+                    <div class="p-2 bg-purple-50/50 rounded-lg border border-purple-100 space-y-1.5">
+                      <div class="text-[10px] text-purple-800 font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-wand-magic-sparkles text-purple-600"></i> Đề cử AI:
                       </div>
                       <div class="flex items-center gap-1">
                         @for (pct of [10, 15, 20, 25]; track pct) {
@@ -1680,7 +1683,7 @@
                                   [disabled]="!directive1Active()"
                                   (click)="applyDirective1Preset(pct)"
                                   class="flex-1 py-0.5 text-[10px] font-bold rounded border transition-all cursor-pointer disabled:cursor-not-allowed"
-                                  [class]="directive1CutPercent() === pct ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                                  [class]="directive1CutPercent() === pct ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
                             -{{ pct }}%
                           </button>
                         }
@@ -1695,7 +1698,7 @@
                           <input type="number" min="0" max="100" step="1"
                                  [disabled]="!directive1Active()"
                                  [ngModel]="directive1CutPercent()" (ngModelChange)="directive1CutPercent.set(+$event)"
-                                 class="w-16 px-1.5 py-0.5 text-xs font-bold text-slate-800 text-right border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-400 disabled:bg-slate-100 disabled:text-slate-600">
+                                 class="w-16 px-1.5 py-0.5 text-xs font-extrabold text-purple-700 text-right border border-purple-300 rounded focus:outline-none focus:ring-1 focus:ring-purple-500 disabled:bg-slate-100 disabled:text-slate-600">
                           <span class="font-bold text-slate-600 text-xs">%</span>
                         </div>
                       </div>
@@ -1709,7 +1712,7 @@
                       <textarea [ngModel]="directive1ActionNote()" (ngModelChange)="directive1ActionNote.set($event)"
                                 [disabled]="!directive1Active()"
                                 rows="4"
-                                class="w-full text-xs text-slate-800 bg-white border border-slate-300 rounded-lg p-2.5 focus:border-slate-500 focus:ring-1 focus:ring-slate-400 focus:outline-none min-h-[95px] leading-relaxed disabled:bg-slate-100 disabled:text-slate-600"
+                                class="w-full text-xs text-slate-800 bg-white border border-slate-300 rounded-lg p-2.5 focus:border-purple-600 focus:ring-1 focus:ring-purple-500 focus:outline-none min-h-[95px] leading-relaxed disabled:bg-slate-100 disabled:text-slate-600"
                                 placeholder="Nhập nội dung chỉ đạo điều hành..."></textarea>
                     </div>
                   </div>
@@ -1729,15 +1732,15 @@
                   <div class="flex items-center justify-between pb-1 border-b border-slate-200/60">
                     <div class="flex items-center gap-1.5">
                       <span class="px-2 py-0.5 rounded text-[10px] font-bold transition-colors"
-                            [class]="directive2Active() ? 'bg-slate-100 text-slate-700 border border-slate-200' : 'bg-slate-200 text-slate-500'">
+                            [class]="directive2Active() ? 'bg-purple-100 text-purple-800' : 'bg-slate-200 text-slate-500'">
                         Quyết định 2
                       </span>
                       @if (!directive2Active()) {
-                        <span class="text-[10px] text-slate-500 font-semibold italic">(Không áp dụng)</span>
+                        <span class="text-[10px] text-slate-600 font-semibold italic">(Không áp dụng)</span>
                       }
                     </div>
-                    <label class="flex items-center gap-1.5 cursor-pointer text-[11px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">
-                      <input type="checkbox" [checked]="directive2Active()" (change)="directive2Active.set(!directive2Active())" class="accent-slate-700 cursor-pointer w-3.5 h-3.5">
+                    <label class="flex items-center gap-1.5 cursor-pointer text-[11px] font-semibold text-slate-700 hover:text-purple-700 transition-colors">
+                      <input type="checkbox" [checked]="directive2Active()" (change)="directive2Active.set(!directive2Active())" class="accent-purple-600 cursor-pointer w-3.5 h-3.5">
                       <span>Áp dụng</span>
                     </label>
                   </div>
@@ -1750,13 +1753,13 @@
                     <!-- Editable Title -->
                     <input type="text" [ngModel]="directive2Title()" (ngModelChange)="directive2Title.set($event)"
                            [disabled]="!directive2Active()"
-                           class="w-full text-xs font-bold text-slate-900 bg-white border border-slate-300 rounded px-2 py-1 focus:border-slate-500 focus:outline-none disabled:bg-slate-100 disabled:text-slate-600"
+                           class="w-full text-xs font-bold text-slate-900 bg-white border border-slate-300 rounded px-2 py-1 focus:border-purple-600 focus:outline-none disabled:bg-slate-100 disabled:text-slate-600"
                            title="Giám đốc có thể chỉnh sửa tiêu đề điều lệnh">
 
                     <!-- AI Presets -->
-                    <div class="p-2 bg-slate-50 rounded-lg border border-slate-200 space-y-1.5">
-                      <div class="text-[10px] text-slate-700 font-bold flex items-center gap-1">
-                        <i class="fa-solid fa-wand-magic-sparkles text-slate-500"></i> Đề cử AI:
+                    <div class="p-2 bg-purple-50/50 rounded-lg border border-purple-100 space-y-1.5">
+                      <div class="text-[10px] text-purple-800 font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-wand-magic-sparkles text-purple-600"></i> Đề cử AI:
                       </div>
                       <div class="flex items-center gap-1">
                         @for (q of [2, 3, 4, 6]; track q) {
@@ -1764,7 +1767,7 @@
                                   [disabled]="!directive2Active()"
                                   (click)="applyDirective2Preset(q)"
                                   class="flex-1 py-0.5 text-[10px] font-bold rounded border transition-all cursor-pointer disabled:cursor-not-allowed"
-                                  [class]="directive2Quarters() === q ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                                  [class]="directive2Quarters() === q ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
                             {{ q }} Quý
                           </button>
                         }
@@ -1779,7 +1782,7 @@
                           <input type="number" min="1" max="16" step="1"
                                  [disabled]="!directive2Active()"
                                  [ngModel]="directive2Quarters()" (ngModelChange)="directive2Quarters.set(+$event)"
-                                 class="w-16 px-1.5 py-0.5 text-xs font-bold text-slate-800 text-right border border-slate-300 rounded focus:outline-none focus:ring-1 focus:ring-slate-400 disabled:bg-slate-100 disabled:text-slate-600">
+                                 class="w-16 px-1.5 py-0.5 text-xs font-extrabold text-purple-700 text-right border border-purple-300 rounded focus:outline-none focus:ring-1 focus:ring-purple-500 disabled:bg-slate-100 disabled:text-slate-600">
                           <span class="font-bold text-slate-600 text-xs">Quý</span>
                         </div>
                       </div>
@@ -1793,7 +1796,7 @@
                       <textarea [ngModel]="directive2ActionNote()" (ngModelChange)="directive2ActionNote.set($event)"
                                 [disabled]="!directive2Active()"
                                 rows="4"
-                                class="w-full text-xs text-slate-800 bg-white border border-slate-300 rounded-lg p-2.5 focus:border-slate-500 focus:ring-1 focus:ring-slate-400 focus:outline-none min-h-[95px] leading-relaxed disabled:bg-slate-100 disabled:text-slate-600"
+                                class="w-full text-xs text-slate-800 bg-white border border-slate-300 rounded-lg p-2.5 focus:border-purple-600 focus:ring-1 focus:ring-purple-500 focus:outline-none min-h-[95px] leading-relaxed disabled:bg-slate-100 disabled:text-slate-600"
                                 placeholder="Nhập kế hoạch phân bổ tài chính..."></textarea>
                     </div>
                   </div>
@@ -1813,15 +1816,15 @@
                   <div class="flex items-center justify-between pb-1 border-b border-slate-200/60">
                     <div class="flex items-center gap-1.5">
                       <span class="px-2 py-0.5 rounded text-[10px] font-bold transition-colors"
-                            [class]="directive3Active() ? 'bg-slate-100 text-slate-700 border border-slate-200' : 'bg-slate-200 text-slate-500'">
+                            [class]="directive3Active() ? 'bg-purple-100 text-purple-800' : 'bg-slate-200 text-slate-500'">
                         Quyết định 3
                       </span>
                       @if (!directive3Active()) {
-                        <span class="text-[10px] text-slate-500 font-semibold italic">(Không áp dụng)</span>
+                        <span class="text-[10px] text-slate-600 font-semibold italic">(Không áp dụng)</span>
                       }
                     </div>
-                    <label class="flex items-center gap-1.5 cursor-pointer text-[11px] font-semibold text-slate-700 hover:text-slate-900 transition-colors">
-                      <input type="checkbox" [checked]="directive3Active()" (change)="directive3Active.set(!directive3Active())" class="accent-slate-700 cursor-pointer w-3.5 h-3.5">
+                    <label class="flex items-center gap-1.5 cursor-pointer text-[11px] font-semibold text-slate-700 hover:text-purple-700 transition-colors">
+                      <input type="checkbox" [checked]="directive3Active()" (change)="directive3Active.set(!directive3Active())" class="accent-purple-600 cursor-pointer w-3.5 h-3.5">
                       <span>Áp dụng</span>
                     </label>
                   </div>
@@ -1834,34 +1837,34 @@
                     <!-- Editable Title -->
                     <input type="text" [ngModel]="directive3Title()" (ngModelChange)="directive3Title.set($event)"
                            [disabled]="!directive3Active()"
-                           class="w-full text-xs font-bold text-slate-900 bg-white border border-slate-300 rounded px-2 py-1 focus:border-slate-500 focus:outline-none disabled:bg-slate-100 disabled:text-slate-600"
+                           class="w-full text-xs font-bold text-slate-900 bg-white border border-slate-300 rounded px-2 py-1 focus:border-purple-600 focus:outline-none disabled:bg-slate-100 disabled:text-slate-600"
                            title="Giám đốc có thể chỉnh sửa tiêu đề điều lệnh">
 
                     <!-- AI Presets -->
-                    <div class="p-2 bg-slate-50 rounded-lg border border-slate-200 space-y-1.5">
-                      <div class="text-[10px] text-slate-700 font-bold flex items-center gap-1">
-                        <i class="fa-solid fa-wand-magic-sparkles text-slate-500"></i> Đề cử AI:
+                    <div class="p-2 bg-purple-50/50 rounded-lg border border-purple-100 space-y-1.5">
+                      <div class="text-[10px] text-purple-800 font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-wand-magic-sparkles text-purple-600"></i> Đề cử AI:
                       </div>
                       <div class="grid grid-cols-3 gap-1">
                         <button type="button"
                                 [disabled]="!directive3Active()"
                                 (click)="applyDirective3Preset('STAGE_2')"
                                 class="py-0.5 text-[10px] font-bold rounded border transition-all cursor-pointer truncate px-1 text-center disabled:cursor-not-allowed"
-                                [class]="directive3Scope() === 'STAGE_2' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                                [class]="directive3Scope() === 'STAGE_2' ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
                           {{ currentLang() === 'vi' ? 'Rủi ro tăng' : 'Stage 2' }}
                         </button>
                         <button type="button"
                                 [disabled]="!directive3Active()"
                                 (click)="applyDirective3Preset('PD_2X')"
                                 class="py-0.5 text-[10px] font-bold rounded border transition-all cursor-pointer truncate px-1 text-center disabled:cursor-not-allowed"
-                                [class]="directive3Scope() === 'PD_2X' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                                [class]="directive3Scope() === 'PD_2X' ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
                           {{ currentLang() === 'vi' ? 'Xác suất tăng 2x' : 'PD Doubled' }}
                         </button>
                         <button type="button"
                                 [disabled]="!directive3Active()"
                                 (click)="applyDirective3Preset('GROUP_2')"
                                 class="py-0.5 text-[10px] font-bold rounded border transition-all cursor-pointer truncate px-1 text-center disabled:cursor-not-allowed"
-                                [class]="directive3Scope() === 'GROUP_2' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                                [class]="directive3Scope() === 'GROUP_2' ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
                           {{ currentLang() === 'vi' ? 'Nhóm 2 trở lên' : 'Stage 2+' }}
                         </button>
                       </div>
@@ -1872,15 +1875,15 @@
                       <div class="text-[11px] font-semibold text-slate-700">Tiêu chí kích hoạt:</div>
                       <input type="text" [ngModel]="directive3CustomScopeText()" (ngModelChange)="directive3CustomScopeText.set($event)"
                              [disabled]="!directive3Active()"
-                             class="w-full text-xs font-bold text-slate-800 bg-white border border-slate-300 rounded px-2 py-0.5 focus:outline-none focus:ring-1 focus:ring-slate-400 disabled:bg-slate-100 disabled:text-slate-600"
+                             class="w-full text-xs font-bold text-purple-700 bg-white border border-purple-300 rounded px-2 py-0.5 focus:outline-none focus:ring-1 focus:ring-purple-500 disabled:bg-slate-100 disabled:text-slate-600"
                              placeholder="Nhập tiêu chí kích hoạt...">
                     </div>
 
                     <!-- Direct Link to Early Warning List (Mở danh sách cảnh báo sớm) -->
                     <button type="button" (click)="goToEarlyWarningList()"
                             [disabled]="!directive3Active()"
-                            class="w-full py-1.5 px-3 bg-slate-800 hover:bg-slate-900 text-white font-semibold text-xs rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-2xs disabled:cursor-not-allowed">
-                      <i class="fa-solid fa-triangle-exclamation text-slate-300"></i>
+                            class="w-full py-1.5 px-3 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs disabled:cursor-not-allowed">
+                      <i class="fa-solid fa-triangle-exclamation"></i>
                       <span>{{ currentLang() === 'vi' ? 'Mở Danh Sách Cảnh Báo Sớm (' + earlyWarningContracts().length + ' Hợp đồng) →' : 'Open Early Warning Portfolio (' + earlyWarningContracts().length + ' loans) →' }}</span>
                     </button>
 
@@ -1892,7 +1895,7 @@
                       <textarea [ngModel]="directive3ActionNote()" (ngModelChange)="directive3ActionNote.set($event)"
                                 [disabled]="!directive3Active()"
                                 rows="4"
-                                class="w-full text-xs text-slate-800 bg-white border border-slate-300 rounded-lg p-2.5 focus:border-slate-500 focus:ring-1 focus:ring-slate-400 focus:outline-none min-h-[95px] leading-relaxed disabled:bg-slate-100 disabled:text-slate-600"
+                                class="w-full text-xs text-slate-800 bg-white border border-slate-300 rounded-lg p-2.5 focus:border-purple-600 focus:ring-1 focus:ring-purple-500 focus:outline-none min-h-[95px] leading-relaxed disabled:bg-slate-100 disabled:text-slate-600"
                                 placeholder="Nhập biện pháp thu hồi nợ..."></textarea>
                     </div>
                   </div>
@@ -1910,15 +1913,15 @@
             <div class="pt-3 border-t border-slate-100 space-y-2.5">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                  <span class="w-2 h-2 rounded-full bg-slate-700"></span>
+                  <span class="w-2 h-2 rounded-full bg-rose-600"></span>
                   <span class="text-xs font-bold text-slate-900 uppercase tracking-wide">
                     5 Khoản Vay Rủi Ro Nhất Cần Xử Lý Sớm
                   </span>
                 </div>
                 <button type="button" (click)="goToEarlyWarningList()"
-                        class="text-xs font-semibold text-slate-600 hover:text-slate-900 flex items-center gap-1 cursor-pointer">
+                        class="text-xs font-bold text-blue-700 hover:text-blue-900 flex items-center gap-1 cursor-pointer">
                   <span>Xem toàn bộ {{ earlyWarningContracts().length }} hồ sơ cảnh báo sớm</span>
-                  <i class="fa-solid fa-arrow-right text-[11px] text-slate-400"></i>
+                  <i class="fa-solid fa-arrow-right text-[11px]"></i>
                 </button>
               </div>
 
@@ -1939,25 +1942,25 @@
                   <tbody class="divide-y divide-slate-100">
                     @for (item of topStressedContracts(); track item.contract_id) {
                       <tr class="hover:bg-slate-50">
-                        <td class="p-2.5 font-bold text-slate-800 font-mono">{{ item.contract_id }}</td>
+                        <td class="p-2.5 font-bold text-blue-700">{{ item.contract_id }}</td>
                         <td class="p-2.5 font-medium text-slate-900">{{ item.customer_name }}</td>
                         <td class="p-2.5 text-slate-600">{{ item.sector_name_vn }}</td>
                         <td class="p-2.5 font-bold text-slate-900">{{ formatVND(item.original_ead) }}</td>
                         <td class="p-2.5">
-                          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-800 border border-rose-200">
+                          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700 border border-rose-200">
                             Nhóm {{ item.baseline_stage }} → Nhóm {{ item.stressed_stage }}
                           </span>
                         </td>
-                        <td class="p-2.5 font-semibold text-slate-800">
+                        <td class="p-2.5 font-semibold text-amber-700">
                           {{ (item.stressed_pd * 100).toFixed(2) }}%
                           <span class="text-[10px] text-slate-400 font-normal">({{ (item.baseline_pd * 100).toFixed(2) }}%)</span>
                         </td>
-                        <td class="p-2.5 font-bold text-slate-800">
+                        <td class="p-2.5 font-extrabold text-rose-600">
                           +{{ formatVND(item.delta_provision) }}
                         </td>
                         <td class="p-2.5">
                           <button type="button" (click)="goToEarlyWarningList()"
-                                  class="text-[11px] font-semibold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 px-2 py-0.5 rounded border border-slate-200 cursor-pointer">
+                                  class="text-[11px] font-bold text-purple-700 hover:text-purple-900 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 cursor-pointer">
                             Xử lý nợ
                           </button>
                         </td>
@@ -1971,7 +1974,7 @@
             <!-- Signature footer -->
             <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
               <div class="flex items-center gap-2">
-                <i class="fa-solid fa-stamp text-slate-500 text-base"></i>
+                <i class="fa-solid fa-stamp text-purple-600 text-base"></i>
                 <span>Chữ ký số xác thực bởi: <strong class="text-slate-900">Lê Hoàng Cường</strong> • Giám đốc Khối Quản trị Rủi ro</span>
               </div>
             </div>
@@ -1998,16 +2001,16 @@
             <div class="flex items-center p-1 bg-slate-100 rounded-lg border border-slate-200">
               <button type="button"
                       (click)="portfolioMode.set('EARLY_WARNING')"
-                      class="px-3.5 py-1.5 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5 cursor-pointer"
-                      [class]="portfolioMode() === 'EARLY_WARNING' ? 'bg-slate-800 text-white shadow-2xs' : 'text-slate-700 hover:text-slate-900'">
-                <i class="fa-solid fa-bell text-[11px]"></i>
+                      class="px-3.5 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 cursor-pointer"
+                      [class]="portfolioMode() === 'EARLY_WARNING' ? 'bg-rose-600 text-white shadow-xs' : 'text-slate-700 hover:text-slate-900'">
+                <i class="fa-solid fa-bell"></i>
                 <span>Cảnh Báo Sớm ({{ earlyWarningContracts().length }} hợp đồng)</span>
               </button>
               <button type="button"
                       (click)="portfolioMode.set('ALL')"
-                      class="px-3.5 py-1.5 text-xs font-semibold rounded-md transition-all flex items-center gap-1.5 cursor-pointer"
-                      [class]="portfolioMode() === 'ALL' ? 'bg-slate-800 text-white shadow-2xs' : 'text-slate-700 hover:text-slate-900'">
-                <i class="fa-solid fa-list text-[11px]"></i>
+                      class="px-3.5 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 cursor-pointer"
+                      [class]="portfolioMode() === 'ALL' ? 'bg-blue-700 text-white shadow-xs' : 'text-slate-700 hover:text-slate-900'">
+                <i class="fa-solid fa-list"></i>
                 <span>Toàn Bộ Danh Mục (100 hợp đồng)</span>
               </button>
             </div>
@@ -2017,29 +2020,29 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
               <div class="text-[11px] font-semibold text-slate-500 uppercase">Hợp đồng cảnh báo sớm</div>
-              <div class="text-2xl font-black text-slate-900 mt-1">
+              <div class="text-2xl font-extrabold text-rose-600 mt-1">
                 {{ earlyWarningContracts().length }} <span class="text-xs font-normal text-slate-500">/ 100 hợp đồng</span>
               </div>
             </div>
 
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
               <div class="text-[11px] font-semibold text-slate-500 uppercase">Dư nợ cảnh báo</div>
-              <div class="text-2xl font-black text-slate-900 mt-1">
+              <div class="text-2xl font-extrabold text-slate-900 mt-1">
                 {{ formatVND(earlyWarningEAD()) }}
               </div>
             </div>
 
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
               <div class="text-[11px] font-semibold text-slate-500 uppercase">Trích lập bổ sung</div>
-              <div class="text-2xl font-black text-rose-800 mt-1">
+              <div class="text-2xl font-extrabold text-rose-700 mt-1">
                 +{{ formatVND(earlyWarningDeltaPS()) }}
               </div>
             </div>
 
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
               <div class="text-[11px] font-semibold text-slate-500 uppercase">Điều lệnh điều hành</div>
-              <div class="text-sm font-bold text-slate-800 mt-2 flex items-center gap-1.5">
-                <i class="fa-solid fa-stamp text-slate-500"></i>
+              <div class="text-sm font-bold text-purple-800 mt-2 flex items-center gap-1.5">
+                <i class="fa-solid fa-stamp text-purple-600"></i>
                 <span>Quyết định 3</span>
               </div>
             </div>
@@ -2217,22 +2220,22 @@
               </button>
               <button type="button" (click)="auditActionFilter.set('SUBMIT')"
                       class="px-2.5 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
-                      [class]="auditActionFilter() === 'SUBMIT' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                      [class]="auditActionFilter() === 'SUBMIT' ? 'bg-blue-700 text-white border-blue-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
                 {{ currentLang() === 'vi' ? 'Khởi tạo và Nộp' : 'Created and Submitted' }}
               </button>
               <button type="button" (click)="auditActionFilter.set('FORWARD_APPROVER')"
                       class="px-2.5 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
-                      [class]="auditActionFilter() === 'FORWARD_APPROVER' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                      [class]="auditActionFilter() === 'FORWARD_APPROVER' ? 'bg-emerald-700 text-white border-emerald-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
                 {{ currentLang() === 'vi' ? 'Thẩm định Đạt' : 'Review Passed' }}
               </button>
               <button type="button" (click)="auditActionFilter.set('RECALCULATE')"
                       class="px-2.5 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
-                      [class]="auditActionFilter() === 'RECALCULATE' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                      [class]="auditActionFilter() === 'RECALCULATE' ? 'bg-rose-700 text-white border-rose-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
                 {{ currentLang() === 'vi' ? 'Yêu cầu Tính lại' : 'Recalculation' }}
               </button>
               <button type="button" (click)="auditActionFilter.set('APPROVE')"
                       class="px-2.5 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
-                      [class]="auditActionFilter() === 'APPROVE' ? 'bg-slate-800 text-white border-slate-800' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                      [class]="auditActionFilter() === 'APPROVE' ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
                 {{ currentLang() === 'vi' ? 'Ký số Ban hành' : 'CRO Authorized' }}
               </button>
             </div>
@@ -2314,7 +2317,7 @@
                 ? (currentLang() === 'vi' ? 'Ghi Đè Bản Thảo' : 'Overwrite Draft') 
                 : (currentLang() === 'vi' ? 'Lưu Bản Thảo' : 'Save Draft') }}
           </button>
-          <button (click)="confirmSaveRun(true)" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded shadow-2xs cursor-pointer">
+          <button (click)="confirmSaveRun(true)" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded shadow-sm cursor-pointer">
             {{ editingRun() 
                 ? (currentLang() === 'vi' ? 'Ghi Đè và Chuyển Thẩm Định' : 'Overwrite and Submit') 
                 : (currentLang() === 'vi' ? 'Lưu và Chuyển Thẩm Định' : 'Save and Submit') }}
@@ -2328,7 +2331,7 @@
   @if (recalculationModalOpen()) {
     <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
       <div class="bg-white rounded-xl max-w-md w-full p-5 border border-slate-200 shadow-xl space-y-4">
-        <h4 class="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">
+        <h4 class="text-sm font-bold text-rose-700 border-b border-slate-100 pb-2">
           {{ t('btn_request_recalc') }}
         </h4>
         <div class="space-y-2 text-xs">
@@ -2341,7 +2344,7 @@
             {{ currentLang() === 'vi' ? 'Hủy' : 'Cancel' }}
           </button>
           <button (click)="executeWorkflow(selectedRunToReview()!.id, 'RECALCULATE', recalculationNote())"
-                  class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-900 text-white font-medium rounded shadow-2xs">
+                  class="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-medium rounded shadow-sm">
             {{ currentLang() === 'vi' ? 'Gửi Yêu Cầu' : 'Send Request' }}
           </button>
         </div>
@@ -2357,7 +2360,7 @@
         <!-- Modal Header -->
         <div class="flex items-start justify-between border-b border-slate-200 pb-3">
           <div>
-            <div class="text-[11px] font-semibold uppercase tracking-wider text-slate-600">
+            <div class="text-[11px] font-semibold uppercase tracking-wider text-blue-700">
               {{ currentLang() === 'vi' ? 'Phương Pháp Luận và Chi Tiết Công Thức' : 'Calculation Methodology and Live Formulas' }}
             </div>
             <h3 class="text-base font-bold text-slate-900 mt-0.5">
@@ -2365,10 +2368,10 @@
             </h3>
             <div class="mt-1 text-xs text-slate-500">
               {{ currentLang() === 'vi' ? 'Sốc hiện tại:' : 'Live Shocks:' }} 
-              ΔGDP: <span class="text-slate-800 font-bold">{{ gdpShock() }}%</span> | 
-              ΔIR: <span class="text-slate-800 font-bold">+{{ irShock() }} bps</span> | 
-              ΔUNEMP: <span class="text-slate-800 font-bold">+{{ unempShock() }}%</span> | 
-              ΔRE: <span class="text-slate-800 font-bold">{{ reShock() }}%</span>
+              ΔGDP: <span class="text-blue-700 font-bold">{{ gdpShock() }}%</span> | 
+              ΔIR: <span class="text-amber-700 font-bold">+{{ irShock() }} bps</span> | 
+              ΔUNEMP: <span class="text-emerald-700 font-bold">+{{ unempShock() }}%</span> | 
+              ΔRE: <span class="text-rose-700 font-bold">{{ reShock() }}%</span>
               <span class="text-slate-400 ml-1">({{ currentLang() === 'vi' ? 'Số liệu tự động cập nhật Realtime khi kéo thanh trượt' : 'Values update dynamically with sliders' }})</span>
             </div>
           </div>
@@ -2380,32 +2383,32 @@
         <!-- 5 Tabs Navigation inside Modal -->
         <div class="flex flex-wrap gap-1.5 border-b border-slate-200 pb-2">
           <button (click)="selectedCalcTab.set('all')"
-                  [class]="selectedCalcTab() === 'all' ? 'bg-slate-900 text-white font-semibold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+                  [class]="selectedCalcTab() === 'all' ? 'bg-slate-900 text-white font-bold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
                   class="px-2.5 py-1 text-xs rounded-md transition-colors">
             {{ currentLang() === 'vi' ? 'Toàn bộ' : 'All' }}
           </button>
           <button (click)="selectedCalcTab.set('ead')"
-                  [class]="selectedCalcTab() === 'ead' ? 'bg-slate-800 text-white font-semibold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+                  [class]="selectedCalcTab() === 'ead' ? 'bg-blue-600 text-white font-bold' : 'bg-blue-50 text-blue-800 hover:bg-blue-100'"
                   class="px-2.5 py-1 text-xs rounded-md transition-colors">
             Dư nợ EAD
           </button>
           <button (click)="selectedCalcTab.set('ecl')"
-                  [class]="selectedCalcTab() === 'ecl' ? 'bg-slate-800 text-white font-semibold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+                  [class]="selectedCalcTab() === 'ecl' ? 'bg-amber-600 text-white font-bold' : 'bg-amber-50 text-amber-800 hover:bg-amber-100'"
                   class="px-2.5 py-1 text-xs rounded-md transition-colors">
             Tổn thất ECL
           </button>
           <button (click)="selectedCalcTab.set('deltaps')"
-                  [class]="selectedCalcTab() === 'deltaps' ? 'bg-slate-800 text-white font-semibold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+                  [class]="selectedCalcTab() === 'deltaps' ? 'bg-rose-600 text-white font-bold' : 'bg-rose-50 text-rose-800 hover:bg-rose-100'"
                   class="px-2.5 py-1 text-xs rounded-md transition-colors">
             Trích lập ΔPS
           </button>
           <button (click)="selectedCalcTab.set('car')"
-                  [class]="selectedCalcTab() === 'car' ? 'bg-slate-800 text-white font-semibold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+                  [class]="selectedCalcTab() === 'car' ? 'bg-purple-600 text-white font-bold' : 'bg-purple-50 text-purple-800 hover:bg-purple-100'"
                   class="px-2.5 py-1 text-xs rounded-md transition-colors">
             Tỷ lệ CAR
           </button>
           <button (click)="selectedCalcTab.set('npl')"
-                  [class]="selectedCalcTab() === 'npl' ? 'bg-slate-800 text-white font-semibold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+                  [class]="selectedCalcTab() === 'npl' ? 'bg-slate-700 text-white font-bold' : 'bg-slate-100 text-slate-800 hover:bg-slate-200'"
                   class="px-2.5 py-1 text-xs rounded-md transition-colors">
             Nợ xấu NPL
           </button>
@@ -2554,7 +2557,7 @@
           <button (click)="renameModalOpen.set(false)" class="px-3 py-1.5 text-slate-600 hover:bg-slate-100 rounded cursor-pointer">
             {{ currentLang() === 'vi' ? 'Hủy' : 'Cancel' }}
           </button>
-          <button (click)="confirmRenameRun()" class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-medium rounded shadow-2xs cursor-pointer">
+          <button (click)="confirmRenameRun()" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded shadow-sm cursor-pointer">
             {{ currentLang() === 'vi' ? 'Lưu Thay Đổi' : 'Save Changes' }}
           </button>
         </div>
@@ -2569,12 +2572,12 @@
         <div class="flex items-start justify-between border-b border-slate-100 pb-3">
           <div>
             <div class="flex items-center gap-2">
-              <span class="text-xs font-mono font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">{{ selectedRunDetail()!.run_code }}</span>
+              <span class="text-xs font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">{{ selectedRunDetail()!.run_code }}</span>
               <span class="inline-block whitespace-nowrap px-2.5 py-1 rounded text-[11px] font-semibold"
-                    [class]="selectedRunDetail()!.status === 'APPROVED' ? 'bg-slate-100 text-slate-700 border border-slate-200' :
-                            (selectedRunDetail()!.status === 'PENDING_APPROVAL' ? 'bg-slate-100 text-slate-700 border border-slate-200' :
-                            (selectedRunDetail()!.status === 'SUBMITTED' ? 'bg-amber-50 text-amber-800 border border-amber-200' :
-                            (selectedRunDetail()!.status === 'RECALCULATION_REQUESTED' ? 'bg-rose-50 text-rose-800 border border-rose-200 font-semibold' : 'bg-slate-100 text-slate-700 border border-slate-200')))">
+                    [class]="selectedRunDetail()!.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                            (selectedRunDetail()!.status === 'PENDING_APPROVAL' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
+                            (selectedRunDetail()!.status === 'SUBMITTED' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                            (selectedRunDetail()!.status === 'RECALCULATION_REQUESTED' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-slate-100 text-slate-700 border border-slate-200')))">
                 {{ getStatusLabel(selectedRunDetail()!.status) }}
               </span>
             </div>
@@ -2587,19 +2590,19 @@
 
         <!-- Detail KPIs Grid -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
-          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
             <div class="text-[11px] text-slate-500 font-medium">Tổn thất Dự kiến</div>
             <div class="text-sm font-bold text-slate-900 mt-0.5">{{ formatVND(selectedRunDetail()!.total_stressed_ecl) }}</div>
           </div>
-          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
-            <div class="text-[11px] text-slate-600 font-medium">Trích lập Bổ sung</div>
-            <div class="text-sm font-bold text-rose-800 mt-0.5">+{{ formatVND(selectedRunDetail()!.total_delta_provision) }}</div>
+          <div class="p-3 bg-rose-50/60 rounded-lg border border-rose-100">
+            <div class="text-[11px] text-rose-700 font-semibold">Trích lập Bổ sung</div>
+            <div class="text-sm font-bold text-rose-700 mt-0.5">+{{ formatVND(selectedRunDetail()!.total_delta_provision) }}</div>
           </div>
-          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
-            <div class="text-[11px] text-slate-600 font-medium">Hệ số CAR sau sốc</div>
-            <div class="text-sm font-bold text-slate-800 mt-0.5">{{ formatPercent(selectedRunDetail()!.car_impact?.stressed_car) }}</div>
+          <div class="p-3 bg-blue-50/60 rounded-lg border border-blue-100">
+            <div class="text-[11px] text-blue-700 font-semibold">Hệ số CAR sau sốc</div>
+            <div class="text-sm font-bold text-blue-800 mt-0.5">{{ formatPercent(selectedRunDetail()!.car_impact?.stressed_car) }}</div>
           </div>
-          <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
             <div class="text-[11px] text-slate-500 font-medium">Kịch bản vĩ mô</div>
             <div class="text-xs font-bold text-slate-800 mt-0.5">{{ selectedRunDetail()!.scenario_name }}</div>
           </div>
@@ -2609,15 +2612,15 @@
         <div class="p-3.5 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-2">
           <div class="font-bold text-slate-800 text-[11px] uppercase tracking-wide">Bộ Tham Số Cú Sốc Vĩ Mô Áp Dụng</div>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
-            <div>GDP: <strong class="text-slate-800">{{ formatShock(selectedRunDetail()!.custom_gdp_shock, 100, 1) }}%</strong></div>
-            <div>Lãi suất: <strong class="text-slate-800">+{{ formatShock(selectedRunDetail()!.custom_ir_shock, 10000, 0) }} bps</strong></div>
-            <div>Thất nghiệp: <strong class="text-slate-800">+{{ formatShock(selectedRunDetail()!.custom_unemp_shock, 100, 1) }}%</strong></div>
-            <div>Bất động sản: <strong class="text-slate-800">{{ formatShock(selectedRunDetail()!.custom_re_shock, 100, 1) }}%</strong></div>
+            <div>GDP: <strong class="text-blue-700">{{ formatShock(selectedRunDetail()!.custom_gdp_shock, 100, 1) }}%</strong></div>
+            <div>Lãi suất: <strong class="text-amber-700">+{{ formatShock(selectedRunDetail()!.custom_ir_shock, 10000, 0) }} bps</strong></div>
+            <div>Thất nghiệp: <strong class="text-emerald-700">+{{ formatShock(selectedRunDetail()!.custom_unemp_shock, 100, 1) }}%</strong></div>
+            <div>Bất động sản: <strong class="text-rose-700">{{ formatShock(selectedRunDetail()!.custom_re_shock, 100, 1) }}%</strong></div>
           </div>
         </div>
 
         @if (selectedRunDetail()!.rejection_reason) {
-          <div class="p-3 bg-rose-50/70 border border-rose-200 rounded-lg text-xs space-y-1">
+          <div class="p-3 bg-rose-50 border border-rose-200 rounded-lg text-xs space-y-1">
             <div class="font-bold text-rose-900 flex items-center gap-1.5">
               <i class="fa-solid fa-triangle-exclamation"></i>
               <span>Ý kiến phản hồi từ Trưởng phòng Quản lý rủi ro:</span>
@@ -2632,8 +2635,8 @@
           </button>
           @if (selectedRunDetail()!.status !== 'PENDING_APPROVAL' && selectedRunDetail()!.status !== 'APPROVED') {
             <button (click)="viewDetailModalOpen.set(false); editRunProposal(selectedRunDetail()!)"
-                    class="px-4 py-1.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-md shadow-2xs transition-colors flex items-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-pen-to-square text-slate-400"></i>
+                    class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-md shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-pen-to-square"></i>
               <span>{{ currentLang() === 'vi' ? 'Chỉnh Sửa và Tính Lại Đề Án Này' : 'Edit and Recalculate' }}</span>
             </button>
           }
@@ -2650,7 +2653,7 @@
         <div class="flex items-start justify-between border-b border-slate-200 pb-3">
           <div>
             <div class="flex items-center gap-2">
-              <span class="text-xs font-bold text-slate-800 bg-slate-100 px-2 py-0.5 rounded border border-slate-200 font-mono">
+              <span class="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
                 {{ selectedReviewDetail()!.run_code }}
               </span>
               <span class="text-xs font-semibold text-slate-500">
