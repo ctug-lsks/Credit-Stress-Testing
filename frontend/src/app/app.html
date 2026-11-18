@@ -1,14 +1,10 @@
 <div class="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
 
-  <!-- ============================================================== -->
-  <!-- 1. TOP HEADER (LIGHT THEME, CORPORATE NAVY AND WHITE) -->
-  <!-- ============================================================== -->
-  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+        <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
 
-        <!-- Brand and System Name -->
-        <div class="flex items-center space-x-3">
+                <div class="flex items-center space-x-3">
           <div class="w-9 h-9 rounded-lg bg-blue-700 flex items-center justify-center text-white font-bold text-sm shadow-sm">
             VR
           </div>
@@ -19,11 +15,9 @@
           </div>
         </div>
 
-        <!-- Right Header Actions (Database Admin, Language Switcher and User Profile) -->
-        <div class="flex items-center space-x-2 sm:space-x-3">
+                <div class="flex items-center space-x-2 sm:space-x-3">
 
-          <!-- Database Admin Portal Link (CHỈ HIỂN THỊ DÀNH CHO QUẢN TRỊ VIÊN IT / ADMIN) -->
-          @if (currentUser()?.role === 'ADMIN') {
+                    @if (currentUser()?.role === 'ADMIN') {
             <a href="/admin/" target="_blank"
                class="px-2.5 py-1 text-xs font-bold rounded-md border border-slate-700 bg-slate-900 hover:bg-slate-800 text-white shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
                title="Cổng Quản trị Cơ sở dữ liệu Django Admin (Dành riêng cho Quản trị viên IT)">
@@ -32,24 +26,21 @@
             </a>
           }
 
-          <!-- API Server Connection Config -->
-          <button (click)="showApiConfigModal.set(true)"
+                    <button (click)="showApiConfigModal.set(true)"
                   class="px-2.5 py-1 text-xs font-medium rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 shadow-sm flex items-center gap-1.5 transition-colors cursor-pointer"
                   title="Cấu hình URL máy chủ Backend (Localhost / Render Cloud)">
             <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span class="hidden sm:inline font-mono text-[11px]">{{ API_BASE.includes('127.0.0.1') ? 'Local API' : 'Cloud API' }}</span>
           </button>
 
-          <!-- Language Switcher Button -->
-          <button (click)="toggleLanguage()"
+                    <button (click)="toggleLanguage()"
                   class="px-2.5 py-1 text-xs font-medium rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 shadow-sm flex items-center space-x-1 transition-colors cursor-pointer">
             <span [class.font-bold]="currentLang() === 'vi'" [class.text-blue-700]="currentLang() === 'vi'">VI</span>
             <span class="text-slate-300">|</span>
             <span [class.font-bold]="currentLang() === 'en'" [class.text-blue-700]="currentLang() === 'en'">EN</span>
           </button>
 
-          <!-- User Account Info (If logged in) -->
-          @if (currentUser()) {
+                    @if (currentUser()) {
             <div class="flex items-center space-x-3 border-l border-slate-200 pl-3">
               <div class="hidden md:flex items-center">
                 <span class="text-xs font-semibold text-slate-800">{{ currentUser()!.full_name }}</span>
@@ -75,8 +66,7 @@
         </div>
       </div>
 
-      <!-- Navigation Tabs (Only visible when logged in) -->
-      @if (currentUser()) {
+            @if (currentUser()) {
         <nav class="flex space-x-6 overflow-x-auto border-t border-slate-200 pt-1 pb-2">
           @if (canAccess('maker')) {
             <button (click)="setMakerView('simulation')"
@@ -138,29 +128,23 @@
     </div>
   </header>
 
-  <!-- Notification Toast -->
-  @if (notification()) {
+    @if (notification()) {
     <div class="fixed bottom-6 right-6 z-50 max-w-md p-3.5 rounded-lg shadow-lg border text-xs font-medium flex items-center space-x-2"
          [class]="notification()!.type === 'success' ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : 'bg-red-50 border-red-300 text-rose-800'">
       <span>{{ notification()!.message }}</span>
     </div>
   }
 
-  <!-- ============================================================== -->
-  <!-- 2. LOGIN SCREEN (IF LOGGED OUT) -->
-  <!-- ============================================================== -->
-  @if (!currentUser()) {
+        @if (!currentUser()) {
     <div class="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-50">
       <div class="max-w-md w-full bg-white p-7 rounded-xl border border-slate-200 shadow-sm space-y-5">
         
-        <!-- Header -->
-        <div class="text-center space-y-1">
+                <div class="text-center space-y-1">
           <h2 class="text-lg font-bold text-slate-900 tracking-tight">{{ t('login_title') }}</h2>
           <p class="text-xs text-slate-500">{{ t('login_subtitle') }}</p>
         </div>
 
-        <!-- Standard Login Form -->
-        <form (ngSubmit)="performLogin()" class="space-y-3.5">
+                <form (ngSubmit)="performLogin()" class="space-y-3.5">
           @if (loginError()) {
             <div class="p-2.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
               {{ loginError() }}
@@ -199,8 +183,7 @@
           </button>
         </form>
 
-        <!-- Divider -->
-        <div class="relative my-2">
+                <div class="relative my-2">
           <div class="absolute inset-0 flex items-center">
             <div class="w-full border-t border-slate-200"></div>
           </div>
@@ -209,8 +192,7 @@
           </div>
         </div>
 
-        <!-- Quick Role Selector with Full Realistic Roles -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
           @for (acc of TEST_ACCOUNTS; track acc.id) {
             <button type="button"
                     (click)="loginWithAccount(acc)"
@@ -243,20 +225,13 @@
     </div>
   }
 
-  <!-- ============================================================== -->
-  <!-- 3. MAIN WORKSPACE (IF LOGGED IN) -->
-  <!-- ============================================================== -->
-  @if (currentUser()) {
+        @if (currentUser()) {
     <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
-      <!-- ========================================================== -->
-      <!-- TAB 1: MAKER STUDIO (SCENARIO SIMULATION) -->
-      <!-- ========================================================== -->
-      @if (activeTab() === 'maker' && canAccess('maker')) {
+                        @if (activeTab() === 'maker' && canAccess('maker')) {
         <div class="space-y-5">
 
-          <!-- RECALCULATION REQUIRED ALERT BANNER (COMPACT) -->
-          @if (recalcRuns().length > 0) {
+                    @if (recalcRuns().length > 0) {
             <div class="bg-red-50 border border-red-300 rounded-xl p-2.5 shadow-xs space-y-1.5">
               @for (run of recalcRuns(); track run.id) {
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-white px-3 py-2 rounded-lg border border-red-200 text-xs">
@@ -283,8 +258,7 @@
             </div>
           }
 
-          <!-- In-place Overwrite Notification Banner (Compact) -->
-          @if (editingRun(); as editing) {
+                    @if (editingRun(); as editing) {
             <div class="px-3 py-2 bg-amber-50 border border-amber-300 rounded-xl flex items-center justify-between gap-2.5 text-xs text-amber-900 shadow-xs">
               <div class="flex items-center gap-2 flex-wrap">
                 <i class="fa-solid fa-arrows-rotate text-amber-700"></i>
@@ -301,8 +275,7 @@
 
 
           @if (makerActiveView() === 'simulation') {
-          <!-- Minimalist Toolbar Header -->
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-1 gap-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-1 gap-3">
             <div>
               <h2 class="text-base font-bold text-slate-900 tracking-tight">{{ t('tab_maker') }}</h2>
             </div>
@@ -323,12 +296,10 @@
             </div>
           </div>
 
-          <!-- MACRO SHOCK SLIDERS AND PRESETS -->
-          <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
+                    <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
               <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wide">{{ t('scenario_settings') }}</h3>
-              <!-- Presets -->
-              <div class="inline-flex rounded-md border border-slate-200 p-0.5 bg-slate-50 space-x-1">
+                            <div class="inline-flex rounded-md border border-slate-200 p-0.5 bg-slate-50 space-x-1">
                 <button (click)="applyPreset('BASELINE')"
                         [class]="selectedPreset() === 'BASELINE' ? 'bg-white text-slate-900 font-semibold shadow-xs border border-slate-200' : 'text-slate-600 hover:text-slate-900'"
                         class="px-2.5 py-1 text-xs rounded transition-all cursor-pointer">
@@ -347,10 +318,8 @@
               </div>
             </div>
 
-            <!-- 4 Macroeconomic Transmission Sliders (Bám sát 4 kênh vĩ mô trong Báo cáo) -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <!-- Channel 1: GDP -->
-              <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-2">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-2">
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-semibold text-slate-700">{{ t('shock_gdp') }}</span>
                   <div class="flex items-center bg-white border border-slate-300 hover:border-blue-400 focus-within:border-blue-600 focus-within:ring-1 focus-within:ring-blue-500 rounded px-1.5 py-0.5 transition-all shadow-2xs cursor-text">
@@ -375,8 +344,7 @@
                 </div>
               </div>
 
-              <!-- Channel 2: Interest Rate -->
-              <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-2">
+                            <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-2">
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-semibold text-slate-700">{{ t('shock_ir') }}</span>
                   <div class="flex items-center bg-white border border-slate-300 hover:border-amber-400 focus-within:border-amber-600 focus-within:ring-1 focus-within:ring-amber-500 rounded px-1.5 py-0.5 transition-all shadow-2xs cursor-text">
@@ -402,8 +370,7 @@
                 </div>
               </div>
 
-              <!-- Channel 3: Unemployment Rate -->
-              <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-2">
+                            <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-2">
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-semibold text-slate-700">{{ t('shock_unemp') }}</span>
                   <div class="flex items-center bg-white border border-slate-300 hover:border-emerald-400 focus-within:border-emerald-600 focus-within:ring-1 focus-within:ring-emerald-500 rounded px-1.5 py-0.5 transition-all shadow-2xs cursor-text">
@@ -429,8 +396,7 @@
                 </div>
               </div>
 
-              <!-- Channel 4: Real Estate Collateral -->
-              <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-2">
+                            <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-2">
                 <div class="flex items-center justify-between text-xs">
                   <span class="font-semibold text-slate-700">{{ t('shock_re') }}</span>
                   <div class="flex items-center bg-white border border-slate-300 hover:border-rose-400 focus-within:border-rose-600 focus-within:ring-1 focus-within:ring-rose-500 rounded px-1.5 py-0.5 transition-all shadow-2xs cursor-text">
@@ -457,12 +423,10 @@
             </div>
           </div>
 
-          <!-- TOP FINANCIAL KPI CARDS WITH LIVE DETAILS -->
-          @if (simulationResult()) {
+                    @if (simulationResult()) {
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
               
-              <!-- EAD Card -->
-              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
+                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
                 <div class="flex items-start justify-between gap-2">
                   <div class="text-xs text-slate-800 font-semibold">{{ t('kpi_ead') }}</div>
                   <button (click)="openCalcDetail('ead')" class="text-xs text-slate-800 hover:text-slate-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
@@ -474,8 +438,7 @@
                 </div>
               </div>
 
-              <!-- Stressed ECL Card -->
-              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
+                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
                 <div class="flex items-start justify-between gap-2">
                   <div class="text-xs text-slate-800 font-semibold">{{ t('kpi_ecl_stress') }}</div>
                   <button (click)="openCalcDetail('ecl')" class="text-xs text-slate-800 hover:text-slate-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
@@ -487,8 +450,7 @@
                 </div>
               </div>
 
-              <!-- Delta Provision Card -->
-              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
+                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
                 <div class="flex items-start justify-between gap-2">
                   <div class="text-xs text-rose-800 font-semibold">{{ t('kpi_delta_ps') }}</div>
                   <button (click)="openCalcDetail('deltaps')" class="text-xs text-slate-800 hover:text-slate-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
@@ -500,8 +462,7 @@
                 </div>
               </div>
 
-              <!-- CAR Ratio Card -->
-              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
+                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
                 <div class="flex items-start justify-between gap-2">
                   <div class="text-xs text-slate-800 font-semibold">{{ t('kpi_car') }}</div>
                   <button (click)="openCalcDetail('car')" class="text-xs text-slate-800 hover:text-slate-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
@@ -514,8 +475,7 @@
                 </div>
               </div>
 
-              <!-- NPL Ratio Card -->
-              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
+                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
                 <div class="flex items-start justify-between gap-2">
                   <div class="text-xs text-slate-800 font-semibold">{{ t('kpi_npl') }}</div>
                   <button (click)="openCalcDetail('npl')" class="text-xs text-slate-800 hover:text-slate-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
@@ -529,11 +489,9 @@
 
             </div>
 
-            <!-- SECTOR BREAKDOWN AND STAGE MIGRATION (STREAMLINED AND CONCISE) -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
-              <!-- Sector Breakdown -->
-              <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
                 <div class="border-b border-slate-100 pb-2 flex justify-between items-center">
                   <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wide">{{ t('sec_breakdown_title') }}</h4>
                   <span class="text-[11px] text-slate-400 font-medium">{{ simulationResult()!.sector_breakdown.length }} {{ currentLang() === 'vi' ? 'ngành' : 'sectors' }}</span>
@@ -563,8 +521,7 @@
                 </div>
               </div>
 
-              <!-- Stage Migration Matrix -->
-              <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
                 <div class="border-b border-slate-100 pb-2 flex justify-between items-center">
                   <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wide">{{ t('stage_migration_title') }}</h4>
                   <span class="text-[11px] text-slate-400 font-medium">100 HĐ</span>
@@ -619,10 +576,8 @@
             </div>
           }
 
-          } <!-- End of makerActiveView() === 'simulation' -->
-
-          <!-- PROPOSALS MANAGEMENT VIEW CARDS (WHEN IN REPORTS VIEW) -->
-          @if (makerActiveView() === 'reports') {
+          } 
+                    @if (makerActiveView() === 'reports') {
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-1">
                 <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
@@ -669,8 +624,7 @@
             </div>
           }
 
-          <!-- MAKER'S PROPOSALS AND RECALCULATION WORKSPACE -->
-          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mt-2">
+                    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mt-2">
             <div class="p-4 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3">
               <div class="flex items-center gap-3">
                 <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wide flex items-center gap-2">
@@ -683,8 +637,7 @@
                 </button>
               </div>
 
-              <!-- Search and Filters -->
-              <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-2">
                 <div class="relative w-full sm:w-56">
                   <input type="text" [ngModel]="makerSearchQuery()" (ngModelChange)="makerSearchQuery.set($event)"
                          placeholder="{{ currentLang() === 'vi' ? 'Tìm mã đề án, tên đề án...' : 'Search run code, title...' }}"
@@ -707,7 +660,7 @@
                   </button>
                   <button type="button" (click)="makerRunFilter.set('SUBMITTED')"
                           class="px-2 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
-                          [class]="makerRunFilter() === 'SUBMITTED' ? 'bg-amber-600 text-white border-amber-600' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'">
+                          [class]="makerRunFilter() === 'SUBMITTED' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'">
                     {{ currentLang() === 'vi' ? 'Chờ thẩm định' : 'Pending Review' }}
                   </button>
                   <button type="button" (click)="makerRunFilter.set('PENDING')"
@@ -724,8 +677,7 @@
               </div>
             </div>
 
-            <!-- Table of Runs -->
-            <div class="overflow-x-auto">
+                        <div class="overflow-x-auto">
               <table class="w-full text-left text-xs">
                 <thead class="bg-slate-50 text-slate-600 uppercase font-semibold text-[11px] border-b border-slate-200 whitespace-nowrap">
                   <tr>
@@ -830,14 +782,10 @@
         </div>
       }
 
-      <!-- ========================================================== -->
-      <!-- TAB 2: CHECKER REVIEW (RISK VALIDATION) -->
-      <!-- ========================================================== -->
-      @if (activeTab() === 'checker' && canAccess('checker')) {
+                        @if (activeTab() === 'checker' && canAccess('checker')) {
         <div class="space-y-6">
 
-          <!-- Section Header -->
-          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
               <h2 class="text-base sm:text-lg font-bold text-slate-900">{{ t('tab_checker') }}</h2>
             </div>
@@ -846,8 +794,7 @@
             </button>
           </div>
 
-          <!-- Review Queue Table -->
-          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
             <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wide">
@@ -862,12 +809,12 @@
                 </button>
                 <button (click)="checkerRunFilter.set('SUBMITTED')"
                         class="px-2.5 py-1 rounded-md text-[11px] font-semibold transition-colors cursor-pointer"
-                        [class]="checkerRunFilter() === 'SUBMITTED' ? 'bg-amber-600 text-white' : 'bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200'">
+                        [class]="checkerRunFilter() === 'SUBMITTED' ? 'bg-slate-900 text-white border border-slate-900' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'">
                   {{ currentLang() === 'vi' ? 'Chờ thẩm định' : 'Pending Review' }} ({{ submittedRunsCount() }})
                 </button>
                 <button (click)="checkerRunFilter.set('PENDING')"
                         class="px-2.5 py-1 rounded-md text-[11px] font-semibold transition-colors cursor-pointer"
-                        [class]="checkerRunFilter() === 'PENDING' ? 'bg-purple-600 text-white' : 'bg-purple-50 text-purple-800 hover:bg-purple-100 border border-purple-200'">
+                        [class]="checkerRunFilter() === 'PENDING' ? 'bg-slate-900 text-white border border-slate-900' : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'">
                   {{ currentLang() === 'vi' ? 'Chờ phê duyệt' : 'Pending Approval' }} ({{ approverRuns().length }})
                 </button>
                 <button (click)="checkerRunFilter.set('RECALCULATE')"
@@ -921,12 +868,10 @@
             </div>
           </div>
 
-          <!-- Selected Run Detail Card -->
-          @if (selectedRunToReview()) {
+                    @if (selectedRunToReview()) {
             <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
               
-              <!-- Review Header with Actions -->
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-3">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-3">
                 <div>
                   <div class="flex items-center gap-2">
                     <span class="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">{{ selectedRunToReview()!.run_code }}</span>
@@ -985,8 +930,7 @@
                 </div>
               </div>
 
-              <!-- Rejection Notice (if recalculation requested) -->
-              @if (selectedRunToReview()!.rejection_reason) {
+                            @if (selectedRunToReview()!.rejection_reason) {
                 <div class="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-rose-800 space-y-1">
                   <div class="font-bold flex items-center gap-1.5 text-red-700">
                     <i class="fa-solid fa-triangle-exclamation"></i>
@@ -996,8 +940,7 @@
                 </div>
               }
 
-              <!-- 4 Financial Metrics of this Run -->
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
                   <div class="text-xs text-slate-600 font-semibold">{{ t('kpi_ead') }}</div>
                   <div class="text-xl font-bold text-slate-900 mt-1">{{ formatVND(selectedRunToReview()!.total_ead) }}</div>
@@ -1022,8 +965,7 @@
                 </div>
               </div>
 
-              <!-- Macro Shocks Applied in this Run -->
-              <div class="p-3 rounded-lg bg-blue-50/40 border border-blue-100 flex flex-wrap items-center justify-between text-xs gap-2">
+                            <div class="p-3 rounded-lg bg-blue-50/40 border border-blue-100 flex flex-wrap items-center justify-between text-xs gap-2">
                 <span class="font-semibold text-blue-900 flex items-center gap-1.5">
                   <i class="fa-solid fa-sliders text-blue-600"></i>
                   <span>{{ currentLang() === 'vi' ? 'Tham số Cú sốc Vĩ mô của phiên này:' : 'Applied Macro Shock Parameters:' }}</span>
@@ -1036,11 +978,9 @@
                 </div>
               </div>
 
-              <!-- PHÂN TÍCH CHUYÊN SÂU DANH MỤC: PHÂN BỔ THEO NGÀNH VÀ MA TRẬN NHÓM NỢ -->
-              @if (selectedReviewDetail() || simulationResult()) {
+                            @if (selectedReviewDetail() || simulationResult()) {
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <!-- Phân bổ Tổn thất theo Ngành Kinh tế -->
-                  <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-3">
+                                    <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-3">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-2">
                       <div class="flex items-center gap-2">
                         <div class="w-2 h-2 rounded-full bg-blue-600"></div>
@@ -1072,8 +1012,7 @@
                     </div>
                   </div>
 
-                  <!-- Ma Trận Dịch Chuyển Nhóm Nợ IFRS 9 -->
-                  <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-3">
+                                    <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-3">
                     <div class="flex items-center justify-between border-b border-slate-100 pb-2">
                       <div class="flex items-center gap-2">
                         <div class="w-2 h-2 rounded-full bg-indigo-600"></div>
@@ -1116,8 +1055,7 @@
                       </div>
                     </div>
 
-                    <!-- Tóm tắt SICR và Nợ xấu -->
-                    <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 flex items-center justify-between">
+                                        <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 flex items-center justify-between">
                       <span class="flex items-center gap-1.5">
                         <i class="fa-solid fa-triangle-exclamation text-amber-600"></i>
                         <span>{{ currentLang() === 'vi' ? 'Khoản vay rủi ro tín dụng tăng đáng kể (SICR):' : 'Significant Increase in Credit Risk:' }}</span>
@@ -1127,8 +1065,7 @@
                   </div>
                 </div>
 
-                <!-- TOP 5 KHOẢN VAY RỦI RO CAO NHẤT CỦA PHIÊN KIỂM ĐỊNH -->
-                @if (selectedReviewDetail()?.top_risk_loans?.length > 0) {
+                                @if (selectedReviewDetail()?.top_risk_loans?.length > 0) {
                   <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-3">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-2 gap-2">
                       <div class="flex items-center gap-2">
@@ -1186,8 +1123,7 @@
                 }
               }
 
-              <!-- 3 Detailed Validation Checkpoints (Interactive Checkboxes for Checker) -->
-              <div class="space-y-2">
+                            <div class="space-y-2">
                 <div class="flex items-center justify-between">
                   <div class="text-xs font-bold text-slate-900 uppercase tracking-wide">
                     {{ currentLang() === 'vi' ? 'Phiếu Kiểm Tra và Thẩm Định Nghiệp Vụ (Bấm chọn hoặc bỏ chọn từng tiêu chí):' : 'Four-Eyes Review Checklist (Tick/Untick checkpoints):' }}
@@ -1199,8 +1135,7 @@
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                  <!-- Checkpoint 1 -->
-                  <label class="p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-2 select-none"
+                                    <label class="p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-2 select-none"
                          [class]="checkerCheckDataIntegrity() ? 'bg-emerald-50/50 border-emerald-300 shadow-xs' : 'bg-red-50/40 border-red-300'">
                     <div class="flex items-start justify-between gap-2">
                       <div class="font-bold text-slate-900 flex items-center gap-2">
@@ -1218,8 +1153,7 @@
                     </p>
                   </label>
 
-                  <!-- Checkpoint 2 -->
-                  <label class="p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-2 select-none"
+                                    <label class="p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-2 select-none"
                          [class]="checkerCheckEconomicLogic() ? 'bg-emerald-50/50 border-emerald-300 shadow-xs' : 'bg-red-50/40 border-red-300'">
                     <div class="flex items-start justify-between gap-2">
                       <div class="font-bold text-slate-900 flex items-center gap-2">
@@ -1237,8 +1171,7 @@
                     </p>
                   </label>
 
-                  <!-- Checkpoint 3 -->
-                  <label class="p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-2 select-none"
+                                    <label class="p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-2 select-none"
                          [class]="checkerCheckCapitalAdequacy() ? 'bg-emerald-50/50 border-emerald-300 shadow-xs' : 'bg-red-50/40 border-red-300'">
                     <div class="flex items-start justify-between gap-2">
                       <div class="font-bold text-slate-900 flex items-center gap-2">
@@ -1258,8 +1191,7 @@
                 </div>
               </div>
 
-              <!-- Ô NHẬN XÉT FEEDBACK CỦA TRƯỞNG PHÒNG QUẢN LÝ RỦI RO KHI THẨM ĐỊNH HOẶC KHÔNG DUYỆT -->
-              <div class="p-4 rounded-xl border border-slate-200 bg-white shadow-xs space-y-3">
+                            <div class="p-4 rounded-xl border border-slate-200 bg-white shadow-xs space-y-3">
                 <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
                   <div class="w-2.5 h-2.5 rounded-full bg-amber-600"></div>
                   <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wide">
@@ -1267,8 +1199,7 @@
                   </h4>
                 </div>
 
-                <!-- Gợi ý nhận xét nhanh -->
-                <div class="space-y-1.5">
+                                <div class="space-y-1.5">
                   <div class="text-[11px] font-semibold text-slate-600 flex items-center gap-1">
                     <i class="fa-regular fa-lightbulb text-amber-500"></i>
                     <span>{{ currentLang() === 'vi' ? 'Mẫu nhận xét nhanh (Bấm để thêm vào ý kiến phản hồi):' : 'Quick suggestion chips (Click to append):' }}</span>
@@ -1353,14 +1284,10 @@
         </div>
       }
 
-      <!-- ========================================================== -->
-      <!-- TAB 3: APPROVER DASHBOARD (EXECUTIVE DIRECTIVES AND CHARTS) -->
-      <!-- ========================================================== -->
-      @if (activeTab() === 'approver' && canAccess('approver')) {
+                        @if (activeTab() === 'approver' && canAccess('approver')) {
         <div class="space-y-6">
 
-          <!-- Section Header and Run Selector for Director -->
-          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between border-b border-slate-100 pb-3 gap-3">
               <div>
                 <h2 class="text-base sm:text-lg font-bold text-slate-900">{{ currentLang() === 'vi' ? 'Báo Cáo Phê Duyệt Điều Hành' : 'Executive Approval Report' }}</h2>
@@ -1387,8 +1314,7 @@
               }
             </div>
 
-            <!-- List of proposals awaiting executive approval (ONLY Checker-approved runs) -->
-            <div class="space-y-2">
+                        <div class="space-y-2">
               <div class="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center justify-between">
                 <span>Đề Án Đã Được Trưởng Phòng Thẩm Định Đạt:</span>
                 <span class="text-slate-500 font-normal">({{ approverRuns().length }} đề án sẵn sàng phê duyệt)</span>
@@ -1432,8 +1358,7 @@
               }
             </div>
 
-            <!-- Proposal Context Card for Board / Director -->
-            @if (selectedApproverRun()) {
+                        @if (selectedApproverRun()) {
               <div class="p-4 rounded-xl bg-purple-50/40 border border-purple-200 space-y-3">
                 <div class="flex items-center justify-between border-b border-purple-100 pb-2">
                   <div class="flex items-center gap-2">
@@ -1447,8 +1372,7 @@
                   </span>
                 </div>
 
-                <!-- 4 Macroeconomic Shocks of this proposal -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
                   <div class="p-2 bg-white rounded-lg border border-purple-100">
                     <span class="text-slate-500 text-[11px]">Cú sốc GDP:</span>
                     <div class="font-bold text-blue-700 text-sm">{{ formatShock(selectedApproverRun()!.custom_gdp_shock, 100, 1) }}%</div>
@@ -1467,8 +1391,7 @@
                   </div>
                 </div>
 
-                <!-- Checker Endorsement Note (Ý kiến thẩm định của Trưởng phòng) -->
-                <div class="p-3 bg-white rounded-lg border border-purple-100 text-xs space-y-1">
+                                <div class="p-3 bg-white rounded-lg border border-purple-100 text-xs space-y-1">
                   <div class="font-bold text-slate-800 flex items-center justify-between">
                     <span>Ý kiến xác nhận của Trưởng phòng Quản lý rủi ro:</span>
                     <span class="font-medium text-slate-600">{{ selectedApproverRun()!.checker_name || 'Trần Thị Bình' }}</span>
@@ -1481,35 +1404,30 @@
             }
           </div>
 
-          <!-- Executive 4 KPI Cards -->
-          @if (selectedApproverRun() || simulationResult()) {
+                    @if (selectedApproverRun() || simulationResult()) {
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <!-- KPI 1: EAD -->
-              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-start">
+                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-start">
                 <div class="text-xs text-slate-700 font-semibold">{{ t('kpi_ead') }}</div>
                 <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">
                   {{ formatVND(selectedApproverRun()?.total_ead || simulationResult()?.summary?.total_ead || 0) }}
                 </div>
               </div>
 
-              <!-- KPI 2: Total Stressed ECL -->
-              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-start">
+                            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-start">
                 <div class="text-xs text-slate-700 font-semibold">{{ t('kpi_ecl_stress') }}</div>
                 <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight text-amber-700 whitespace-nowrap overflow-hidden text-ellipsis">
                   {{ formatVND(selectedApproverRun()?.total_stressed_ecl || simulationResult()?.summary?.total_stressed_ecl || 0) }}
                 </div>
               </div>
 
-              <!-- KPI 3: Delta PS -->
-              <div class="bg-red-50/50 p-4 rounded-xl border border-red-200 shadow-sm flex flex-col justify-start">
+                            <div class="bg-red-50/50 p-4 rounded-xl border border-red-200 shadow-sm flex flex-col justify-start">
                 <div class="text-xs text-rose-900 font-semibold">{{ t('kpi_delta_ps') }}</div>
                 <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight text-red-700 whitespace-nowrap overflow-hidden text-ellipsis">
                   +{{ formatVND(selectedApproverRun()?.total_delta_provision || simulationResult()?.summary?.total_delta_provision || 0) }}
                 </div>
               </div>
 
-              <!-- KPI 4: CAR -->
-              <div class="bg-white p-4 rounded-xl border shadow-sm flex flex-col justify-start"
+                            <div class="bg-white p-4 rounded-xl border shadow-sm flex flex-col justify-start"
                    [class]="(selectedApproverRun()?.car_impact?.is_capital_adequate ?? (simulationResult()?.summary?.is_capital_adequate ?? true)) ? 'border-emerald-200 bg-emerald-50/20' : 'border-red-300 bg-red-50/20'">
                 <div class="text-xs text-slate-700 font-semibold">{{ t('kpi_car') }}</div>
                 <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight whitespace-nowrap overflow-hidden text-ellipsis"
@@ -1519,11 +1437,9 @@
               </div>
             </div>
 
-            <!-- Two Visual Analytics Charts for Board / CRO -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-              <!-- Visual Chart 1: Sector Risk Block Diagram (Sơ đồ khối) -->
-              <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3.5">
+                            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3.5">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
                   <div class="flex items-center gap-2">
                     <div class="w-2 h-2 rounded-full bg-blue-600"></div>
@@ -1536,8 +1452,7 @@
                   </span>
                 </div>
 
-                <!-- Sơ đồ khối 6 phân khúc -->
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-1">
+                                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-1">
                   @for (sec of currentSectorBreakdown(); track sec.sector_code) {
                     <div class="p-3 rounded-xl border flex flex-col justify-between transition-all"
                          [class]="sec.sector_code === 'REAL_ESTATE' ? 'bg-red-50/70 border-red-300 ring-1 ring-rose-200' : (sec.sector_code === 'CONSTRUCTION' ? 'bg-amber-50/50 border-amber-200' : 'bg-slate-50/70 border-slate-200 hover:border-slate-300')">
@@ -1568,8 +1483,7 @@
                 </div>
               </div>
 
-              <!-- Visual Chart 2: Cross-Scenario Comparison Matrix -->
-              <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3.5">
+                            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3.5">
                 <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
                   <div class="flex items-center gap-2">
                     <div class="w-2 h-2 rounded-full bg-purple-600"></div>
@@ -1583,8 +1497,7 @@
                 </div>
 
                 <div class="grid grid-cols-3 gap-3 pt-1">
-                  <!-- Scenario 1: Baseline -->
-                  <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2 text-center">
+                                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2 text-center">
                     <div class="text-xs font-bold text-slate-800">Kịch bản Cơ sở</div>
                     <div class="pt-1 border-t border-slate-200">
                       <div class="text-xs text-slate-500">Trích thêm (ΔPS):</div>
@@ -1596,8 +1509,7 @@
                     </div>
                   </div>
 
-                  <!-- Scenario 2: Adverse -->
-                  <div class="p-3 bg-amber-50/50 rounded-lg border border-amber-200 space-y-2 text-center">
+                                    <div class="p-3 bg-amber-50/50 rounded-lg border border-amber-200 space-y-2 text-center">
                     <div class="text-xs font-bold text-amber-900">Căng thẳng Vừa</div>
                     <div class="pt-1 border-t border-amber-200">
                       <div class="text-xs text-amber-700">Trích thêm (ΔPS):</div>
@@ -1609,8 +1521,7 @@
                     </div>
                   </div>
 
-                  <!-- Scenario 3: Severe -->
-                  <div class="p-3 bg-red-50/50 rounded-lg border border-red-200 space-y-2 text-center">
+                                    <div class="p-3 bg-red-50/50 rounded-lg border border-red-200 space-y-2 text-center">
                     <div class="text-xs font-bold text-rose-900">Khủng hoảng Sâu</div>
                     <div class="pt-1 border-t border-red-200">
                       <div class="text-xs text-red-700">Trích thêm (ΔPS):</div>
@@ -1627,8 +1538,7 @@
             </div>
           }
 
-          <!-- 3 Policy Directives (Interactive, Editable by Director and AI Assisted) -->
-          <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
+                    <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-2.5 gap-2">
               <div class="flex items-center gap-2">
                 <div class="w-2 h-2 rounded-full bg-purple-700"></div>
@@ -1649,8 +1559,7 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <!-- Directive 1 -->
-              <div class="p-3.5 rounded-xl border space-y-3 flex flex-col justify-between transition-all"
+                            <div class="p-3.5 rounded-xl border space-y-3 flex flex-col justify-between transition-all"
                    [class]="directive1Active() ? 'bg-slate-50/80 border-slate-200' : 'bg-slate-100/60 border-slate-200/80 shadow-none'">
                 <div class="space-y-2">
                   <div class="flex items-center justify-between pb-1 border-b border-slate-200/60">
@@ -1669,19 +1578,16 @@
                     </label>
                   </div>
                   
-                  <!-- Form content disabled and dimmed when not active -->
-                  <div class="space-y-2 transition-all duration-200"
+                                    <div class="space-y-2 transition-all duration-200"
                        [class.opacity-40]="!directive1Active()"
                        [class.pointer-events-none]="!directive1Active()"
                        [class.select-none]="!directive1Active()">
-                    <!-- Editable Title -->
-                    <input type="text" [ngModel]="directive1Title()" (ngModelChange)="directive1Title.set($event)"
+                                        <input type="text" [ngModel]="directive1Title()" (ngModelChange)="directive1Title.set($event)"
                            [disabled]="!directive1Active()"
                            class="w-full text-xs font-bold text-slate-900 bg-white border border-slate-300 rounded px-2 py-1 focus:border-purple-600 focus:outline-none disabled:bg-slate-100 disabled:text-slate-600"
                            title="Giám đốc có thể chỉnh sửa tiêu đề điều lệnh">
 
-                    <!-- AI Presets -->
-                    <div class="p-2 bg-purple-50/50 rounded-lg border border-purple-100 space-y-1.5">
+                                        <div class="p-2 bg-purple-50/50 rounded-lg border border-purple-100 space-y-1.5">
                       <div class="text-[10px] text-purple-800 font-bold flex items-center gap-1">
                         <i class="fa-solid fa-wand-magic-sparkles text-purple-600"></i> Đề cử AI:
                       </div>
@@ -1691,15 +1597,14 @@
                                   [disabled]="!directive1Active()"
                                   (click)="applyDirective1Preset(pct)"
                                   class="flex-1 py-0.5 text-[10px] font-bold rounded border transition-all cursor-pointer disabled:cursor-not-allowed"
-                                  [class]="directive1CutPercent() === pct ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                                  [class]="directive1CutPercent() === pct ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
                             -{{ pct }}%
                           </button>
                         }
                       </div>
                     </div>
 
-                    <!-- Director Custom Input (Gõ trực tiếp) -->
-                    <div class="p-2 bg-white rounded-lg border border-slate-200">
+                                        <div class="p-2 bg-white rounded-lg border border-slate-200">
                       <div class="flex items-center justify-between text-[11px]">
                         <span class="text-slate-700 font-semibold">Tỷ lệ cắt giảm:</span>
                         <div class="flex items-center gap-1">
@@ -1712,8 +1617,7 @@
                       </div>
                     </div>
 
-                    <!-- Director Action Directive Note (Gõ trực tiếp văn bản chỉ đạo) -->
-                    <div class="space-y-1.5">
+                                        <div class="space-y-1.5">
                       <label class="text-[11px] font-bold text-slate-800 block">
                         <span>Chỉ đạo chi tiết của Giám đốc:</span>
                       </label>
@@ -1733,8 +1637,7 @@
                 </div>
               </div>
 
-              <!-- Directive 2 -->
-              <div class="p-3.5 rounded-xl border space-y-3 flex flex-col justify-between transition-all"
+                            <div class="p-3.5 rounded-xl border space-y-3 flex flex-col justify-between transition-all"
                    [class]="directive2Active() ? 'bg-slate-50/80 border-slate-200' : 'bg-slate-100/60 border-slate-200/80 shadow-none'">
                 <div class="space-y-2">
                   <div class="flex items-center justify-between pb-1 border-b border-slate-200/60">
@@ -1753,19 +1656,16 @@
                     </label>
                   </div>
 
-                  <!-- Form content disabled and dimmed when not active -->
-                  <div class="space-y-2 transition-all duration-200"
+                                    <div class="space-y-2 transition-all duration-200"
                        [class.opacity-40]="!directive2Active()"
                        [class.pointer-events-none]="!directive2Active()"
                        [class.select-none]="!directive2Active()">
-                    <!-- Editable Title -->
-                    <input type="text" [ngModel]="directive2Title()" (ngModelChange)="directive2Title.set($event)"
+                                        <input type="text" [ngModel]="directive2Title()" (ngModelChange)="directive2Title.set($event)"
                            [disabled]="!directive2Active()"
                            class="w-full text-xs font-bold text-slate-900 bg-white border border-slate-300 rounded px-2 py-1 focus:border-purple-600 focus:outline-none disabled:bg-slate-100 disabled:text-slate-600"
                            title="Giám đốc có thể chỉnh sửa tiêu đề điều lệnh">
 
-                    <!-- AI Presets -->
-                    <div class="p-2 bg-purple-50/50 rounded-lg border border-purple-100 space-y-1.5">
+                                        <div class="p-2 bg-purple-50/50 rounded-lg border border-purple-100 space-y-1.5">
                       <div class="text-[10px] text-purple-800 font-bold flex items-center gap-1">
                         <i class="fa-solid fa-wand-magic-sparkles text-purple-600"></i> Đề cử AI:
                       </div>
@@ -1775,15 +1675,14 @@
                                   [disabled]="!directive2Active()"
                                   (click)="applyDirective2Preset(q)"
                                   class="flex-1 py-0.5 text-[10px] font-bold rounded border transition-all cursor-pointer disabled:cursor-not-allowed"
-                                  [class]="directive2Quarters() === q ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                                  [class]="directive2Quarters() === q ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
                             {{ q }} Quý
                           </button>
                         }
                       </div>
                     </div>
 
-                    <!-- Director Custom Input (Gõ trực tiếp) -->
-                    <div class="p-2 bg-white rounded-lg border border-slate-200">
+                                        <div class="p-2 bg-white rounded-lg border border-slate-200">
                       <div class="flex items-center justify-between text-[11px]">
                         <span class="text-slate-700 font-semibold">Lộ trình phân bổ:</span>
                         <div class="flex items-center gap-1">
@@ -1796,8 +1695,7 @@
                       </div>
                     </div>
 
-                    <!-- Director Action Directive Note (Gõ trực tiếp) -->
-                    <div class="space-y-1.5">
+                                        <div class="space-y-1.5">
                       <label class="text-[11px] font-bold text-slate-800 block">
                         <span>Chỉ đạo chi tiết của Giám đốc:</span>
                       </label>
@@ -1817,8 +1715,7 @@
                 </div>
               </div>
 
-              <!-- Directive 3 -->
-              <div class="p-3.5 rounded-xl border space-y-3 flex flex-col justify-between transition-all"
+                            <div class="p-3.5 rounded-xl border space-y-3 flex flex-col justify-between transition-all"
                    [class]="directive3Active() ? 'bg-slate-50/80 border-slate-200' : 'bg-slate-100/60 border-slate-200/80 shadow-none'">
                 <div class="space-y-2">
                   <div class="flex items-center justify-between pb-1 border-b border-slate-200/60">
@@ -1837,19 +1734,16 @@
                     </label>
                   </div>
 
-                  <!-- Form content disabled and dimmed when not active -->
-                  <div class="space-y-2 transition-all duration-200"
+                                    <div class="space-y-2 transition-all duration-200"
                        [class.opacity-40]="!directive3Active()"
                        [class.pointer-events-none]="!directive3Active()"
                        [class.select-none]="!directive3Active()">
-                    <!-- Editable Title -->
-                    <input type="text" [ngModel]="directive3Title()" (ngModelChange)="directive3Title.set($event)"
+                                        <input type="text" [ngModel]="directive3Title()" (ngModelChange)="directive3Title.set($event)"
                            [disabled]="!directive3Active()"
                            class="w-full text-xs font-bold text-slate-900 bg-white border border-slate-300 rounded px-2 py-1 focus:border-purple-600 focus:outline-none disabled:bg-slate-100 disabled:text-slate-600"
                            title="Giám đốc có thể chỉnh sửa tiêu đề điều lệnh">
 
-                    <!-- AI Presets -->
-                    <div class="p-2 bg-purple-50/50 rounded-lg border border-purple-100 space-y-1.5">
+                                        <div class="p-2 bg-purple-50/50 rounded-lg border border-purple-100 space-y-1.5">
                       <div class="text-[10px] text-purple-800 font-bold flex items-center gap-1">
                         <i class="fa-solid fa-wand-magic-sparkles text-purple-600"></i> Đề cử AI:
                       </div>
@@ -1858,28 +1752,27 @@
                                 [disabled]="!directive3Active()"
                                 (click)="applyDirective3Preset('STAGE_2')"
                                 class="py-0.5 text-[10px] font-bold rounded border transition-all cursor-pointer truncate px-1 text-center disabled:cursor-not-allowed"
-                                [class]="directive3Scope() === 'STAGE_2' ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                                [class]="directive3Scope() === 'STAGE_2' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
                           {{ currentLang() === 'vi' ? 'Rủi ro tăng' : 'Stage 2' }}
                         </button>
                         <button type="button"
                                 [disabled]="!directive3Active()"
                                 (click)="applyDirective3Preset('PD_2X')"
                                 class="py-0.5 text-[10px] font-bold rounded border transition-all cursor-pointer truncate px-1 text-center disabled:cursor-not-allowed"
-                                [class]="directive3Scope() === 'PD_2X' ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                                [class]="directive3Scope() === 'PD_2X' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
                           {{ currentLang() === 'vi' ? 'Xác suất tăng 2x' : 'PD Doubled' }}
                         </button>
                         <button type="button"
                                 [disabled]="!directive3Active()"
                                 (click)="applyDirective3Preset('GROUP_2')"
                                 class="py-0.5 text-[10px] font-bold rounded border transition-all cursor-pointer truncate px-1 text-center disabled:cursor-not-allowed"
-                                [class]="directive3Scope() === 'GROUP_2' ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                                [class]="directive3Scope() === 'GROUP_2' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
                           {{ currentLang() === 'vi' ? 'Nhóm 2 trở lên' : 'Stage 2+' }}
                         </button>
                       </div>
                     </div>
 
-                    <!-- Director Custom Input (Gõ trực tiếp tiêu chí) -->
-                    <div class="p-2 bg-white rounded-lg border border-slate-200 space-y-1.5">
+                                        <div class="p-2 bg-white rounded-lg border border-slate-200 space-y-1.5">
                       <div class="text-[11px] font-semibold text-slate-700">Tiêu chí kích hoạt:</div>
                       <input type="text" [ngModel]="directive3CustomScopeText()" (ngModelChange)="directive3CustomScopeText.set($event)"
                              [disabled]="!directive3Active()"
@@ -1887,16 +1780,14 @@
                              placeholder="Nhập tiêu chí kích hoạt...">
                     </div>
 
-                    <!-- Direct Link to Early Warning List (Mở danh sách cảnh báo sớm) -->
-                    <button type="button" (click)="goToEarlyWarningList()"
+                                        <button type="button" (click)="goToEarlyWarningList()"
                             [disabled]="!directive3Active()"
                             class="w-full py-1.5 px-3 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs disabled:cursor-not-allowed">
                       <i class="fa-solid fa-triangle-exclamation"></i>
                       <span>{{ currentLang() === 'vi' ? 'Mở Danh Sách Cảnh Báo Sớm (' + earlyWarningContracts().length + ' Hợp đồng) →' : 'Open Early Warning Portfolio (' + earlyWarningContracts().length + ' loans) →' }}</span>
                     </button>
 
-                    <!-- Director Action Directive Note (Gõ trực tiếp) -->
-                    <div class="space-y-1.5">
+                                        <div class="space-y-1.5">
                       <label class="text-[11px] font-bold text-slate-800 block">
                         <span>Chỉ đạo chi tiết của Giám đốc:</span>
                       </label>
@@ -1917,8 +1808,7 @@
               </div>
             </div>
 
-            <!-- Top 5 Early Warning Preview Table for Board/Director -->
-            <div class="pt-3 border-t border-slate-100 space-y-2.5">
+                        <div class="pt-3 border-t border-slate-100 space-y-2.5">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
                   <span class="w-2 h-2 rounded-full bg-red-600"></span>
@@ -1979,8 +1869,7 @@
               </div>
             </div>
 
-            <!-- Signature footer -->
-            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                        <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
               <div class="flex items-center gap-2">
                 <i class="fa-solid fa-stamp text-purple-600 text-base"></i>
                 <span>Chữ ký số xác thực bởi: <strong class="text-slate-900">Lê Hoàng Cường</strong> • Giám đốc Khối Quản trị Rủi ro</span>
@@ -1991,22 +1880,17 @@
         </div>
       }
 
-      <!-- ========================================================== -->
-      <!-- TAB 4: CREDIT LOAN PORTFOLIO AND EARLY WARNING LIST -->
-      <!-- ========================================================== -->
-      @if (activeTab() === 'portfolio') {
+                        @if (activeTab() === 'portfolio') {
         <div class="space-y-5">
 
-          <!-- Section Header and Mode Switcher -->
-          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div>
               <h2 class="text-base sm:text-lg font-bold text-slate-900">
                 Danh Sách Cảnh Báo Sớm
               </h2>
             </div>
 
-            <!-- Mode Switcher Buttons -->
-            <div class="flex items-center p-1 bg-slate-100 rounded-lg border border-slate-200">
+                        <div class="flex items-center p-1 bg-slate-100 rounded-lg border border-slate-200">
               <button type="button"
                       (click)="portfolioMode.set('EARLY_WARNING')"
                       class="px-3.5 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 cursor-pointer"
@@ -2017,15 +1901,14 @@
               <button type="button"
                       (click)="portfolioMode.set('ALL')"
                       class="px-3.5 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 cursor-pointer"
-                      [class]="portfolioMode() === 'ALL' ? 'bg-blue-700 text-white shadow-xs' : 'text-slate-700 hover:text-slate-900'">
+                      [class]="portfolioMode() === 'ALL' ? 'bg-slate-900 text-white shadow-xs' : 'text-slate-700 hover:text-slate-900'">
                 <i class="fa-solid fa-list"></i>
                 <span>Toàn Bộ Danh Mục (100 hợp đồng)</span>
               </button>
             </div>
           </div>
 
-          <!-- 4 KPI Cards for Early Warning -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
               <div class="text-[11px] font-semibold text-slate-500 uppercase">Hợp đồng cảnh báo sớm</div>
               <div class="text-2xl font-extrabold text-rose-600 mt-1">
@@ -2056,16 +1939,13 @@
             </div>
           </div>
 
-          <!-- Filters Bar -->
-          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-3">
+                    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-3">
             <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
-              <!-- Search -->
-              <input type="text" [placeholder]="t('search_placeholder')"
+                            <input type="text" [placeholder]="t('search_placeholder')"
                      [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)"
                      class="bg-slate-50 border border-slate-300 rounded-md px-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-600 w-full sm:w-60">
 
-              <!-- Sector Filter -->
-              <select [ngModel]="selectedSectorFilter()" (ngModelChange)="selectedSectorFilter.set($event)"
+                            <select [ngModel]="selectedSectorFilter()" (ngModelChange)="selectedSectorFilter.set($event)"
                       class="bg-slate-50 border border-slate-300 rounded-md px-2.5 py-1.5 text-xs text-slate-700">
                 <option value="ALL">{{ t('filter_all_sectors') }}</option>
                 <option value="REAL_ESTATE">{{ getSectorName('REAL_ESTATE') }}</option>
@@ -2076,8 +1956,7 @@
                 <option value="CONSUMER_LOAN">{{ getSectorName('CONSUMER_LOAN') }}</option>
               </select>
 
-              <!-- Stage Filter -->
-              <select [ngModel]="selectedStageFilter()" (ngModelChange)="selectedStageFilter.set($event)"
+                            <select [ngModel]="selectedStageFilter()" (ngModelChange)="selectedStageFilter.set($event)"
                       class="bg-slate-50 border border-slate-300 rounded-md px-2.5 py-1.5 text-xs text-slate-700">
                 <option value="ALL">{{ t('filter_all_stages') }}</option>
                 <option value="1">{{ currentLang() === 'vi' ? 'Nhóm 1 - Nợ tiêu chuẩn' : 'Stage 1 - Performing' }}</option>
@@ -2098,8 +1977,7 @@
             </div>
           </div>
 
-          <!-- Stressed Contracts / Early Warning Table -->
-          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
             <div class="overflow-x-auto max-h-[600px] overflow-y-auto">
               <table class="w-full text-left text-xs">
                 <thead class="bg-slate-50 text-slate-700 uppercase font-bold text-[11px] border-b border-slate-200 sticky top-0 z-10 shadow-xs">
@@ -2118,29 +1996,23 @@
                 <tbody class="divide-y divide-slate-100">
                   @for (c of filteredStressedContracts(); track c.contract_id) {
                     <tr class="hover:bg-slate-50 transition-colors" [class.bg-red-50/20]="c.is_sicr">
-                      <!-- Contract ID -->
-                      <td class="p-3 font-bold text-blue-700 whitespace-nowrap">{{ c.contract_id }}</td>
+                                            <td class="p-3 font-bold text-blue-700 whitespace-nowrap">{{ c.contract_id }}</td>
 
-                      <!-- Customer Name -->
-                      <td class="p-3 font-sans font-medium text-slate-900">
+                                            <td class="p-3 font-sans font-medium text-slate-900">
                         <div>{{ c.customer_name }}</div>
                         <span class="text-[10px] text-slate-400">{{ c.customer_segment }}</span>
                       </td>
 
-                      <!-- Sector -->
-                      <td class="p-3 font-sans text-slate-600 whitespace-nowrap">{{ c.sector_name_vn }}</td>
+                                            <td class="p-3 font-sans text-slate-600 whitespace-nowrap">{{ c.sector_name_vn }}</td>
 
-                      <!-- EAD -->
-                      <td class="p-3 font-bold text-slate-900 whitespace-nowrap">{{ formatVND(c.original_ead) }}</td>
+                                            <td class="p-3 font-bold text-slate-900 whitespace-nowrap">{{ formatVND(c.original_ead) }}</td>
 
-                      <!-- Collateral Info -->
-                      <td class="p-3 font-sans text-slate-600 text-[11px]">
+                                            <td class="p-3 font-sans text-slate-600 text-[11px]">
                         <div>{{ (c.collateral_type || 'Bất động sản thương mại').replace('&', 'và') }}</div>
                         <span class="text-[10px] text-slate-400">Định giá lại: {{ formatVND(c.collateral_value || c.original_ead * 1.2) }}</span>
                       </td>
 
-                      <!-- Stage Migration with Alarm Badge -->
-                      <td class="p-3 font-sans whitespace-nowrap">
+                                            <td class="p-3 font-sans whitespace-nowrap">
                         @if (c.is_sicr) {
                           <span class="px-2 py-0.5 rounded text-[10px] font-extrabold border bg-rose-100 text-red-700 border-red-300 inline-flex items-center gap-1 shadow-xs">
                             <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
@@ -2153,16 +2025,14 @@
                         }
                       </td>
 
-                      <!-- PD Change -->
-                      <td class="p-3 font-sans whitespace-nowrap">
+                                            <td class="p-3 font-sans whitespace-nowrap">
                         <div class="font-bold" [class.text-red-700]="c.stressed_pd > c.baseline_pd" [class.text-slate-800]="c.stressed_pd <= c.baseline_pd">
                           {{ (c.stressed_pd * 100).toFixed(2) }}%
                         </div>
                         <span class="text-[10px] text-slate-400">Gốc: {{ (c.baseline_pd * 100).toFixed(2) }}%</span>
                       </td>
 
-                      <!-- Delta Provision -->
-                      <td class="p-3 font-sans whitespace-nowrap">
+                                            <td class="p-3 font-sans whitespace-nowrap">
                         @if (c.delta_provision > 0) {
                           <span class="font-extrabold text-rose-600">+{{ formatVND(c.delta_provision) }}</span>
                         } @else {
@@ -2170,8 +2040,7 @@
                         }
                       </td>
 
-                      <!-- Early Warning Recommended Actions -->
-                      <td class="p-3 font-sans whitespace-nowrap">
+                                            <td class="p-3 font-sans whitespace-nowrap">
                         @if (c.is_sicr) {
                           <div class="flex items-center gap-1.5">
                             <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
@@ -2197,10 +2066,7 @@
         </div>
       }
 
-      <!-- ========================================================== -->
-      <!-- TAB 5: AUDIT TRAIL (NHẬT KÝ HOẠT ĐỘNG KIỂM TOÁN ĐỘC LẬP) -->
-      <!-- ========================================================== -->
-      @if (activeTab() === 'audit') {
+                        @if (activeTab() === 'audit') {
         <div class="space-y-6">
           <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-3">
@@ -2219,8 +2085,7 @@
               </div>
             </div>
 
-            <!-- Action Filters -->
-            <div class="flex flex-wrap items-center gap-1.5 pt-1">
+                        <div class="flex flex-wrap items-center gap-1.5 pt-1">
               <button type="button" (click)="auditActionFilter.set('ALL')"
                       class="px-2.5 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
                       [class]="auditActionFilter() === 'ALL' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
@@ -2228,28 +2093,27 @@
               </button>
               <button type="button" (click)="auditActionFilter.set('SUBMIT')"
                       class="px-2.5 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
-                      [class]="auditActionFilter() === 'SUBMIT' ? 'bg-blue-700 text-white border-blue-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                      [class]="auditActionFilter() === 'SUBMIT' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
                 {{ currentLang() === 'vi' ? 'Khởi tạo và Nộp' : 'Created and Submitted' }}
               </button>
               <button type="button" (click)="auditActionFilter.set('FORWARD_APPROVER')"
                       class="px-2.5 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
-                      [class]="auditActionFilter() === 'FORWARD_APPROVER' ? 'bg-emerald-700 text-white border-emerald-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                      [class]="auditActionFilter() === 'FORWARD_APPROVER' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
                 {{ currentLang() === 'vi' ? 'Thẩm định Đạt' : 'Review Passed' }}
               </button>
               <button type="button" (click)="auditActionFilter.set('RECALCULATE')"
                       class="px-2.5 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
-                      [class]="auditActionFilter() === 'RECALCULATE' ? 'bg-rose-700 text-white border-rose-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                      [class]="auditActionFilter() === 'RECALCULATE' ? 'bg-red-600 text-white border-red-600' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
                 {{ currentLang() === 'vi' ? 'Yêu cầu Tính lại' : 'Recalculation' }}
               </button>
               <button type="button" (click)="auditActionFilter.set('APPROVE')"
                       class="px-2.5 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
-                      [class]="auditActionFilter() === 'APPROVE' ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                      [class]="auditActionFilter() === 'APPROVE' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
                 {{ currentLang() === 'vi' ? 'Ký số Ban hành' : 'CRO Authorized' }}
               </button>
             </div>
 
-            <!-- Audit Trail Records -->
-            <div class="space-y-2.5">
+                        <div class="space-y-2.5">
               @for (log of filteredAuditLogs(); track log.id) {
                 <div class="p-3.5 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-2 hover:bg-slate-100/70 transition-colors">
                   <div class="flex flex-wrap items-center justify-between gap-2">
@@ -2285,8 +2149,7 @@
     </main>
   }
 
-  <!-- SAVE MODAL -->
-  @if (saveRunModalOpen()) {
+    @if (saveRunModalOpen()) {
     <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
       <div class="bg-white rounded-xl max-w-md w-full p-5 border border-slate-200 shadow-xl space-y-4">
         <h4 class="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center justify-between">
@@ -2335,8 +2198,7 @@
     </div>
   }
 
-  <!-- RECALCULATION MODAL -->
-  @if (recalculationModalOpen()) {
+    @if (recalculationModalOpen()) {
     <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
       <div class="bg-white rounded-xl max-w-md w-full p-5 border border-slate-200 shadow-xl space-y-4">
         <h4 class="text-sm font-bold text-red-700 border-b border-slate-100 pb-2">
@@ -2360,13 +2222,11 @@
     </div>
   }
 
-  <!-- CALCULATION METHODOLOGY MODAL (POP-UP CHI TIẾT CÁCH TÍNH REALTIME) -->
-  @if (methodologyModalOpen() && simulationResult()) {
+    @if (methodologyModalOpen() && simulationResult()) {
     <div class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
       <div class="bg-white rounded-xl max-w-4xl w-full p-5 sm:p-6 border border-slate-200 shadow-2xl space-y-4 my-auto max-h-[92vh] overflow-y-auto">
         
-        <!-- Modal Header -->
-        <div class="flex items-start justify-between border-b border-slate-200 pb-3">
+                <div class="flex items-start justify-between border-b border-slate-200 pb-3">
           <div>
             <div class="text-[11px] font-semibold uppercase tracking-wider text-blue-700">
               {{ currentLang() === 'vi' ? 'Phương Pháp Luận và Chi Tiết Công Thức' : 'Calculation Methodology and Live Formulas' }}
@@ -2388,45 +2248,42 @@
           </button>
         </div>
 
-        <!-- 5 Tabs Navigation inside Modal -->
-        <div class="flex flex-wrap gap-1.5 border-b border-slate-200 pb-2">
+                <div class="flex flex-wrap gap-1.5 border-b border-slate-200 pb-2">
           <button (click)="selectedCalcTab.set('all')"
                   [class]="selectedCalcTab() === 'all' ? 'bg-slate-900 text-white font-bold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
                   class="px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer">
             {{ currentLang() === 'vi' ? 'Toàn bộ' : 'All' }}
           </button>
           <button (click)="selectedCalcTab.set('ead')"
-                  [class]="selectedCalcTab() === 'ead' ? 'bg-blue-600 text-white font-bold' : 'bg-blue-50 text-blue-800 hover:bg-blue-100'"
+                  [class]="selectedCalcTab() === 'ead' ? 'bg-slate-900 text-white font-bold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
                   class="px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer">
             Dư nợ EAD
           </button>
           <button (click)="selectedCalcTab.set('ecl')"
-                  [class]="selectedCalcTab() === 'ecl' ? 'bg-amber-600 text-white font-bold' : 'bg-amber-50 text-amber-800 hover:bg-amber-100'"
+                  [class]="selectedCalcTab() === 'ecl' ? 'bg-slate-900 text-white font-bold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
                   class="px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer">
             Tổn thất ECL
           </button>
           <button (click)="selectedCalcTab.set('deltaps')"
-                  [class]="selectedCalcTab() === 'deltaps' ? 'bg-red-600 text-white font-bold' : 'bg-red-50 text-rose-800 hover:bg-red-100'"
+                  [class]="selectedCalcTab() === 'deltaps' ? 'bg-red-600 text-white font-bold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
                   class="px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer">
             Trích lập ΔPS
           </button>
           <button (click)="selectedCalcTab.set('car')"
-                  [class]="selectedCalcTab() === 'car' ? 'bg-purple-600 text-white font-bold' : 'bg-purple-50 text-purple-800 hover:bg-purple-100'"
+                  [class]="selectedCalcTab() === 'car' ? 'bg-slate-900 text-white font-bold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
                   class="px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer">
             Tỷ lệ CAR
           </button>
           <button (click)="selectedCalcTab.set('npl')"
-                  [class]="selectedCalcTab() === 'npl' ? 'bg-slate-700 text-white font-bold' : 'bg-slate-100 text-slate-800 hover:bg-slate-200'"
+                  [class]="selectedCalcTab() === 'npl' ? 'bg-slate-900 text-white font-bold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
                   class="px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer">
             Nợ xấu NPL
           </button>
         </div>
 
-        <!-- Metric Details List -->
-        <div class="space-y-4 text-xs">
+                <div class="space-y-4 text-xs">
 
-          <!-- EAD Breakdown -->
-          @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'ead') {
+                    @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'ead') {
             <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
               <div class="flex items-center justify-between border-b border-slate-200 pb-1.5">
                 <span class="font-bold text-slate-900 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Tổng Dư Nợ Chịu Rủi Ro' : 'Total Exposure at Default' }}</span>
@@ -2444,8 +2301,7 @@
             </div>
           }
 
-          <!-- ECL Breakdown -->
-          @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'ecl') {
+                    @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'ecl') {
             <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
               <div class="flex items-center justify-between border-b border-slate-200 pb-1.5">
                 <span class="font-bold text-slate-900 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Tổn Thất Tín Dụng Dự Kiến' : 'Stressed Expected Credit Loss' }}</span>
@@ -2464,8 +2320,7 @@
             </div>
           }
 
-          <!-- Delta PS Breakdown -->
-          @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'deltaps') {
+                    @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'deltaps') {
             <div class="p-4 rounded-lg bg-red-50/40 border border-red-200 space-y-2">
               <div class="flex items-center justify-between border-b border-red-200 pb-1.5">
                 <span class="font-bold text-rose-800 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Chi Phí Trích Lập Dự Phòng Bổ Sung' : 'Additional Provision Allocation' }}</span>
@@ -2484,8 +2339,7 @@
             </div>
           }
 
-          <!-- CAR Breakdown -->
-          @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'car') {
+                    @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'car') {
             <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
               <div class="flex items-center justify-between border-b border-slate-200 pb-1.5">
                 <span class="font-bold text-slate-900 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Tỷ Lệ An Toàn Vốn' : 'Capital Adequacy Ratio' }}</span>
@@ -2508,8 +2362,7 @@
             </div>
           }
 
-          <!-- NPL Breakdown -->
-          @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'npl') {
+                    @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'npl') {
             <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
               <div class="flex items-center justify-between border-b border-slate-200 pb-1.5">
                 <span class="font-bold text-slate-900 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Tỷ Lệ Nợ Xấu' : 'Non-Performing Loan Ratio' }}</span>
@@ -2532,8 +2385,7 @@
 
         </div>
 
-        <!-- Modal Footer -->
-        <div class="flex items-center justify-between pt-3 border-t border-slate-200 text-xs">
+                <div class="flex items-center justify-between pt-3 border-t border-slate-200 text-xs">
           <span class="text-slate-400 text-xs">Chuẩn mực IFRS 9 và Basel II</span>
           <button (click)="methodologyModalOpen.set(false)"
                   class="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-md border border-slate-300 transition-colors cursor-pointer">
@@ -2545,8 +2397,7 @@
     </div>
   }
 
-  <!-- RENAME PROPOSAL MODAL -->
-  @if (renameModalOpen() && runToRename()) {
+    @if (renameModalOpen() && runToRename()) {
     <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
       <div class="bg-white rounded-xl max-w-md w-full p-5 border border-slate-200 shadow-xl space-y-4">
         <h4 class="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center gap-2">
@@ -2573,8 +2424,7 @@
     </div>
   }
 
-  <!-- RUN DETAIL MODAL -->
-  @if (viewDetailModalOpen() && selectedRunDetail()) {
+    @if (viewDetailModalOpen() && selectedRunDetail()) {
     <div class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
       <div class="bg-white rounded-xl max-w-2xl w-full p-5 sm:p-6 border border-slate-200 shadow-2xl space-y-4 my-auto max-h-[90vh] overflow-y-auto">
         <div class="flex items-start justify-between border-b border-slate-100 pb-3">
@@ -2596,8 +2446,7 @@
           </button>
         </div>
 
-        <!-- Detail KPIs Grid -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
           <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
             <div class="text-[11px] text-slate-500 font-medium">Tổn thất Dự kiến</div>
             <div class="text-sm font-bold text-slate-900 mt-0.5">{{ formatVND(selectedRunDetail()!.total_stressed_ecl) }}</div>
@@ -2616,8 +2465,7 @@
           </div>
         </div>
 
-        <!-- Macro Shocks applied -->
-        <div class="p-3.5 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-2">
+                <div class="p-3.5 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-2">
           <div class="font-bold text-slate-800 text-[11px] uppercase tracking-wide">Bộ Tham Số Cú Sốc Vĩ Mô Áp Dụng</div>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
             <div>GDP: <strong class="text-blue-700">{{ formatShock(selectedRunDetail()!.custom_gdp_shock, 100, 1) }}%</strong></div>
@@ -2653,12 +2501,10 @@
     </div>
   }
 
-  <!-- CHECKER 100 CONTRACTS REVIEW MODAL -->
-  @if (checkerContractModalOpen() && selectedReviewDetail()) {
+    @if (checkerContractModalOpen() && selectedReviewDetail()) {
     <div class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
       <div class="bg-white rounded-xl max-w-5xl w-full p-5 sm:p-6 border border-slate-200 shadow-2xl space-y-4 my-auto max-h-[92vh] flex flex-col">
-        <!-- Header -->
-        <div class="flex items-start justify-between border-b border-slate-200 pb-3">
+                <div class="flex items-start justify-between border-b border-slate-200 pb-3">
           <div>
             <div class="flex items-center gap-2">
               <span class="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
@@ -2680,8 +2526,7 @@
           </button>
         </div>
 
-        <!-- Filter bar -->
-        <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center justify-between gap-3">
           <div class="relative flex-1 max-w-sm">
             <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
             <input type="text"
@@ -2695,8 +2540,7 @@
           </span>
         </div>
 
-        <!-- Table -->
-        <div class="overflow-y-auto flex-1 border border-slate-200 rounded-lg max-h-[55vh]">
+                <div class="overflow-y-auto flex-1 border border-slate-200 rounded-lg max-h-[55vh]">
           <table class="w-full text-left text-xs">
             <thead class="bg-slate-50 text-slate-600 uppercase font-semibold text-[11px] border-b border-slate-200 sticky top-0 whitespace-nowrap">
               <tr>
@@ -2738,8 +2582,7 @@
           </table>
         </div>
 
-        <!-- Footer -->
-        <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
+                <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
           <span class="text-slate-400">Kiểm tra tính toàn vẹn 100 hợp đồng danh mục IFRS 9</span>
           <button (click)="checkerContractModalOpen.set(false)" class="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-md cursor-pointer">
             {{ currentLang() === 'vi' ? 'Đóng Bảng Kê' : 'Close' }}
@@ -2749,10 +2592,7 @@
     </div>
   }
 
-  <!-- ============================================================== -->
-  <!-- MODAL CẤU HÌNH MÁY CHỦ BACKEND API (LOCAL / RENDER CLOUD) -->
-  <!-- ============================================================== -->
-  @if (showApiConfigModal()) {
+        @if (showApiConfigModal()) {
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4 animate-fade-in">
       <div class="bg-white rounded-xl shadow-2xl border border-slate-200 max-w-lg w-full p-6 text-slate-800">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
@@ -2809,8 +2649,7 @@
     </div>
   }
 
-  <!-- FOOTER -->
-  <footer class="bg-white border-t border-slate-200 py-3 mt-auto text-xs text-slate-500">
+    <footer class="bg-white border-t border-slate-200 py-3 mt-auto text-xs text-slate-500">
     <div class="max-w-7xl mx-auto px-4 flex items-center justify-center">
       <div>Hệ thống Kiểm định Tín dụng và Phân bổ Trích lập Dự phòng IFRS 9 © 2026</div>
     </div>

@@ -141,9 +141,6 @@ export interface StressTestRun {
   audit_logs?: AuditLogItem[];
 }
 
-// ==========================================
-// BILINGUAL DICTIONARY (VIETNAMESE / ENGLISH)
-// ==========================================
 export const TRANSLATIONS: { [lang: string]: { [key: string]: string } } = {
   vi: {
     system_title: 'KIỂM ĐỊNH TÍN DỤNG IFRS 9',
@@ -371,14 +368,11 @@ export class App implements OnInit {
     this.fetchInitialData();
   }
 
-  // Language and Auth State
   currentLang = signal<'vi' | 'en'>('vi');
   currentUser = signal<SystemUser | null>(null);
 
-  // Navigation Tabs
   activeTab = signal<'maker' | 'checker' | 'approver' | 'portfolio' | 'audit'>('maker');
 
-  // Pre-configured Accounts for Testing
   readonly TEST_ACCOUNTS: SystemUser[] = [
     { id: 1, username: 'maker_an', full_name: 'Nguyễn Văn An', email: 'an.nguyen@bank.vn', role: 'MAKER', department: 'Phòng Đo lường Rủi ro' },
     { id: 2, username: 'checker_binh', full_name: 'Trần Thị Bình', email: 'binh.tran@bank.vn', role: 'CHECKER', department: 'Phòng Quản lý rủi ro' },
@@ -387,19 +381,16 @@ export class App implements OnInit {
     { id: 5, username: 'admin_system', full_name: 'Quản trị viên Hệ thống', email: 'admin.it@bank.vn', role: 'ADMIN', department: 'Khối Công nghệ Thông tin và CSDL' },
   ];
 
-  // Login Form
   loginUsername = signal<string>('maker_an');
   loginPassword = signal<string>('123456');
   loginError = signal<string>('');
 
-  // Macro Shocks
   selectedPreset = signal<string>('ADVERSE');
   gdpShock = signal<number>(-1.5);
   irShock = signal<number>(200);
   unempShock = signal<number>(2.0);
   reShock = signal<number>(-15);
 
-  // Data Signals
   isLoading = signal<boolean>(false);
   isSaving = signal<boolean>(false);
   notification = signal<{ type: 'success' | 'error' | 'info'; message: string } | null>(null);
@@ -409,12 +400,10 @@ export class App implements OnInit {
   allRuns = signal<StressTestRun[]>([]);
   contracts = signal<LoanContract[]>([]);
 
-  // Portfolio Filters
   searchQuery = signal<string>('');
   selectedSectorFilter = signal<string>('ALL');
   selectedStageFilter = signal<string>('ALL');
 
-  // Modal / Inputs
   saveRunModalOpen = signal<boolean>(false);
   newRunName = signal<string>('Mô phỏng Kịch bản Căng thẳng Q4/2026');
   editingRun = signal<StressTestRun | null>(null);
@@ -427,7 +416,6 @@ export class App implements OnInit {
   methodologyModalOpen = signal<boolean>(false);
   selectedCalcTab = signal<'all' | 'ead' | 'ecl' | 'deltaps' | 'car' | 'npl'>('all');
 
-  // Maker Proposals Management and Recalculation
   makerActiveView = signal<'simulation' | 'reports'>('simulation');
   makerRunFilter = signal<'ALL' | 'RECALCULATE' | 'DRAFT' | 'SUBMITTED' | 'PENDING' | 'APPROVED'>('ALL');
   makerSearchQuery = signal<string>('');
@@ -453,7 +441,6 @@ export class App implements OnInit {
 
   checkerRunFilter = signal<'ALL' | 'SUBMITTED' | 'PENDING' | 'RECALCULATE'>('ALL');
 
-  // Checker Review Detailed Metrics and Checkbox Checkpoints
   checkerCheckDataIntegrity = signal<boolean>(true);
   checkerCheckEconomicLogic = signal<boolean>(true);
   checkerCheckCapitalAdequacy = signal<boolean>(true);
@@ -634,22 +621,18 @@ export class App implements OnInit {
     );
   }
 
-  // Director Interactive and Editable Policy Directives
   directive1Active = signal<boolean>(true);
   directive2Active = signal<boolean>(true);
   directive3Active = signal<boolean>(true);
 
-  // Directive 1: Cắt giảm hạn mức BĐS
   directive1Title = signal<string>('Cắt giảm hạn mức Bất động sản và Xây dựng');
   directive1CutPercent = signal<number>(15);
   directive1ActionNote = signal<string>('Khối KHDN tạm dừng giải ngân các khoản vay trung dài hạn mới thuộc lĩnh vực BĐS; ưu tiên điều chuyển dòng vốn sang nhóm sản xuất kinh doanh.');
 
-  // Directive 2: Phân bổ trích lập dự phòng phát sinh tăng
   directive2Title = signal<string>('Phân bổ trích lập dự phòng phát sinh tăng');
   directive2Quarters = signal<number>(4);
   directive2ActionNote = signal<string>('Khối Tài chính Kế toán trích lập đều đặn theo từng quý vào chi phí hoạt động để ổn định kết quả kinh doanh và chỉ tiêu cổ tức.');
 
-  // Directive 3: Kích hoạt xử lý nợ sớm
   directive3Title = signal<string>('Kích hoạt quy trình xử lý nợ sớm');
   directive3Scope = signal<'STAGE_2' | 'PD_2X' | 'GROUP_2'>('STAGE_2');
   directive3CustomScopeText = signal<string>('Khoản vay có rủi ro tín dụng gia tăng đáng kể');
@@ -657,7 +640,6 @@ export class App implements OnInit {
 
   directiveApproved = signal<boolean>(false);
 
-  // Early Warning and Portfolio Mode
   portfolioMode = signal<'ALL' | 'EARLY_WARNING'>('EARLY_WARNING');
 
   applyDirective1Preset(pct: number) {
@@ -728,7 +710,6 @@ export class App implements OnInit {
     this.methodologyModalOpen.set(true);
   }
 
-  // Translation Helper
   t(key: string): string {
     const lang = this.currentLang();
     return TRANSLATIONS[lang]?.[key] || TRANSLATIONS['vi']?.[key] || key;
@@ -806,7 +787,6 @@ export class App implements OnInit {
     }
   }
 
-  // Filtered Contracts
   filteredContracts = computed(() => {
     const list = this.contracts();
     const query = this.searchQuery().toLowerCase().trim();
@@ -824,7 +804,6 @@ export class App implements OnInit {
     });
   });
 
-  // Early Warning (SICR) Contracts after Stress Test Simulation
   earlyWarningContracts = computed(() => {
     const results = this.simulationResult()?.contract_results || [];
     return results.filter(r => r.is_sicr || r.stressed_stage > r.baseline_stage);
@@ -916,7 +895,6 @@ export class App implements OnInit {
   }
 
   ngOnInit() {
-    // Check saved session
     const saved = localStorage.getItem('credit_risk_user');
     if (saved) {
       try {
@@ -926,7 +904,6 @@ export class App implements OnInit {
         this.setUser(this.TEST_ACCOUNTS[0]);
       }
     } else {
-      // Default to Maker for immediate demonstration
       this.setUser(this.TEST_ACCOUNTS[0]);
     }
 
@@ -954,7 +931,6 @@ export class App implements OnInit {
     this.currentUser.set(user);
     localStorage.setItem('credit_risk_user', JSON.stringify(user));
 
-    // Automatically navigate to authorized tab
     if (user.role === 'MAKER') {
       this.activeTab.set('maker');
     } else if (user.role === 'CHECKER') {
@@ -1015,7 +991,6 @@ export class App implements OnInit {
           this.fetchRunReviewDetail(target.id);
         }
         
-        // For Director: ONLY select proposals verified/forwarded by Checker
         const approverEligible = runs.filter(r => r.status === 'PENDING_APPROVAL' || r.status === 'APPROVED');
         if (approverEligible.length > 0) {
           const current = this.selectedApproverRun();
