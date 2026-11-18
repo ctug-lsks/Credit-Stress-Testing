@@ -1,0 +1,2381 @@
+<div class="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans">
+
+  <!-- ============================================================== -->
+  <!-- 1. TOP HEADER (LIGHT THEME, CORPORATE NAVY AND WHITE) -->
+  <!-- ============================================================== -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+
+        <!-- Brand and System Name -->
+        <div class="flex items-center space-x-3">
+          <div class="w-9 h-9 rounded-lg bg-blue-700 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+            VR
+          </div>
+          <div>
+            <h1 class="text-sm sm:text-base font-bold text-slate-900 tracking-tight">
+              {{ t('system_title') }}
+            </h1>
+          </div>
+        </div>
+
+        <!-- Right Header Actions (Database Admin, Language Switcher and User Profile) -->
+        <div class="flex items-center space-x-2 sm:space-x-3">
+
+          <!-- Database Admin Portal Link (CHỈ HIỂN THỊ DÀNH CHO QUẢN TRỊ VIÊN IT / ADMIN) -->
+          @if (currentUser()?.role === 'ADMIN') {
+            <a href="/admin/" target="_blank"
+               class="px-2.5 py-1 text-xs font-bold rounded-md border border-slate-700 bg-slate-900 hover:bg-slate-800 text-white shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+               title="Cổng Quản trị Cơ sở dữ liệu Django Admin (Dành riêng cho Quản trị viên IT)">
+              <i class="fa-solid fa-database text-amber-400 text-[11px]"></i>
+              <span class="hidden sm:inline">Quản Trị CSDL</span>
+            </a>
+          }
+
+          <!-- Language Switcher Button -->
+          <button (click)="toggleLanguage()"
+                  class="px-2.5 py-1 text-xs font-medium rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 shadow-sm flex items-center space-x-1 transition-colors">
+            <span [class.font-bold]="currentLang() === 'vi'" [class.text-blue-700]="currentLang() === 'vi'">VI</span>
+            <span class="text-slate-300">|</span>
+            <span [class.font-bold]="currentLang() === 'en'" [class.text-blue-700]="currentLang() === 'en'">EN</span>
+          </button>
+
+          <!-- User Account Info (If logged in) -->
+          @if (currentUser()) {
+            <div class="flex items-center space-x-3 border-l border-slate-200 pl-3">
+              <div class="hidden md:flex items-center">
+                <span class="text-xs font-semibold text-slate-800">{{ currentUser()!.full_name }}</span>
+              </div>
+              <span class="px-2 py-0.5 rounded text-xs font-semibold border"
+                    [class]="currentUser()!.role === 'MAKER' ? 'bg-blue-50 text-blue-700 border-blue-200' :
+                            (currentUser()!.role === 'CHECKER' ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                            (currentUser()!.role === 'APPROVER' ? 'bg-purple-50 text-purple-700 border-purple-200' : 'bg-slate-100 text-slate-700 border-slate-300'))">
+                {{ getRoleLabel(currentUser()!.role) }}
+              </span>
+              <button (click)="logout()" title="{{ t('btn_logout') }}"
+                      class="px-2.5 py-1 text-xs font-medium text-slate-600 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 rounded-md transition-colors">
+                {{ t('btn_logout') }}
+              </button>
+            </div>
+          } @else {
+            <button (click)="loginUsername.set('maker_an')"
+                    class="px-3 py-1 text-xs font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700 shadow-sm">
+              {{ t('btn_login') }}
+            </button>
+          }
+
+        </div>
+      </div>
+
+      <!-- Navigation Tabs (Only visible when logged in) -->
+      @if (currentUser()) {
+        <nav class="flex space-x-6 overflow-x-auto border-t border-slate-200 pt-1 pb-2">
+          @if (canAccess('maker')) {
+            <button (click)="setMakerView('simulation')"
+                    [class]="activeTab() === 'maker' && makerActiveView() === 'simulation' ? 'border-blue-600 text-blue-700 font-semibold' : 'border-transparent text-slate-600 hover:text-slate-900'"
+                    class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-calculator text-blue-600"></i>
+              <span>{{ currentLang() === 'vi' ? 'Mô Phỏng Kịch Bản' : 'Stress Simulation' }}</span>
+            </button>
+            <button (click)="setMakerView('reports')"
+                    [class]="activeTab() === 'maker' && makerActiveView() === 'reports' ? 'border-blue-600 text-blue-700 font-semibold' : 'border-transparent text-slate-600 hover:text-slate-900'"
+                    class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-folder-open text-blue-600"></i>
+              <span>{{ currentLang() === 'vi' ? 'Quản Lý Báo Cáo và Đề Án' : 'My Reports and Proposals' }}</span>
+              <span class="px-1.5 py-0.2 text-[10px] bg-blue-100 text-blue-800 rounded font-bold">{{ allRuns().length }}</span>
+              @if (recalcRuns().length > 0) {
+                <span class="px-1.5 py-0.2 text-[10px] bg-rose-600 text-white rounded-full font-bold animate-pulse">
+                  {{ recalcRuns().length }} {{ currentLang() === 'vi' ? 'cần sửa' : 'to revise' }}
+                </span>
+              }
+            </button>
+          }
+          @if (canAccess('checker')) {
+            <button (click)="activeTab.set('checker')"
+                    [class]="activeTab() === 'checker' ? 'border-amber-600 text-amber-700 font-semibold' : 'border-transparent text-slate-600 hover:text-slate-900'"
+                    class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5">
+              {{ t('tab_checker') }}
+              @if (submittedRunsCount() > 0) {
+                <span class="px-1.5 py-0.2 text-[10px] bg-amber-500 text-white rounded-full font-bold animate-pulse">{{ submittedRunsCount() }}</span>
+              } @else if (allRuns().length > 0) {
+                <span class="px-1.5 py-0.2 text-[10px] bg-slate-100 text-slate-600 rounded font-semibold">{{ allRuns().length }}</span>
+              }
+            </button>
+          }
+          @if (canAccess('approver')) {
+            <button (click)="activeTab.set('approver')"
+                    [class]="activeTab() === 'approver' ? 'border-purple-600 text-purple-700 font-semibold' : 'border-transparent text-slate-600 hover:text-slate-900'"
+                    class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5">
+              {{ t('tab_approver') }}
+            </button>
+          }
+          <button (click)="activeTab.set('portfolio')"
+                  [class]="activeTab() === 'portfolio' ? 'border-rose-600 text-rose-700 font-semibold' : 'border-transparent text-slate-600 hover:text-slate-900'"
+                  class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-triangle-exclamation text-amber-500"></i>
+            <span>{{ currentLang() === 'vi' ? 'Cảnh Báo Sớm và Danh Mục' : 'Early Warning and Portfolio' }}</span>
+            @if (earlyWarningContracts().length > 0) {
+              <span class="px-1.5 py-0.2 text-[10px] bg-rose-100 text-rose-700 rounded-full font-bold">
+                {{ earlyWarningContracts().length }} cảnh báo
+              </span>
+            }
+          </button>
+          <button (click)="openAuditTab()"
+                  [class]="activeTab() === 'audit' ? 'border-blue-600 text-blue-700 font-semibold' : 'border-transparent text-slate-600 hover:text-slate-900'"
+                  class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
+            {{ t('tab_audit') }}
+          </button>
+        </nav>
+      }
+    </div>
+  </header>
+
+  <!-- Notification Toast -->
+  @if (notification()) {
+    <div class="fixed bottom-6 right-6 z-50 max-w-md p-3.5 rounded-lg shadow-lg border text-xs font-medium flex items-center space-x-2"
+         [class]="notification()!.type === 'success' ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : 'bg-rose-50 border-rose-300 text-rose-800'">
+      <span>{{ notification()!.message }}</span>
+    </div>
+  }
+
+  <!-- ============================================================== -->
+  <!-- 2. LOGIN SCREEN (IF LOGGED OUT) -->
+  <!-- ============================================================== -->
+  @if (!currentUser()) {
+    <div class="flex-1 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-50">
+      <div class="max-w-md w-full bg-white p-7 rounded-xl border border-slate-200 shadow-sm space-y-5">
+        
+        <!-- Header -->
+        <div class="text-center space-y-1">
+          <h2 class="text-lg font-bold text-slate-900 tracking-tight">{{ t('login_title') }}</h2>
+          <p class="text-xs text-slate-500">{{ t('login_subtitle') }}</p>
+        </div>
+
+        <!-- Standard Login Form -->
+        <form (ngSubmit)="performLogin()" class="space-y-3.5">
+          @if (loginError()) {
+            <div class="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
+              {{ loginError() }}
+            </div>
+          }
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">
+              {{ t('lbl_username') }}
+            </label>
+            <input type="text"
+                   [ngModel]="loginUsername()"
+                   (ngModelChange)="loginUsername.set($event)"
+                   name="username"
+                   [placeholder]="t('placeholder_username')"
+                   class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-900 shadow-sm transition"
+                   required />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">
+              {{ t('lbl_password') }}
+            </label>
+            <input type="password"
+                   [ngModel]="loginPassword()"
+                   (ngModelChange)="loginPassword.set($event)"
+                   name="password"
+                   [placeholder]="t('placeholder_password')"
+                   class="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-slate-900 shadow-sm transition"
+                   required />
+          </div>
+
+          <button type="submit"
+                  class="w-full py-2 px-4 bg-blue-700 hover:bg-blue-800 text-white font-semibold text-xs rounded-lg shadow-sm transition duration-150 flex items-center justify-center cursor-pointer">
+            {{ t('btn_login') }}
+          </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="relative my-2">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-slate-200"></div>
+          </div>
+          <div class="relative flex justify-center text-xs">
+            <span class="bg-white px-2.5 text-slate-400 font-medium">{{ t('quick_login_title') }}</span>
+          </div>
+        </div>
+
+        <!-- Quick Role Selector with Full Realistic Roles -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+          @for (acc of TEST_ACCOUNTS; track acc.id) {
+            <button type="button"
+                    (click)="loginWithAccount(acc)"
+                    class="p-3 text-left rounded-lg border transition duration-150 cursor-pointer shadow-xs hover:shadow-sm flex items-center justify-between gap-2"
+                    [class]="acc.role === 'MAKER' ? 'bg-blue-50/70 border-blue-200 hover:bg-blue-100/70' :
+                            (acc.role === 'CHECKER' ? 'bg-amber-50/70 border-amber-200 hover:bg-amber-100/70' :
+                            (acc.role === 'APPROVER' ? 'bg-purple-50/70 border-purple-200 hover:bg-purple-100/70' : 
+                            'bg-slate-50 border-slate-300 hover:bg-slate-100'))">
+              <div>
+                <div class="font-bold text-xs"
+                     [class]="acc.role === 'MAKER' ? 'text-blue-900' :
+                             (acc.role === 'CHECKER' ? 'text-amber-900' :
+                             (acc.role === 'APPROVER' ? 'text-purple-900' : 'text-slate-900'))">
+                  {{ getRoleLabel(acc.role) }}
+                </div>
+                <div class="text-[11px] text-slate-600 mt-0.5">
+                  <span class="font-medium text-slate-800">{{ acc.full_name }}</span> • <span class="text-slate-500">{{ acc.department }}</span>
+                </div>
+              </div>
+              <span class="text-xs font-semibold shrink-0"
+                    [class]="acc.role === 'MAKER' ? 'text-blue-700' :
+                            (acc.role === 'CHECKER' ? 'text-amber-700' :
+                            (acc.role === 'APPROVER' ? 'text-purple-700' : 'text-slate-600'))">
+                Vào ngay →
+              </span>
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ============================================================== -->
+  <!-- 3. MAIN WORKSPACE (IF LOGGED IN) -->
+  <!-- ============================================================== -->
+  @if (currentUser()) {
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+      <!-- ========================================================== -->
+      <!-- TAB 1: MAKER STUDIO (SCENARIO SIMULATION) -->
+      <!-- ========================================================== -->
+      @if (activeTab() === 'maker' && canAccess('maker')) {
+        <div class="space-y-5">
+
+          <!-- RECALCULATION REQUIRED ALERT BANNER (COMPACT) -->
+          @if (recalcRuns().length > 0) {
+            <div class="bg-rose-50 border border-rose-300 rounded-xl p-2.5 shadow-xs space-y-1.5">
+              @for (run of recalcRuns(); track run.id) {
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-white px-3 py-2 rounded-lg border border-rose-200 text-xs">
+                  <div class="flex items-center gap-2 flex-wrap min-w-0">
+                    <span class="inline-flex items-center gap-1 text-[11px] font-bold text-rose-700 bg-rose-100 px-2 py-0.5 rounded-full shrink-0">
+                      <i class="fa-solid fa-triangle-exclamation"></i>
+                      <span>{{ currentLang() === 'vi' ? 'Cần tính lại' : 'Recalculate' }}</span>
+                    </span>
+                    <span class="font-bold text-rose-800 font-mono shrink-0">{{ run.run_code }}</span>
+                    <span class="font-medium text-slate-800 truncate">{{ run.run_name }}</span>
+                    @if (run.rejection_reason) {
+                      <span class="text-rose-700 text-[11px] italic truncate max-w-lg">
+                        — "{{ run.rejection_reason }}"
+                      </span>
+                    }
+                  </div>
+                  <button (click)="editRunProposal(run)"
+                          class="px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-md shadow-xs transition-colors inline-flex items-center gap-1.5 cursor-pointer shrink-0">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>{{ currentLang() === 'vi' ? 'Tính Lại Ngay' : 'Recalculate Now' }}</span>
+                  </button>
+                </div>
+              }
+            </div>
+          }
+
+          <!-- In-place Overwrite Notification Banner (Compact) -->
+          @if (editingRun(); as editing) {
+            <div class="px-3 py-2 bg-amber-50 border border-amber-300 rounded-xl flex items-center justify-between gap-2.5 text-xs text-amber-900 shadow-xs">
+              <div class="flex items-center gap-2 flex-wrap">
+                <i class="fa-solid fa-arrows-rotate text-amber-700"></i>
+                <span class="font-semibold">{{ currentLang() === 'vi' ? 'Đang chỉnh sửa đề án:' : 'Editing proposal:' }}</span>
+                <span class="font-mono text-xs font-bold text-amber-800 bg-white border border-amber-300 px-1.5 py-0.5 rounded">{{ editing.run_code }}</span>
+                <span class="text-amber-800 font-medium">({{ editing.run_name }})</span>
+              </div>
+              <button type="button" (click)="cancelEditingRun()" class="px-2 py-1 bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-md font-semibold text-xs transition-colors cursor-pointer shrink-0 inline-flex items-center gap-1">
+                <i class="fa-solid fa-xmark text-slate-400"></i>
+                <span>{{ currentLang() === 'vi' ? 'Hủy / Tạo mới' : 'Cancel' }}</span>
+              </button>
+            </div>
+          }
+
+
+          @if (makerActiveView() === 'simulation') {
+          <!-- Minimalist Toolbar Header -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-1 gap-3">
+            <div>
+              <h2 class="text-base font-bold text-slate-900 tracking-tight">{{ t('tab_maker') }}</h2>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button (click)="openCalcDetail('all')"
+                      class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold rounded-md border border-blue-200 transition-colors flex items-center gap-1.5 shadow-2xs">
+                <i class="fa-solid fa-calculator text-[11px]"></i>
+                <span>{{ t('btn_methodology_detail') }}</span>
+              </button>
+              <button (click)="runSimulation()" [disabled]="isLoading()"
+                      class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-md border border-slate-300 transition-colors">
+                {{ isLoading() ? '...' : t('btn_recalculate') }}
+              </button>
+              <button (click)="openSaveModal()"
+                      class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-md shadow-sm transition-colors">
+                {{ t('btn_submit_checker') }}
+              </button>
+            </div>
+          </div>
+
+          <!-- MACRO SHOCK SLIDERS AND PRESETS -->
+          <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+              <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wide">{{ t('scenario_settings') }}</h3>
+              <!-- Presets -->
+              <div class="inline-flex rounded-md border border-slate-200 p-0.5 bg-slate-50 space-x-1">
+                <button (click)="applyPreset('BASELINE')"
+                        [class]="selectedPreset() === 'BASELINE' ? 'bg-white text-slate-900 font-semibold shadow-xs border border-slate-200' : 'text-slate-600 hover:text-slate-900'"
+                        class="px-2.5 py-1 text-xs rounded transition-all">
+                  {{ t('preset_baseline') }}
+                </button>
+                <button (click)="applyPreset('ADVERSE')"
+                        [class]="selectedPreset() === 'ADVERSE' ? 'bg-white text-slate-900 font-semibold shadow-xs border border-slate-200' : 'text-slate-600 hover:text-slate-900'"
+                        class="px-2.5 py-1 text-xs rounded transition-all">
+                  {{ t('preset_adverse') }}
+                </button>
+                <button (click)="applyPreset('SEVERE')"
+                        [class]="selectedPreset() === 'SEVERE' ? 'bg-white text-slate-900 font-semibold shadow-xs border border-slate-200' : 'text-slate-600 hover:text-slate-900'"
+                        class="px-2.5 py-1 text-xs rounded transition-all">
+                  {{ t('preset_severe') }}
+                </button>
+              </div>
+            </div>
+
+            <!-- 4 Macroeconomic Transmission Sliders (Bám sát 4 kênh vĩ mô trong Báo cáo) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <!-- Channel 1: GDP -->
+              <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-2">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="font-semibold text-slate-700">{{ t('shock_gdp') }}</span>
+                  <span class="font-bold text-blue-700 px-2 py-0.5 bg-white border border-slate-200 rounded text-xs">
+                    {{ gdpShock() > 0 ? '+' : '' }}{{ gdpShock() }}%
+                  </span>
+                </div>
+                <input type="range" min="-5.0" max="2.0" step="0.25"
+                       [ngModel]="gdpShock()" (ngModelChange)="gdpShock.set($event); selectedPreset.set('CUSTOM'); runSimulation()"
+                       class="w-full accent-blue-600 cursor-pointer">
+                <div class="flex justify-between text-[11px] text-slate-500">
+                  <span>-5.0%</span>
+                  <span>0.0%</span>
+                  <span>+2.0%</span>
+                </div>
+              </div>
+
+              <!-- Channel 2: Interest Rate -->
+              <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-2">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="font-semibold text-slate-700">{{ t('shock_ir') }}</span>
+                  <span class="font-bold text-amber-700 px-2 py-0.5 bg-white border border-slate-200 rounded text-xs">
+                    +{{ irShock() }} bps
+                  </span>
+                </div>
+                <input type="range" min="0" max="600" step="25"
+                       [ngModel]="irShock()" (ngModelChange)="irShock.set($event); selectedPreset.set('CUSTOM'); runSimulation()"
+                       class="w-full accent-amber-600 cursor-pointer">
+                <div class="flex justify-between text-[11px] text-slate-500">
+                  <span>0 bps</span>
+                  <span>+300 bps</span>
+                  <span>+600 bps</span>
+                </div>
+              </div>
+
+              <!-- Channel 3: Unemployment Rate -->
+              <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-2">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="font-semibold text-slate-700">{{ t('shock_unemp') }}</span>
+                  <span class="font-bold text-emerald-700 px-2 py-0.5 bg-white border border-slate-200 rounded text-xs">
+                    +{{ unempShock() }}%
+                  </span>
+                </div>
+                <input type="range" min="0.0" max="8.0" step="0.5"
+                       [ngModel]="unempShock()" (ngModelChange)="unempShock.set($event); selectedPreset.set('CUSTOM'); runSimulation()"
+                       class="w-full accent-emerald-600 cursor-pointer">
+                <div class="flex justify-between text-[11px] text-slate-500">
+                  <span>0.0%</span>
+                  <span>+4.0%</span>
+                  <span>+8.0%</span>
+                </div>
+              </div>
+
+              <!-- Channel 4: Real Estate Collateral -->
+              <div class="bg-slate-50 p-3.5 rounded-lg border border-slate-200 space-y-2">
+                <div class="flex items-center justify-between text-xs">
+                  <span class="font-semibold text-slate-700">{{ t('shock_re') }}</span>
+                  <span class="font-bold text-rose-700 px-2 py-0.5 bg-white border border-slate-200 rounded text-xs">
+                    {{ reShock() }}%
+                  </span>
+                </div>
+                <input type="range" min="-50" max="0" step="5"
+                       [ngModel]="reShock()" (ngModelChange)="reShock.set($event); selectedPreset.set('CUSTOM'); runSimulation()"
+                       class="w-full accent-rose-600 cursor-pointer">
+                <div class="flex justify-between text-[11px] text-slate-500">
+                  <span>-50%</span>
+                  <span>-25%</span>
+                  <span>0%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TOP FINANCIAL KPI CARDS WITH LIVE DETAILS -->
+          @if (simulationResult()) {
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              
+              <!-- EAD Card -->
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="text-xs text-slate-800 font-semibold">{{ t('kpi_ead') }}</div>
+                  <button (click)="openCalcDetail('ead')" class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
+                    {{ currentLang() === 'vi' ? 'Chi tiết' : 'Details' }}
+                  </button>
+                </div>
+                <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">
+                  {{ formatVND(simulationResult()!.summary.total_ead) }}
+                </div>
+              </div>
+
+              <!-- Stressed ECL Card -->
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="text-xs text-slate-800 font-semibold">{{ t('kpi_ecl_stress') }}</div>
+                  <button (click)="openCalcDetail('ecl')" class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
+                    {{ currentLang() === 'vi' ? 'Chi tiết' : 'Details' }}
+                  </button>
+                </div>
+                <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight text-amber-700 whitespace-nowrap overflow-hidden text-ellipsis">
+                  {{ formatVND(simulationResult()!.summary.total_stressed_ecl) }}
+                </div>
+              </div>
+
+              <!-- Delta Provision Card -->
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="text-xs text-rose-800 font-semibold">{{ t('kpi_delta_ps') }}</div>
+                  <button (click)="openCalcDetail('deltaps')" class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
+                    {{ currentLang() === 'vi' ? 'Chi tiết' : 'Details' }}
+                  </button>
+                </div>
+                <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight text-rose-700 whitespace-nowrap overflow-hidden text-ellipsis">
+                  +{{ formatVND(simulationResult()!.summary.total_delta_provision) }}
+                </div>
+              </div>
+
+              <!-- CAR Ratio Card -->
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="text-xs text-slate-800 font-semibold">{{ t('kpi_car') }}</div>
+                  <button (click)="openCalcDetail('car')" class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
+                    {{ currentLang() === 'vi' ? 'Chi tiết' : 'Details' }}
+                  </button>
+                </div>
+                <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight whitespace-nowrap overflow-hidden text-ellipsis"
+                     [class]="simulationResult()!.summary.is_capital_adequate ? 'text-emerald-700' : 'text-rose-700'">
+                  {{ formatPercent(simulationResult()!.summary.stressed_car) }}
+                </div>
+              </div>
+
+              <!-- NPL Ratio Card -->
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="text-xs text-slate-800 font-semibold">{{ t('kpi_npl') }}</div>
+                  <button (click)="openCalcDetail('npl')" class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
+                    {{ currentLang() === 'vi' ? 'Chi tiết' : 'Details' }}
+                  </button>
+                </div>
+                <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">
+                  {{ formatPercent(simulationResult()!.summary.npl_ratio_post) }}
+                </div>
+              </div>
+
+            </div>
+
+            <!-- SECTOR BREAKDOWN AND STAGE MIGRATION (STREAMLINED AND CONCISE) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+              <!-- Sector Breakdown -->
+              <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                <div class="border-b border-slate-100 pb-2 flex justify-between items-center">
+                  <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wide">{{ t('sec_breakdown_title') }}</h4>
+                  <span class="text-[11px] text-slate-400 font-medium">{{ simulationResult()!.sector_breakdown.length }} {{ currentLang() === 'vi' ? 'ngành' : 'sectors' }}</span>
+                </div>
+                <div class="space-y-2.5">
+                  @for (sec of simulationResult()!.sector_breakdown; track sec.sector_code) {
+                    <div class="text-xs">
+                      <div class="flex justify-between font-medium text-slate-700 mb-1">
+                        <span>{{ getSectorName(sec.sector_code) }} ({{ sec.contract_count }})</span>
+                        <span class="font-bold text-slate-900">
+                          {{ formatVND(sec.stressed_ecl) }}
+                          <span class="text-rose-600 font-normal text-[11px]">(+{{ formatVND(sec.delta_provision) }})</span>
+                        </span>
+                      </div>
+                      <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden flex">
+                        <div class="h-full bg-slate-400"
+                             [style.width.%]="(sec.baseline_ecl / (sec.stressed_ecl || 1)) * 100"></div>
+                        <div class="h-full bg-rose-500"
+                             [style.width.%]="(sec.delta_provision / (sec.stressed_ecl || 1)) * 100"></div>
+                      </div>
+                    </div>
+                  }
+                </div>
+                <div class="pt-2 border-t border-slate-100 flex items-center gap-4 text-[11px] text-slate-500">
+                  <span class="flex items-center gap-1.5"><span class="w-2.5 h-2 bg-slate-400 rounded-xs"></span> {{ t('kpi_ecl_base') }}</span>
+                  <span class="flex items-center gap-1.5"><span class="w-2.5 h-2 bg-rose-500 rounded-xs"></span> {{ t('kpi_delta_ps') }}</span>
+                </div>
+              </div>
+
+              <!-- Stage Migration Matrix -->
+              <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3">
+                <div class="border-b border-slate-100 pb-2 flex justify-between items-center">
+                  <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wide">{{ t('stage_migration_title') }}</h4>
+                  <span class="text-[11px] text-slate-400 font-medium">100 HĐ</span>
+                </div>
+                <div class="grid grid-cols-3 gap-3 pt-1">
+                  <div class="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200 text-center flex flex-col justify-start">
+                    <div class="text-xs font-bold text-slate-700 h-9 flex items-center justify-center text-center leading-snug px-1">
+                      {{ t('stage_1') }}
+                    </div>
+                    <div class="mt-1.5 text-2xl font-black text-emerald-700">
+                      {{ simulationResult()!.stage_migration.post_stress[1] }}
+                    </div>
+                  </div>
+
+                  <div class="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200 text-center flex flex-col justify-start">
+                    <div class="text-xs font-bold text-slate-700 h-9 flex items-center justify-center text-center leading-snug px-1">
+                      {{ t('stage_2') }}
+                    </div>
+                    <div class="mt-1.5 text-2xl font-black text-amber-700">
+                      {{ simulationResult()!.stage_migration.post_stress[2] }}
+                    </div>
+                  </div>
+
+                  <div class="p-3.5 bg-slate-50/80 rounded-xl border border-slate-200 text-center flex flex-col justify-start">
+                    <div class="text-xs font-bold text-slate-700 h-9 flex items-center justify-center text-center leading-snug px-1">
+                      {{ t('stage_3') }}
+                    </div>
+                    <div class="mt-1.5 text-2xl font-black text-rose-700">
+                      {{ simulationResult()!.stage_migration.post_stress[3] }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          } @else {
+            <div class="bg-white p-8 rounded-xl border border-slate-200 text-center space-y-3">
+              <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-50 text-blue-600">
+                <i class="fa-solid fa-spinner fa-spin text-xl"></i>
+              </div>
+              <div class="text-sm font-bold text-slate-800">
+                Đang tải và tính toán mô phỏng danh mục tín dụng...
+              </div>
+              <p class="text-xs text-slate-500 max-w-md mx-auto">
+                Hệ thống đang chạy mô hình truyền dẫn kinh tế lượng IFRS 9 cho danh mục tín dụng.
+              </p>
+              <button type="button" (click)="runSimulation()"
+                      class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold cursor-pointer inline-flex items-center gap-1.5 transition-colors">
+                <i class="fa-solid fa-rotate-right"></i>
+                <span>Tải lại kết quả tính toán</span>
+              </button>
+            </div>
+          }
+
+          } <!-- End of makerActiveView() === 'simulation' -->
+
+          <!-- PROPOSALS MANAGEMENT VIEW CARDS (WHEN IN REPORTS VIEW) -->
+          @if (makerActiveView() === 'reports') {
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs space-y-1">
+                <div class="text-[11px] font-semibold text-slate-500 uppercase tracking-wide">
+                  {{ currentLang() === 'vi' ? 'Tổng Số Đề Án' : 'Total Proposals' }}
+                </div>
+                <div class="text-2xl font-black text-slate-900">{{ allRuns().length }}</div>
+                <div class="text-[10px] text-slate-400">
+                  {{ currentLang() === 'vi' ? 'Các kịch bản đã tạo' : 'Scenarios created' }}
+                </div>
+              </div>
+
+              <div class="bg-white p-4 rounded-xl border border-rose-200 shadow-2xs space-y-1 bg-rose-50/40">
+                <div class="text-[11px] font-semibold text-rose-700 uppercase tracking-wide flex items-center justify-between">
+                  <span>{{ currentLang() === 'vi' ? 'Cần Tính Lại' : 'Recalculation Req.' }}</span>
+                  @if (recalcRuns().length > 0) {
+                    <span class="w-2 h-2 rounded-full bg-rose-600 animate-ping"></span>
+                  }
+                </div>
+                <div class="text-2xl font-black text-rose-700">{{ recalcRuns().length }}</div>
+                <div class="text-[10px] text-rose-600 font-medium">
+                  {{ recalcRuns().length > 0 ? (currentLang() === 'vi' ? 'Trưởng phòng yêu cầu sửa' : 'Checker requested') : (currentLang() === 'vi' ? 'Không có tồn đọng' : 'None') }}
+                </div>
+              </div>
+
+              <div class="bg-white p-4 rounded-xl border border-amber-200 shadow-2xs space-y-1 bg-amber-50/40">
+                <div class="text-[11px] font-semibold text-amber-700 uppercase tracking-wide">
+                  {{ currentLang() === 'vi' ? 'Chờ Thẩm Định' : 'Pending Review' }}
+                </div>
+                <div class="text-2xl font-black text-amber-700">{{ submittedRunsCount() }}</div>
+                <div class="text-[10px] text-amber-600 font-medium">
+                  {{ currentLang() === 'vi' ? 'Hồ sơ đã gửi Checker' : 'Forwarded to Checker' }}
+                </div>
+              </div>
+
+              <div class="bg-white p-4 rounded-xl border border-emerald-200 shadow-2xs space-y-1 bg-emerald-50/40">
+                <div class="text-[11px] font-semibold text-emerald-700 uppercase tracking-wide">
+                  {{ currentLang() === 'vi' ? 'Đã Phê Duyệt' : 'Approved' }}
+                </div>
+                <div class="text-2xl font-black text-emerald-700">{{ approvedRunsCount() }}</div>
+                <div class="text-[10px] text-emerald-600 font-medium">
+                  {{ currentLang() === 'vi' ? 'Đã ký số ban hành' : 'CRO Authorized' }}
+                </div>
+              </div>
+            </div>
+          }
+
+          <!-- MAKER'S PROPOSALS AND RECALCULATION WORKSPACE -->
+          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden mt-2">
+            <div class="p-4 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wide flex items-center gap-2">
+                  <i class="fa-solid fa-folder-tree text-blue-600"></i>
+                  <span>{{ currentLang() === 'vi' ? 'Danh Sách Báo Cáo và Đề Án Kiểm Định' : 'Stress Scenarios and Proposal Workspace' }}</span>
+                </h3>
+                <button (click)="makerActiveView.set('simulation')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow-xs transition-colors inline-flex items-center gap-1.5 cursor-pointer shrink-0">
+                  <i class="fa-solid fa-plus"></i>
+                  <span>{{ currentLang() === 'vi' ? 'Tạo Kịch Bản Mới' : 'Create New Scenario' }}</span>
+                </button>
+              </div>
+
+              <!-- Search and Filters -->
+              <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                <div class="relative w-full sm:w-56">
+                  <input type="text" [ngModel]="makerSearchQuery()" (ngModelChange)="makerSearchQuery.set($event)"
+                         placeholder="{{ currentLang() === 'vi' ? 'Tìm mã đề án, tên đề án...' : 'Search run code, title...' }}"
+                         class="w-full pl-8 pr-3 py-1.5 text-xs border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 bg-slate-50 text-slate-800">
+                  <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2.5 text-slate-400 text-xs"></i>
+                </div>
+
+                <div class="flex flex-wrap items-center gap-1">
+                  <button type="button" (click)="makerRunFilter.set('ALL')"
+                          class="px-2 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
+                          [class]="makerRunFilter() === 'ALL' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'">
+                    {{ currentLang() === 'vi' ? 'Tất cả' : 'All' }} ({{ allRuns().length }})
+                  </button>
+                  <button type="button" (click)="makerRunFilter.set('RECALCULATE')"
+                          class="px-2 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer flex items-center gap-1"
+                          [class]="makerRunFilter() === 'RECALCULATE' ? 'bg-rose-700 text-white border-rose-700' : 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'">
+                    <i class="fa-solid fa-triangle-exclamation text-[10px]"></i>
+                    <span>{{ currentLang() === 'vi' ? 'Cần tính lại' : 'Recalculate' }}</span>
+                    <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-rose-600 text-white font-bold">{{ recalcRuns().length }}</span>
+                  </button>
+                  <button type="button" (click)="makerRunFilter.set('SUBMITTED')"
+                          class="px-2 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
+                          [class]="makerRunFilter() === 'SUBMITTED' ? 'bg-amber-600 text-white border-amber-600' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'">
+                    {{ currentLang() === 'vi' ? 'Chờ thẩm định' : 'Pending Review' }}
+                  </button>
+                  <button type="button" (click)="makerRunFilter.set('PENDING')"
+                          class="px-2 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
+                          [class]="makerRunFilter() === 'PENDING' ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'">
+                    {{ currentLang() === 'vi' ? 'Chờ phê duyệt' : 'Pending Approval' }}
+                  </button>
+                  <button type="button" (click)="makerRunFilter.set('APPROVED')"
+                          class="px-2 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
+                          [class]="makerRunFilter() === 'APPROVED' ? 'bg-emerald-700 text-white border-emerald-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'">
+                    {{ currentLang() === 'vi' ? 'Đã phê duyệt' : 'Approved' }}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Table of Runs -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-600 uppercase font-semibold text-[11px] border-b border-slate-200 whitespace-nowrap">
+                  <tr>
+                    <th class="p-3 whitespace-nowrap">{{ currentLang() === 'vi' ? 'Mã Đề Án' : 'Run Code' }}</th>
+                    <th class="p-3 min-w-[200px]">{{ currentLang() === 'vi' ? 'Tên Đề Án' : 'Scenario Title' }}</th>
+                    <th class="p-3 whitespace-nowrap">{{ currentLang() === 'vi' ? 'Tham Số Cú Sốc' : 'Macro Shocks' }}</th>
+                    <th class="p-3 whitespace-nowrap">{{ currentLang() === 'vi' ? 'Trích Lập Bổ Sung' : 'Additional Provision' }}</th>
+                    <th class="p-3 whitespace-nowrap">{{ currentLang() === 'vi' ? 'Tỷ Lệ CAR' : 'CAR' }}</th>
+                    <th class="p-3 whitespace-nowrap">{{ currentLang() === 'vi' ? 'Trạng Thái' : 'Status' }}</th>
+                    <th class="p-3 text-right whitespace-nowrap">{{ currentLang() === 'vi' ? 'Thao Tác Chỉnh Sửa' : 'Action' }}</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  @for (run of filteredMakerRuns(); track run.id) {
+                    <tr class="hover:bg-slate-50 transition-colors"
+                        [class.bg-rose-50/70]="run.status === 'RECALCULATION_REQUESTED'">
+                      <td class="p-3 font-bold text-blue-700 whitespace-nowrap font-mono">
+                        {{ run.run_code }}
+                        <div class="text-[10px] text-slate-400 font-normal font-sans">{{ run.created_at | date:'dd/MM/yyyy HH:mm' }}</div>
+                      </td>
+                      <td class="p-3 font-medium text-slate-900 min-w-[200px]">
+                        <div class="font-semibold">{{ run.run_name }}</div>
+                        @if (run.rejection_reason && run.status === 'RECALCULATION_REQUESTED') {
+                          <div class="mt-1 text-[11px] p-2 rounded border leading-relaxed bg-rose-100/70 border-rose-300 text-rose-900 font-medium">
+                            <span class="font-bold">{{ currentLang() === 'vi' ? 'Ý kiến phản hồi:' : 'Feedback:' }}</span> "{{ run.rejection_reason }}"
+                          </div>
+                        }
+                      </td>
+                      <td class="p-3 text-[11px] text-slate-600 whitespace-nowrap">
+                        <div class="space-y-0.5">
+                          <span>GDP: <strong class="text-blue-700">{{ formatShock(run.custom_gdp_shock, 100, 1) }}%</strong></span> |
+                          <span>{{ currentLang() === 'vi' ? 'Lãi suất:' : 'IR:' }} <strong class="text-amber-700">+{{ formatShock(run.custom_ir_shock, 10000, 0) }} bps</strong></span>
+                        </div>
+                        <div class="space-y-0.5 mt-0.5">
+                          <span>{{ currentLang() === 'vi' ? 'Thất nghiệp:' : 'Unemp:' }} <strong class="text-emerald-700">+{{ formatShock(run.custom_unemp_shock, 100, 1) }}%</strong></span> |
+                          <span>{{ currentLang() === 'vi' ? 'BĐS:' : 'RE:' }} <strong class="text-rose-700">{{ formatShock(run.custom_re_shock, 100, 1) }}%</strong></span>
+                        </div>
+                      </td>
+                      <td class="p-3 font-bold text-rose-700 whitespace-nowrap">+{{ formatVND(run.total_delta_provision) }}</td>
+                      <td class="p-3 whitespace-nowrap">
+                        <span class="font-bold" [class]="(run.car_impact?.stressed_car || 0) >= 0.08 ? 'text-emerald-700' : 'text-rose-700'">
+                          {{ formatPercent(run.car_impact?.stressed_car) }}
+                        </span>
+                      </td>
+                      <td class="p-3 whitespace-nowrap">
+                        <span class="inline-block whitespace-nowrap px-2.5 py-1 rounded text-[11px] font-semibold"
+                              [class]="run.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                                      (run.status === 'PENDING_APPROVAL' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
+                                      (run.status === 'SUBMITTED' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                                      (run.status === 'RECALCULATION_REQUESTED' ? 'bg-rose-100 text-rose-800 border border-rose-300 font-bold' : 'bg-slate-100 text-slate-700 border border-slate-200')))">
+                          {{ getStatusLabel(run.status) }}
+                        </span>
+                      </td>
+                      <td class="p-3 text-right whitespace-nowrap space-x-1.5">
+                        @if (run.status === 'RECALCULATION_REQUESTED') {
+                          <button type="button" (click)="editRunProposal(run)"
+                                  class="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white font-bold text-[11px] rounded shadow-xs transition-colors cursor-pointer inline-flex items-center gap-1">
+                            <i class="fa-solid fa-bolt"></i>
+                            <span>{{ currentLang() === 'vi' ? 'Tính Lại Ngay' : 'Recalculate' }}</span>
+                          </button>
+                          <button type="button" (click)="openRenameModal(run)"
+                                  class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] rounded border border-slate-300 transition-colors cursor-pointer inline-flex items-center gap-1">
+                            <i class="fa-solid fa-tag text-slate-400"></i>
+                            <span>{{ currentLang() === 'vi' ? 'Đổi Tên' : 'Rename' }}</span>
+                          </button>
+                        } @else if (run.status === 'DRAFT') {
+                          <button type="button" (click)="editRunProposal(run)"
+                                  class="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-[11px] rounded border border-blue-200 transition-colors cursor-pointer inline-flex items-center gap-1">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                            <span>{{ currentLang() === 'vi' ? 'Chỉnh Sửa' : 'Edit' }}</span>
+                          </button>
+                          <button type="button" (click)="openRenameModal(run)"
+                                  class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] rounded border border-slate-300 transition-colors cursor-pointer inline-flex items-center gap-1">
+                            <i class="fa-solid fa-tag text-slate-400"></i>
+                            <span>{{ currentLang() === 'vi' ? 'Đổi Tên' : 'Rename' }}</span>
+                          </button>
+                          <button type="button" (click)="deleteRun(run)"
+                                  class="px-2 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold text-[11px] rounded border border-rose-200 transition-colors cursor-pointer inline-flex items-center gap-1">
+                            <i class="fa-solid fa-trash-can"></i>
+                            <span>{{ currentLang() === 'vi' ? 'Xóa' : 'Delete' }}</span>
+                          </button>
+                        } @else if (run.status === 'SUBMITTED') {
+                          <button type="button" (click)="executeWorkflow(run.id, 'CANCEL_SUBMIT', 'Chuyên viên rút hồ sơ về bản nháp để hiệu chỉnh lại.')"
+                                  class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 font-semibold text-[11px] rounded border border-amber-300 transition-colors cursor-pointer inline-flex items-center gap-1">
+                            <i class="fa-solid fa-undo"></i>
+                            <span>{{ currentLang() === 'vi' ? 'Rút Về Nháp Để Sửa' : 'Withdraw' }}</span>
+                          </button>
+                        }
+                        <button type="button" (click)="openRunDetailModal(run)"
+                                class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] rounded border border-slate-300 transition-colors cursor-pointer inline-flex items-center gap-1">
+                          <i class="fa-solid fa-eye text-slate-400"></i>
+                          <span>{{ currentLang() === 'vi' ? 'Chi Tiết' : 'Detail' }}</span>
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      }
+
+      <!-- ========================================================== -->
+      <!-- TAB 2: CHECKER REVIEW (RISK VALIDATION) -->
+      <!-- ========================================================== -->
+      @if (activeTab() === 'checker' && canAccess('checker')) {
+        <div class="space-y-6">
+
+          <!-- Section Header -->
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-base sm:text-lg font-bold text-slate-900">{{ t('tab_checker') }}</h2>
+            </div>
+            <button (click)="fetchRuns()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-md border border-slate-300">
+              {{ currentLang() === 'vi' ? 'Làm mới' : 'Refresh' }}
+            </button>
+          </div>
+
+          <!-- Review Queue Table -->
+          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="p-4 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wide">
+                  {{ currentLang() === 'vi' ? 'Hồ Sơ Thẩm Định Rủi Ro' : 'Stress Test Review Queue' }}
+                </h3>
+              </div>
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <button (click)="checkerRunFilter.set('ALL')"
+                        class="px-2.5 py-1 rounded-md text-[11px] font-semibold transition-colors cursor-pointer"
+                        [class]="checkerRunFilter() === 'ALL' ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'">
+                  {{ currentLang() === 'vi' ? 'Tất cả' : 'All' }} ({{ allRuns().length }})
+                </button>
+                <button (click)="checkerRunFilter.set('SUBMITTED')"
+                        class="px-2.5 py-1 rounded-md text-[11px] font-semibold transition-colors cursor-pointer"
+                        [class]="checkerRunFilter() === 'SUBMITTED' ? 'bg-amber-600 text-white' : 'bg-amber-50 text-amber-800 hover:bg-amber-100 border border-amber-200'">
+                  {{ currentLang() === 'vi' ? 'Chờ thẩm định' : 'Pending Review' }} ({{ submittedRunsCount() }})
+                </button>
+                <button (click)="checkerRunFilter.set('PENDING')"
+                        class="px-2.5 py-1 rounded-md text-[11px] font-semibold transition-colors cursor-pointer"
+                        [class]="checkerRunFilter() === 'PENDING' ? 'bg-purple-600 text-white' : 'bg-purple-50 text-purple-800 hover:bg-purple-100 border border-purple-200'">
+                  {{ currentLang() === 'vi' ? 'Chờ phê duyệt' : 'Pending Approval' }} ({{ approverRuns().length }})
+                </button>
+                <button (click)="checkerRunFilter.set('RECALCULATE')"
+                        class="px-2.5 py-1 rounded-md text-[11px] font-semibold transition-colors cursor-pointer"
+                        [class]="checkerRunFilter() === 'RECALCULATE' ? 'bg-rose-600 text-white' : 'bg-rose-50 text-rose-800 hover:bg-rose-100 border border-rose-200'">
+                  {{ currentLang() === 'vi' ? 'Yêu cầu tính lại' : 'Recalculation' }} ({{ recalcRuns().length }})
+                </button>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-600 uppercase font-semibold text-[11px] border-b border-slate-200 whitespace-nowrap">
+                  <tr>
+                    <th class="p-3 whitespace-nowrap">{{ t('col_run_code') }}</th>
+                    <th class="p-3 min-w-[220px]">{{ t('col_run_name') }}</th>
+                    <th class="p-3 whitespace-nowrap">{{ t('col_maker') }}</th>
+                    <th class="p-3 whitespace-nowrap">{{ t('col_scenario') }}</th>
+                    <th class="p-3 whitespace-nowrap">{{ t('col_delta_ps') }}</th>
+                    <th class="p-3 whitespace-nowrap">{{ t('col_status') }}</th>
+                    <th class="p-3 text-right whitespace-nowrap">{{ t('col_actions') }}</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  @for (run of filteredCheckerRuns(); track run.id) {
+                    <tr class="hover:bg-slate-50 cursor-pointer transition-colors"
+                        [class.bg-blue-50]="selectedRunToReview()?.id === run.id"
+                        (click)="selectedRunToReview.set(run)">
+                      <td class="p-3 font-bold text-blue-700 whitespace-nowrap font-mono">{{ run.run_code }}</td>
+                      <td class="p-3 font-medium text-slate-900 min-w-[200px]">{{ run.run_name }}</td>
+                      <td class="p-3 text-slate-600 whitespace-nowrap">{{ run.maker_name }}</td>
+                      <td class="p-3 text-slate-600 whitespace-nowrap">{{ run.scenario_name }}</td>
+                      <td class="p-3 font-bold text-rose-700 whitespace-nowrap">+{{ formatVND(run.total_delta_provision) }}</td>
+                      <td class="p-3 whitespace-nowrap">
+                        <span class="inline-block whitespace-nowrap px-2.5 py-1 rounded text-[11px] font-semibold"
+                              [class]="run.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                                      (run.status === 'PENDING_APPROVAL' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
+                                      (run.status === 'SUBMITTED' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                                      (run.status === 'RECALCULATION_REQUESTED' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-slate-100 text-slate-700 border border-slate-200')))">
+                          {{ getStatusLabel(run.status) }}
+                        </span>
+                      </td>
+                      <td class="p-3 text-right whitespace-nowrap">
+                        <button (click)="selectedRunToReview.set(run)" class="px-2.5 py-1 text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-700 rounded border border-slate-200 font-semibold cursor-pointer">
+                          {{ currentLang() === 'vi' ? 'Xem xét' : 'Review' }}
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Selected Run Detail Card -->
+          @if (selectedRunToReview()) {
+            <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
+              
+              <!-- Review Header with Actions -->
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-3">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">{{ selectedRunToReview()!.run_code }}</span>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-semibold"
+                          [class]="selectedRunToReview()!.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                                  (selectedRunToReview()!.status === 'PENDING_APPROVAL' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
+                                  (selectedRunToReview()!.status === 'SUBMITTED' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                                  (selectedRunToReview()!.status === 'RECALCULATION_REQUESTED' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-slate-100 text-slate-700 border border-slate-200')))">
+                      {{ getStatusLabel(selectedRunToReview()!.status) }}
+                    </span>
+                  </div>
+                  <h3 class="text-sm font-bold text-slate-900 mt-1">{{ selectedRunToReview()!.run_name }}</h3>
+                  <div class="text-[11px] text-slate-500 mt-0.5">
+                    {{ currentLang() === 'vi' ? 'Người lập:' : 'Created by:' }} <strong class="text-slate-700">{{ selectedRunToReview()!.maker_name }}</strong> | 
+                    {{ currentLang() === 'vi' ? 'Kịch bản:' : 'Scenario:' }} <strong class="text-slate-700">{{ selectedRunToReview()!.scenario_name }}</strong>
+                  </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                  @if (selectedRunToReview()!.status === 'APPROVED') {
+                    <span class="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold rounded-md flex items-center gap-1.5">
+                      <i class="fa-solid fa-circle-check"></i>
+                      <span>{{ currentLang() === 'vi' ? 'Đã được Giám đốc phê duyệt chính thức' : 'Officially Approved by Director' }}</span>
+                    </span>
+                  } @else if (selectedRunToReview()!.status === 'PENDING_APPROVAL') {
+                    <button (click)="submitCheckerFeedback('CANCEL_FORWARD')"
+                            class="px-3.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 cursor-pointer">
+                      <i class="fa-solid fa-undo"></i>
+                      <span>{{ currentLang() === 'vi' ? 'Hủy chuyển duyệt (Rút lại hồ sơ)' : 'Cancel Forward' }}</span>
+                    </button>
+                    <span class="px-3 py-1.5 bg-purple-50 text-purple-700 border border-purple-200 text-xs font-semibold rounded-md flex items-center gap-1.5">
+                      <i class="fa-solid fa-clock"></i>
+                      <span>{{ currentLang() === 'vi' ? 'Đã chuyển Giám đốc phê duyệt' : 'Pending Executive Approval' }}</span>
+                    </span>
+                  } @else if (selectedRunToReview()!.status === 'RECALCULATION_REQUESTED') {
+                    <button (click)="submitCheckerFeedback('CANCEL_RECALCULATE')"
+                            class="px-3.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 cursor-pointer">
+                      <i class="fa-solid fa-undo"></i>
+                      <span>{{ currentLang() === 'vi' ? 'Hủy yêu cầu tính lại' : 'Cancel Recalculate' }}</span>
+                    </button>
+                    <span class="px-3 py-1.5 bg-rose-50 text-rose-700 border border-rose-200 text-xs font-semibold rounded-md flex items-center gap-1.5">
+                      <i class="fa-solid fa-rotate-left"></i>
+                      <span>{{ currentLang() === 'vi' ? 'Đã trả về Chuyên viên tính lại' : 'Returned to Maker' }}</span>
+                    </span>
+                  } @else {
+                    <button (click)="submitCheckerFeedback('RECALCULATE')"
+                            class="px-3.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 cursor-pointer">
+                      <i class="fa-solid fa-rotate-left"></i>
+                      {{ currentLang() === 'vi' ? 'Yêu cầu Tính lại' : t('btn_request_recalc') }}
+                    </button>
+                    <button (click)="submitCheckerFeedback('FORWARD_APPROVER')"
+                            class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-md shadow-sm transition-colors flex items-center gap-1.5 cursor-pointer">
+                      <i class="fa-solid fa-check-double"></i>
+                      {{ currentLang() === 'vi' ? 'Xác nhận và Chuyển Phê duyệt' : t('btn_forward_approver') }}
+                    </button>
+                  }
+                </div>
+              </div>
+
+              <!-- Rejection Notice (if recalculation requested) -->
+              @if (selectedRunToReview()!.rejection_reason) {
+                <div class="p-3 bg-rose-50 border border-rose-200 rounded-lg text-xs text-rose-800 space-y-1">
+                  <div class="font-bold flex items-center gap-1.5 text-rose-700">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    {{ currentLang() === 'vi' ? 'Ý kiến phản hồi từ Trưởng phòng Quản lý rủi ro:' : 'Recalculation Request Note:' }}
+                  </div>
+                  <div>{{ selectedRunToReview()!.rejection_reason }}</div>
+                </div>
+              }
+
+              <!-- 4 Financial Metrics of this Run -->
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <div class="text-xs text-slate-600 font-semibold">{{ t('kpi_ead') }}</div>
+                  <div class="text-xl font-bold text-slate-900 mt-1">{{ formatVND(selectedRunToReview()!.total_ead) }}</div>
+                </div>
+
+                <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <div class="text-xs text-slate-600 font-semibold">{{ t('kpi_ecl_stress') }}</div>
+                  <div class="text-xl font-bold text-amber-700 mt-1">{{ formatVND(selectedRunToReview()!.total_stressed_ecl) }}</div>
+                </div>
+
+                <div class="p-3.5 rounded-xl bg-rose-50/50 border border-rose-200">
+                  <div class="text-xs text-rose-800 font-semibold">{{ t('kpi_delta_ps') }}</div>
+                  <div class="text-xl font-bold text-rose-700 mt-1">+{{ formatVND(selectedRunToReview()!.total_delta_provision) }}</div>
+                </div>
+
+                <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <div class="text-xs text-slate-600 font-semibold">{{ t('kpi_car_stress') }}</div>
+                  <div class="text-xl font-bold mt-1"
+                       [class]="(selectedRunToReview()!.car_impact?.is_capital_adequate ?? true) ? 'text-emerald-700' : 'text-rose-700'">
+                    {{ selectedRunToReview()!.car_impact ? formatPercent(selectedRunToReview()!.car_impact!.stressed_car) : '19.41%' }}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Macro Shocks Applied in this Run -->
+              <div class="p-3 rounded-lg bg-blue-50/40 border border-blue-100 flex flex-wrap items-center justify-between text-xs gap-2">
+                <span class="font-semibold text-blue-900 flex items-center gap-1.5">
+                  <i class="fa-solid fa-sliders text-blue-600"></i>
+                  <span>{{ currentLang() === 'vi' ? 'Tham số Cú sốc Vĩ mô của phiên này:' : 'Applied Macro Shock Parameters:' }}</span>
+                </span>
+                <div class="flex items-center gap-3 text-slate-700 font-medium">
+                  <span>ΔGDP: <strong class="text-blue-700">{{ formatShock(selectedRunToReview()!.custom_gdp_shock, 100, 1) }}%</strong></span>
+                  <span>ΔLãi suất: <strong class="text-amber-700">+{{ formatShock(selectedRunToReview()!.custom_ir_shock, 10000, 0) }} bps</strong></span>
+                  <span>ΔThất nghiệp: <strong class="text-emerald-700">+{{ formatShock(selectedRunToReview()!.custom_unemp_shock, 100, 1) }}%</strong></span>
+                  <span>ΔGiá BĐS: <strong class="text-rose-700">{{ formatShock(selectedRunToReview()!.custom_re_shock, 100, 1) }}%</strong></span>
+                </div>
+              </div>
+
+              <!-- 3 Detailed Validation Checkpoints (Thẩm định nghiệp vụ) -->
+              <div class="space-y-2">
+                <div class="text-xs font-bold text-slate-900 uppercase tracking-wide">
+                  {{ currentLang() === 'vi' ? 'Phiếu Kiểm Tra và Thẩm Định Nghiệp Vụ:' : 'Four-Eyes Review Checklist:' }}
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                  <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between font-bold text-slate-900">
+                    <span>1. {{ currentLang() === 'vi' ? 'Tính Toàn Vẹn Dữ Liệu' : 'Data Integrity and Quality' }}</span>
+                    <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+                  </div>
+
+                  <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between font-bold text-slate-900">
+                    <span>2. {{ currentLang() === 'vi' ? 'Tính Logic Kinh Tế' : 'Economic Sensitivity Logic' }}</span>
+                    <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+                  </div>
+
+                  <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between font-bold text-slate-900">
+                    <span>3. {{ currentLang() === 'vi' ? 'Điều Kiện Trình Phê Duyệt' : 'Readiness for Approval' }}</span>
+                    <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Ô NHẬN XÉT FEEDBACK CỦA TRƯỞNG PHÒNG QUẢN LÝ RỦI RO KHI THẨM ĐỊNH HOẶC KHÔNG DUYỆT -->
+              <div class="p-4 rounded-xl border border-slate-200 bg-white shadow-xs space-y-3">
+                <div class="flex items-center gap-2 border-b border-slate-100 pb-2">
+                  <div class="w-2.5 h-2.5 rounded-full bg-amber-600"></div>
+                  <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wide">
+                    {{ currentLang() === 'vi' ? 'Ý Kiến Thẩm Định và Phản Hồi của Trưởng Phòng Quản Lý Rủi Ro' : 'Risk Management Head Review and Feedback Notes' }}
+                  </h4>
+                </div>
+
+                <textarea [ngModel]="recalculationNote()" (ngModelChange)="recalculationNote.set($event)"
+                          rows="3"
+                          class="w-full text-xs text-slate-800 bg-slate-50/50 border border-slate-300 rounded-lg p-3 focus:bg-white focus:border-amber-600 focus:ring-1 focus:ring-amber-500 focus:outline-none leading-relaxed min-h-[90px]"
+                          [placeholder]="currentLang() === 'vi' ? 'Nhập nhận xét thẩm định, lý do không duyệt hoặc yêu cầu Chuyên viên tính toán lại...' : 'Enter feedback notes, reasons for not approving, or instructions for Analyst to recalculate...'"></textarea>
+
+                <div class="flex flex-wrap justify-end gap-2 pt-1">
+                  @if (selectedRunToReview()!.status === 'PENDING_APPROVAL') {
+                    <button type="button"
+                            (click)="submitCheckerFeedback('CANCEL_FORWARD')"
+                            class="px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs">
+                      <i class="fa-solid fa-undo"></i>
+                      <span>{{ currentLang() === 'vi' ? 'Hủy Chuyển Duyệt (Rút Lại)' : 'Cancel Forward' }}</span>
+                    </button>
+                  }
+                  @if (selectedRunToReview()!.status === 'RECALCULATION_REQUESTED') {
+                    <button type="button"
+                            (click)="submitCheckerFeedback('CANCEL_RECALCULATE')"
+                            class="px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs">
+                      <i class="fa-solid fa-undo"></i>
+                      <span>{{ currentLang() === 'vi' ? 'Hủy Yêu Cầu Tính Lại' : 'Cancel Recalculate' }}</span>
+                    </button>
+                  }
+                  <button type="button"
+                          (click)="submitCheckerFeedback('RECALCULATE')"
+                          class="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span>{{ currentLang() === 'vi' ? 'Không Duyệt — Yêu Cầu Tính Lại' : 'Reject and Recalculate' }}</span>
+                  </button>
+                  <button type="button"
+                          (click)="submitCheckerFeedback('FORWARD_APPROVER')"
+                          [disabled]="selectedRunToReview()!.status === 'PENDING_APPROVAL' || selectedRunToReview()!.status === 'APPROVED'"
+                          class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center gap-1.5 cursor-pointer">
+                    <i class="fa-solid fa-check-double"></i>
+                    <span>{{ currentLang() === 'vi' ? (selectedRunToReview()!.status === 'PENDING_APPROVAL' ? 'Đã Chuyển Phê Duyệt' : (selectedRunToReview()!.status === 'APPROVED' ? 'Đã Phê Duyệt' : 'Xác Nhận Đạt và Chuyển Phê Duyệt')) : 'Verify and Forward to Approver' }}</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          }
+
+        </div>
+      }
+
+      <!-- ========================================================== -->
+      <!-- TAB 3: APPROVER DASHBOARD (EXECUTIVE DIRECTIVES AND CHARTS) -->
+      <!-- ========================================================== -->
+      @if (activeTab() === 'approver' && canAccess('approver')) {
+        <div class="space-y-6">
+
+          <!-- Section Header and Run Selector for Director -->
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-4">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between border-b border-slate-100 pb-3 gap-3">
+              <div>
+                <h2 class="text-base sm:text-lg font-bold text-slate-900">{{ currentLang() === 'vi' ? 'Báo Cáo Phê Duyệt Điều Hành' : 'Executive Approval Report' }}</h2>
+              </div>
+              @if (selectedApproverRun()) {
+                <div class="flex items-center gap-2">
+                  @if (selectedApproverRun()!.status === 'APPROVED') {
+                    <button (click)="executeWorkflow(selectedApproverRun()!.id, 'CANCEL_APPROVE', 'Giám đốc Khối Quản lý rủi ro / CEO đã hủy ký số phê duyệt đề án, chuyển lại trạng thái chờ xem xét.')"
+                            class="px-4 py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 text-xs font-bold rounded-lg shadow-sm transition-all flex items-center gap-2 cursor-pointer">
+                      <i class="fa-solid fa-undo"></i>
+                      <span>{{ currentLang() === 'vi' ? 'Hủy Phê Duyệt (Thu Hồi Ký Số)' : 'Revoke Approval' }}</span>
+                    </button>
+                    <span class="px-3 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold rounded-lg flex items-center gap-1.5">
+                      <i class="fa-solid fa-circle-check"></i> {{ currentLang() === 'vi' ? 'Đề án đã phê duyệt' : 'Approved' }}
+                    </span>
+                  } @else {
+                    <button (click)="executeWorkflow(selectedApproverRun()!.id, 'APPROVE', 'Giám đốc Khối Quản lý rủi ro / CEO Lê Hoàng Cường đã ký số phê duyệt đề án.')"
+                            class="px-5 py-2.5 bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold rounded-lg shadow-sm transition-all flex items-center gap-2 cursor-pointer">
+                      <i class="fa-solid fa-file-signature text-sm"></i>
+                      <span>{{ t('btn_sign_approve') }}</span>
+                    </button>
+                  }
+                </div>
+              }
+            </div>
+
+            <!-- List of proposals awaiting executive approval (ONLY Checker-approved runs) -->
+            <div class="space-y-2">
+              <div class="text-xs font-bold text-slate-800 uppercase tracking-wide flex items-center justify-between">
+                <span>Đề Án Đã Được Trưởng Phòng Thẩm Định Đạt:</span>
+                <span class="text-slate-500 font-normal">({{ approverRuns().length }} đề án sẵn sàng phê duyệt)</span>
+              </div>
+
+              @if (approverRuns().length > 0) {
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5">
+                  @for (run of approverRuns(); track run.id) {
+                    <button type="button"
+                            (click)="selectedApproverRun.set(run)"
+                            class="p-3 text-left rounded-lg border transition-all cursor-pointer shadow-2xs hover:shadow-xs flex flex-col justify-between"
+                            [class]="selectedApproverRun()?.id === run.id ? 'bg-purple-50/70 border-purple-400 ring-1 ring-purple-300' : 'bg-slate-50 border-slate-200 hover:bg-slate-100/70'">
+                      <div class="flex items-center justify-between gap-1 mb-1">
+                        <span class="font-bold text-xs" [class]="selectedApproverRun()?.id === run.id ? 'text-purple-900' : 'text-slate-900'">
+                          {{ run.run_code }}
+                        </span>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold"
+                              [class]="run.status === 'APPROVED' ? 'bg-emerald-100 text-emerald-800' :
+                                      (run.status === 'PENDING_APPROVAL' ? 'bg-purple-100 text-purple-800 border border-purple-300' : 'bg-amber-100 text-amber-800')">
+                          {{ getStatusLabel(run.status) }}
+                        </span>
+                      </div>
+                      <div class="text-xs font-semibold text-slate-800 truncate">{{ run.run_name }}</div>
+                      <div class="text-[11px] text-slate-500 mt-1 flex justify-between">
+                        <span>Lập bởi: <strong class="text-slate-700">{{ run.maker_name }}</strong></span>
+                        <span class="text-rose-700 font-bold">+{{ formatVND(run.total_delta_provision) }}</span>
+                      </div>
+                    </button>
+                  }
+                </div>
+              } @else {
+                <div class="p-6 bg-slate-50 rounded-xl border border-dashed border-slate-300 text-center space-y-2">
+                  <div class="w-10 h-10 mx-auto rounded-full bg-amber-100/70 flex items-center justify-center text-amber-700 text-base">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                  </div>
+                  <div class="text-xs font-bold text-slate-800">Chưa có đề án nào được Trưởng phòng Quản lý rủi ro thẩm định đạt và chuyển lên</div>
+                  <div class="text-[11px] text-slate-500 max-w-lg mx-auto leading-relaxed">
+                    Theo nguyên tắc 4 mắt, Ban Điều hành chỉ xem xét và ký số phê duyệt những đề án đã được Trưởng phòng Quản lý rủi ro thẩm định hoàn tất ở Tuyến 2.
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Proposal Context Card for Board / Director -->
+            @if (selectedApproverRun()) {
+              <div class="p-4 rounded-xl bg-purple-50/40 border border-purple-200 space-y-3">
+                <div class="flex items-center justify-between border-b border-purple-100 pb-2">
+                  <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-purple-700"></span>
+                    <h3 class="text-xs font-bold text-purple-900 uppercase tracking-wide">
+                      Bối Cảnh Kịch Bản và Tờ Trình Thẩm Định
+                    </h3>
+                  </div>
+                  <span class="text-xs font-bold text-purple-800 bg-white px-2.5 py-0.5 rounded border border-purple-200">
+                    {{ selectedApproverRun()!.run_code }} • {{ selectedApproverRun()!.scenario_name }}
+                  </span>
+                </div>
+
+                <!-- 4 Macroeconomic Shocks of this proposal -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                  <div class="p-2 bg-white rounded-lg border border-purple-100">
+                    <span class="text-slate-500 text-[11px]">Cú sốc GDP:</span>
+                    <div class="font-bold text-blue-700 text-sm">{{ formatShock(selectedApproverRun()!.custom_gdp_shock, 100, 1) }}%</div>
+                  </div>
+                  <div class="p-2 bg-white rounded-lg border border-purple-100">
+                    <span class="text-slate-500 text-[11px]">Cú sốc Lãi suất:</span>
+                    <div class="font-bold text-amber-700 text-sm">+{{ formatShock(selectedApproverRun()!.custom_ir_shock, 10000, 0) }} bps</div>
+                  </div>
+                  <div class="p-2 bg-white rounded-lg border border-purple-100">
+                    <span class="text-slate-500 text-[11px]">Cú sốc Thất nghiệp:</span>
+                    <div class="font-bold text-emerald-700 text-sm">+{{ formatShock(selectedApproverRun()!.custom_unemp_shock, 100, 1) }}%</div>
+                  </div>
+                  <div class="p-2 bg-white rounded-lg border border-purple-100">
+                    <span class="text-slate-500 text-[11px]">Cú sốc Bất động sản:</span>
+                    <div class="font-bold text-rose-700 text-sm">{{ formatShock(selectedApproverRun()!.custom_re_shock, 100, 1) }}%</div>
+                  </div>
+                </div>
+
+                <!-- Checker Endorsement Note (Ý kiến thẩm định của Trưởng phòng) -->
+                <div class="p-3 bg-white rounded-lg border border-purple-100 text-xs space-y-1">
+                  <div class="font-bold text-slate-800 flex items-center justify-between">
+                    <span>Ý kiến xác nhận của Trưởng phòng Quản lý rủi ro:</span>
+                    <span class="font-medium text-slate-600">{{ selectedApproverRun()!.checker_name || 'Trần Thị Bình' }}</span>
+                  </div>
+                  <div class="text-slate-700 leading-relaxed italic">
+                    "{{ selectedApproverRun()!.rejection_reason || 'Bộ hồ sơ đã được rà soát đầy đủ 3 tiêu chuẩn: Tính toàn vẹn dữ liệu từ Core Banking, tính logic nhạy cảm chu kỳ kinh tế và mức độ thâm hụt vốn đệm CAR. Đề nghị Giám đốc Khối Quản trị Rủi ro ký số phê duyệt và ban hành 3 quyết định điều hành.' }}"
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+
+          <!-- Executive 4 KPI Cards -->
+          @if (selectedApproverRun() || simulationResult()) {
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <!-- KPI 1: EAD -->
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-start">
+                <div class="text-xs text-slate-700 font-semibold">{{ t('kpi_ead') }}</div>
+                <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight text-slate-900 whitespace-nowrap overflow-hidden text-ellipsis">
+                  {{ formatVND(selectedApproverRun()?.total_ead || simulationResult()?.summary?.total_ead || 0) }}
+                </div>
+              </div>
+
+              <!-- KPI 2: Total Stressed ECL -->
+              <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-start">
+                <div class="text-xs text-slate-700 font-semibold">{{ t('kpi_ecl_stress') }}</div>
+                <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight text-amber-700 whitespace-nowrap overflow-hidden text-ellipsis">
+                  {{ formatVND(selectedApproverRun()?.total_stressed_ecl || simulationResult()?.summary?.total_stressed_ecl || 0) }}
+                </div>
+              </div>
+
+              <!-- KPI 3: Delta PS -->
+              <div class="bg-rose-50/50 p-4 rounded-xl border border-rose-200 shadow-sm flex flex-col justify-start">
+                <div class="text-xs text-rose-900 font-semibold">{{ t('kpi_delta_ps') }}</div>
+                <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight text-rose-700 whitespace-nowrap overflow-hidden text-ellipsis">
+                  +{{ formatVND(selectedApproverRun()?.total_delta_provision || simulationResult()?.summary?.total_delta_provision || 0) }}
+                </div>
+              </div>
+
+              <!-- KPI 4: CAR -->
+              <div class="bg-white p-4 rounded-xl border shadow-sm flex flex-col justify-start"
+                   [class]="(selectedApproverRun()?.car_impact?.is_capital_adequate ?? (simulationResult()?.summary?.is_capital_adequate ?? true)) ? 'border-emerald-200 bg-emerald-50/20' : 'border-rose-300 bg-rose-50/20'">
+                <div class="text-xs text-slate-700 font-semibold">{{ t('kpi_car') }}</div>
+                <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight whitespace-nowrap overflow-hidden text-ellipsis"
+                     [class]="(selectedApproverRun()?.car_impact?.is_capital_adequate ?? (simulationResult()?.summary?.is_capital_adequate ?? true)) ? 'text-emerald-700' : 'text-rose-700'">
+                  {{ formatPercent(selectedApproverRun()?.car_impact ? selectedApproverRun()!.car_impact!.stressed_car : (simulationResult()?.summary?.stressed_car || 0)) }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Two Visual Analytics Charts for Board / CRO -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+              <!-- Visual Chart 1: Sector Risk Block Diagram (Sơ đồ khối) -->
+              <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3.5">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                  <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-blue-600"></div>
+                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wide">
+                      1. Sơ Đồ Khối Phân Bổ Tổn Thất Theo Ngành
+                    </h3>
+                  </div>
+                  <span class="whitespace-nowrap shrink-0 text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded border border-blue-200">
+                    6 Nhóm ngành
+                  </span>
+                </div>
+
+                <!-- Sơ đồ khối 6 phân khúc -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-1">
+                  @for (sec of currentSectorBreakdown(); track sec.sector_code) {
+                    <div class="p-3 rounded-xl border flex flex-col justify-between transition-all"
+                         [class]="sec.sector_code === 'REAL_ESTATE' ? 'bg-rose-50/70 border-rose-300 ring-1 ring-rose-200' : (sec.sector_code === 'CONSTRUCTION' ? 'bg-amber-50/50 border-amber-200' : 'bg-slate-50/70 border-slate-200 hover:border-slate-300')">
+                      <div>
+                        <div class="flex items-center justify-between gap-1 mb-1">
+                          <span class="text-[11px] font-bold text-slate-800 flex items-center gap-1.5 truncate">
+                            <i class="fa-solid text-xs" [class]="getSectorBadgeClass(sec.sector_code).icon" [class.text-rose-600]="sec.sector_code === 'REAL_ESTATE'" [class.text-amber-600]="sec.sector_code === 'CONSTRUCTION'" [class.text-slate-500]="sec.sector_code !== 'REAL_ESTATE' && sec.sector_code !== 'CONSTRUCTION'"></i>
+                            <span class="truncate">{{ getSectorName(sec.sector_code) }}</span>
+                          </span>
+                          <span class="text-[10px] font-extrabold px-1.5 py-0.5 rounded shrink-0 whitespace-nowrap"
+                                [class]="sec.sector_code === 'REAL_ESTATE' ? 'bg-rose-200/80 text-rose-800' : 'bg-slate-200/80 text-slate-700'">
+                            {{ ((sec.stressed_ecl / (simulationResult()?.summary?.total_stressed_ecl || 1)) * 100).toFixed(1) }}% ECL
+                          </span>
+                        </div>
+                        <div class="text-base font-extrabold text-slate-900 mt-0.5">
+                          {{ formatVND(sec.stressed_ecl) }}
+                        </div>
+                        <div class="text-[10px] font-semibold text-rose-600 mt-0.5">
+                          ΔPS: +{{ formatVND(sec.delta_provision) }}
+                        </div>
+                      </div>
+                      <div class="pt-2 mt-2 border-t border-slate-200/60 flex items-center justify-between text-[10px] text-slate-500">
+                        <span>{{ sec.contract_count }} HĐ tín dụng</span>
+                        <span>Dư nợ: {{ formatVND(sec.ead) }}</span>
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+
+              <!-- Visual Chart 2: Cross-Scenario Comparison Matrix -->
+              <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-3.5">
+                <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                  <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-purple-600"></div>
+                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wide">
+                      2. Ma Trận 3 Kịch Bản Vĩ Mô
+                    </h3>
+                  </div>
+                  <span class="whitespace-nowrap shrink-0 text-xs font-bold text-purple-700 bg-purple-50 px-2.5 py-0.5 rounded border border-purple-200">
+                    Cơ sở • Căng thẳng • Khủng hoảng
+                  </span>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3 pt-1">
+                  <!-- Scenario 1: Baseline -->
+                  <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2 text-center">
+                    <div class="text-xs font-bold text-slate-800">Kịch bản Cơ sở</div>
+                    <div class="pt-1 border-t border-slate-200">
+                      <div class="text-xs text-slate-500">Trích thêm (ΔPS):</div>
+                      <div class="text-sm font-bold text-slate-800">+4,3 tỷ</div>
+                    </div>
+                    <div class="pt-1 border-t border-slate-200">
+                      <div class="text-xs text-slate-500">Tỷ lệ CAR:</div>
+                      <div class="text-sm font-bold text-emerald-700">19,41%</div>
+                    </div>
+                  </div>
+
+                  <!-- Scenario 2: Adverse -->
+                  <div class="p-3 bg-amber-50/50 rounded-lg border border-amber-200 space-y-2 text-center">
+                    <div class="text-xs font-bold text-amber-900">Căng thẳng Vừa</div>
+                    <div class="pt-1 border-t border-amber-200">
+                      <div class="text-xs text-amber-700">Trích thêm (ΔPS):</div>
+                      <div class="text-sm font-bold text-rose-700">+471,4 tỷ</div>
+                    </div>
+                    <div class="pt-1 border-t border-amber-200">
+                      <div class="text-xs text-amber-700">Tỷ lệ CAR:</div>
+                      <div class="text-sm font-bold text-rose-700">2,18%</div>
+                    </div>
+                  </div>
+
+                  <!-- Scenario 3: Severe -->
+                  <div class="p-3 bg-rose-50/50 rounded-lg border border-rose-200 space-y-2 text-center">
+                    <div class="text-xs font-bold text-rose-900">Khủng hoảng Sâu</div>
+                    <div class="pt-1 border-t border-rose-200">
+                      <div class="text-xs text-rose-700">Trích thêm (ΔPS):</div>
+                      <div class="text-sm font-bold text-rose-800">+1.110 tỷ</div>
+                    </div>
+                    <div class="pt-1 border-t border-rose-200">
+                      <div class="text-xs text-rose-700">Tỷ lệ CAR:</div>
+                      <div class="text-sm font-bold text-rose-900">Dưới 0%</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          }
+
+          <!-- 3 Policy Directives (Interactive, Editable by Director and AI Assisted) -->
+          <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-2.5 gap-2">
+              <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-purple-700"></div>
+                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wide">
+                  3 Quyết Định Điều Hành Chiến Lược
+                </h3>
+              </div>
+              <div class="flex items-center gap-2">
+                <button type="button" (click)="resetDirectivesToAI()"
+                        class="px-2.5 py-1 text-[11px] font-semibold text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100 rounded border border-purple-200 transition-colors flex items-center gap-1 cursor-pointer">
+                  <i class="fa-solid fa-rotate-left text-[10px]"></i>
+                  <span>Khôi phục đề xuất AI</span>
+                </button>
+                <span class="px-2.5 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded text-xs font-bold whitespace-nowrap">
+                  {{ directiveApproved() ? 'Đã ban hành' : 'Sẵn sàng hiệu lực' }}
+                </span>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- Directive 1 -->
+              <div class="p-3.5 rounded-xl border space-y-3 flex flex-col justify-between transition-all"
+                   [class]="directive1Active() ? 'bg-slate-50/80 border-slate-200' : 'bg-slate-100/60 border-slate-200/80 shadow-none'">
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between pb-1 border-b border-slate-200/60">
+                    <div class="flex items-center gap-1.5">
+                      <span class="px-2 py-0.5 rounded text-[10px] font-bold transition-colors"
+                            [class]="directive1Active() ? 'bg-purple-100 text-purple-800' : 'bg-slate-200 text-slate-500'">
+                        Quyết định 1
+                      </span>
+                      @if (!directive1Active()) {
+                        <span class="text-[10px] text-slate-600 font-semibold italic">(Không áp dụng)</span>
+                      }
+                    </div>
+                    <label class="flex items-center gap-1.5 cursor-pointer text-[11px] font-semibold text-slate-700 hover:text-purple-700 transition-colors">
+                      <input type="checkbox" [checked]="directive1Active()" (change)="directive1Active.set(!directive1Active())" class="accent-purple-600 cursor-pointer w-3.5 h-3.5">
+                      <span>Áp dụng</span>
+                    </label>
+                  </div>
+                  
+                  <!-- Form content disabled and dimmed when not active -->
+                  <div class="space-y-2 transition-all duration-200"
+                       [class.opacity-40]="!directive1Active()"
+                       [class.pointer-events-none]="!directive1Active()"
+                       [class.select-none]="!directive1Active()">
+                    <!-- Editable Title -->
+                    <input type="text" [ngModel]="directive1Title()" (ngModelChange)="directive1Title.set($event)"
+                           [disabled]="!directive1Active()"
+                           class="w-full text-xs font-bold text-slate-900 bg-white border border-slate-300 rounded px-2 py-1 focus:border-purple-600 focus:outline-none disabled:bg-slate-100 disabled:text-slate-600"
+                           title="Giám đốc có thể chỉnh sửa tiêu đề điều lệnh">
+
+                    <!-- AI Presets -->
+                    <div class="p-2 bg-purple-50/50 rounded-lg border border-purple-100 space-y-1.5">
+                      <div class="text-[10px] text-purple-800 font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-wand-magic-sparkles text-purple-600"></i> Đề cử AI:
+                      </div>
+                      <div class="flex items-center gap-1">
+                        @for (pct of [10, 15, 20, 25]; track pct) {
+                          <button type="button"
+                                  [disabled]="!directive1Active()"
+                                  (click)="applyDirective1Preset(pct)"
+                                  class="flex-1 py-0.5 text-[10px] font-bold rounded border transition-all cursor-pointer disabled:cursor-not-allowed"
+                                  [class]="directive1CutPercent() === pct ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                            -{{ pct }}%
+                          </button>
+                        }
+                      </div>
+                    </div>
+
+                    <!-- Director Custom Input (Gõ trực tiếp) -->
+                    <div class="p-2 bg-white rounded-lg border border-slate-200">
+                      <div class="flex items-center justify-between text-[11px]">
+                        <span class="text-slate-700 font-semibold">Tỷ lệ cắt giảm:</span>
+                        <div class="flex items-center gap-1">
+                          <input type="number" min="0" max="100" step="1"
+                                 [disabled]="!directive1Active()"
+                                 [ngModel]="directive1CutPercent()" (ngModelChange)="directive1CutPercent.set(+$event)"
+                                 class="w-16 px-1.5 py-0.5 text-xs font-extrabold text-purple-700 text-right border border-purple-300 rounded focus:outline-none focus:ring-1 focus:ring-purple-500 disabled:bg-slate-100 disabled:text-slate-600">
+                          <span class="font-bold text-slate-600 text-xs">%</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Director Action Directive Note (Gõ trực tiếp văn bản chỉ đạo) -->
+                    <div class="space-y-1.5">
+                      <label class="text-[11px] font-bold text-slate-800 block">
+                        <span>Chỉ đạo chi tiết của Giám đốc:</span>
+                      </label>
+                      <textarea [ngModel]="directive1ActionNote()" (ngModelChange)="directive1ActionNote.set($event)"
+                                [disabled]="!directive1Active()"
+                                rows="4"
+                                class="w-full text-xs text-slate-800 bg-white border border-slate-300 rounded-lg p-2.5 focus:border-purple-600 focus:ring-1 focus:ring-purple-500 focus:outline-none min-h-[95px] leading-relaxed disabled:bg-slate-100 disabled:text-slate-600"
+                                placeholder="Nhập nội dung chỉ đạo điều hành..."></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pt-2 border-t border-slate-200 text-[10px] text-slate-500 flex items-center justify-between transition-opacity"
+                     [class.opacity-40]="!directive1Active()">
+                  <span>Đơn vị thực thi:</span>
+                  <strong class="text-slate-800">Khối KHDN và Bán lẻ</strong>
+                </div>
+              </div>
+
+              <!-- Directive 2 -->
+              <div class="p-3.5 rounded-xl border space-y-3 flex flex-col justify-between transition-all"
+                   [class]="directive2Active() ? 'bg-slate-50/80 border-slate-200' : 'bg-slate-100/60 border-slate-200/80 shadow-none'">
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between pb-1 border-b border-slate-200/60">
+                    <div class="flex items-center gap-1.5">
+                      <span class="px-2 py-0.5 rounded text-[10px] font-bold transition-colors"
+                            [class]="directive2Active() ? 'bg-purple-100 text-purple-800' : 'bg-slate-200 text-slate-500'">
+                        Quyết định 2
+                      </span>
+                      @if (!directive2Active()) {
+                        <span class="text-[10px] text-slate-600 font-semibold italic">(Không áp dụng)</span>
+                      }
+                    </div>
+                    <label class="flex items-center gap-1.5 cursor-pointer text-[11px] font-semibold text-slate-700 hover:text-purple-700 transition-colors">
+                      <input type="checkbox" [checked]="directive2Active()" (change)="directive2Active.set(!directive2Active())" class="accent-purple-600 cursor-pointer w-3.5 h-3.5">
+                      <span>Áp dụng</span>
+                    </label>
+                  </div>
+
+                  <!-- Form content disabled and dimmed when not active -->
+                  <div class="space-y-2 transition-all duration-200"
+                       [class.opacity-40]="!directive2Active()"
+                       [class.pointer-events-none]="!directive2Active()"
+                       [class.select-none]="!directive2Active()">
+                    <!-- Editable Title -->
+                    <input type="text" [ngModel]="directive2Title()" (ngModelChange)="directive2Title.set($event)"
+                           [disabled]="!directive2Active()"
+                           class="w-full text-xs font-bold text-slate-900 bg-white border border-slate-300 rounded px-2 py-1 focus:border-purple-600 focus:outline-none disabled:bg-slate-100 disabled:text-slate-600"
+                           title="Giám đốc có thể chỉnh sửa tiêu đề điều lệnh">
+
+                    <!-- AI Presets -->
+                    <div class="p-2 bg-purple-50/50 rounded-lg border border-purple-100 space-y-1.5">
+                      <div class="text-[10px] text-purple-800 font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-wand-magic-sparkles text-purple-600"></i> Đề cử AI:
+                      </div>
+                      <div class="flex items-center gap-1">
+                        @for (q of [2, 3, 4, 6]; track q) {
+                          <button type="button"
+                                  [disabled]="!directive2Active()"
+                                  (click)="applyDirective2Preset(q)"
+                                  class="flex-1 py-0.5 text-[10px] font-bold rounded border transition-all cursor-pointer disabled:cursor-not-allowed"
+                                  [class]="directive2Quarters() === q ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                            {{ q }} Quý
+                          </button>
+                        }
+                      </div>
+                    </div>
+
+                    <!-- Director Custom Input (Gõ trực tiếp) -->
+                    <div class="p-2 bg-white rounded-lg border border-slate-200">
+                      <div class="flex items-center justify-between text-[11px]">
+                        <span class="text-slate-700 font-semibold">Lộ trình phân bổ:</span>
+                        <div class="flex items-center gap-1">
+                          <input type="number" min="1" max="16" step="1"
+                                 [disabled]="!directive2Active()"
+                                 [ngModel]="directive2Quarters()" (ngModelChange)="directive2Quarters.set(+$event)"
+                                 class="w-16 px-1.5 py-0.5 text-xs font-extrabold text-purple-700 text-right border border-purple-300 rounded focus:outline-none focus:ring-1 focus:ring-purple-500 disabled:bg-slate-100 disabled:text-slate-600">
+                          <span class="font-bold text-slate-600 text-xs">Quý</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Director Action Directive Note (Gõ trực tiếp) -->
+                    <div class="space-y-1.5">
+                      <label class="text-[11px] font-bold text-slate-800 block">
+                        <span>Chỉ đạo chi tiết của Giám đốc:</span>
+                      </label>
+                      <textarea [ngModel]="directive2ActionNote()" (ngModelChange)="directive2ActionNote.set($event)"
+                                [disabled]="!directive2Active()"
+                                rows="4"
+                                class="w-full text-xs text-slate-800 bg-white border border-slate-300 rounded-lg p-2.5 focus:border-purple-600 focus:ring-1 focus:ring-purple-500 focus:outline-none min-h-[95px] leading-relaxed disabled:bg-slate-100 disabled:text-slate-600"
+                                placeholder="Nhập kế hoạch phân bổ tài chính..."></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pt-2 border-t border-slate-200 text-[10px] text-slate-500 flex items-center justify-between transition-opacity"
+                     [class.opacity-40]="!directive2Active()">
+                  <span>Đơn vị thực thi:</span>
+                  <strong class="text-slate-800">Khối Tài chính Kế toán</strong>
+                </div>
+              </div>
+
+              <!-- Directive 3 -->
+              <div class="p-3.5 rounded-xl border space-y-3 flex flex-col justify-between transition-all"
+                   [class]="directive3Active() ? 'bg-slate-50/80 border-slate-200' : 'bg-slate-100/60 border-slate-200/80 shadow-none'">
+                <div class="space-y-2">
+                  <div class="flex items-center justify-between pb-1 border-b border-slate-200/60">
+                    <div class="flex items-center gap-1.5">
+                      <span class="px-2 py-0.5 rounded text-[10px] font-bold transition-colors"
+                            [class]="directive3Active() ? 'bg-purple-100 text-purple-800' : 'bg-slate-200 text-slate-500'">
+                        Quyết định 3
+                      </span>
+                      @if (!directive3Active()) {
+                        <span class="text-[10px] text-slate-600 font-semibold italic">(Không áp dụng)</span>
+                      }
+                    </div>
+                    <label class="flex items-center gap-1.5 cursor-pointer text-[11px] font-semibold text-slate-700 hover:text-purple-700 transition-colors">
+                      <input type="checkbox" [checked]="directive3Active()" (change)="directive3Active.set(!directive3Active())" class="accent-purple-600 cursor-pointer w-3.5 h-3.5">
+                      <span>Áp dụng</span>
+                    </label>
+                  </div>
+
+                  <!-- Form content disabled and dimmed when not active -->
+                  <div class="space-y-2 transition-all duration-200"
+                       [class.opacity-40]="!directive3Active()"
+                       [class.pointer-events-none]="!directive3Active()"
+                       [class.select-none]="!directive3Active()">
+                    <!-- Editable Title -->
+                    <input type="text" [ngModel]="directive3Title()" (ngModelChange)="directive3Title.set($event)"
+                           [disabled]="!directive3Active()"
+                           class="w-full text-xs font-bold text-slate-900 bg-white border border-slate-300 rounded px-2 py-1 focus:border-purple-600 focus:outline-none disabled:bg-slate-100 disabled:text-slate-600"
+                           title="Giám đốc có thể chỉnh sửa tiêu đề điều lệnh">
+
+                    <!-- AI Presets -->
+                    <div class="p-2 bg-purple-50/50 rounded-lg border border-purple-100 space-y-1.5">
+                      <div class="text-[10px] text-purple-800 font-bold flex items-center gap-1">
+                        <i class="fa-solid fa-wand-magic-sparkles text-purple-600"></i> Đề cử AI:
+                      </div>
+                      <div class="grid grid-cols-3 gap-1">
+                        <button type="button"
+                                [disabled]="!directive3Active()"
+                                (click)="applyDirective3Preset('STAGE_2')"
+                                class="py-0.5 text-[10px] font-bold rounded border transition-all cursor-pointer truncate px-1 text-center disabled:cursor-not-allowed"
+                                [class]="directive3Scope() === 'STAGE_2' ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                          {{ currentLang() === 'vi' ? 'Rủi ro tăng' : 'Stage 2' }}
+                        </button>
+                        <button type="button"
+                                [disabled]="!directive3Active()"
+                                (click)="applyDirective3Preset('PD_2X')"
+                                class="py-0.5 text-[10px] font-bold rounded border transition-all cursor-pointer truncate px-1 text-center disabled:cursor-not-allowed"
+                                [class]="directive3Scope() === 'PD_2X' ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                          {{ currentLang() === 'vi' ? 'Xác suất tăng 2x' : 'PD Doubled' }}
+                        </button>
+                        <button type="button"
+                                [disabled]="!directive3Active()"
+                                (click)="applyDirective3Preset('GROUP_2')"
+                                class="py-0.5 text-[10px] font-bold rounded border transition-all cursor-pointer truncate px-1 text-center disabled:cursor-not-allowed"
+                                [class]="directive3Scope() === 'GROUP_2' ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                          {{ currentLang() === 'vi' ? 'Nhóm 2 trở lên' : 'Stage 2+' }}
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Director Custom Input (Gõ trực tiếp tiêu chí) -->
+                    <div class="p-2 bg-white rounded-lg border border-slate-200 space-y-1.5">
+                      <div class="text-[11px] font-semibold text-slate-700">Tiêu chí kích hoạt:</div>
+                      <input type="text" [ngModel]="directive3CustomScopeText()" (ngModelChange)="directive3CustomScopeText.set($event)"
+                             [disabled]="!directive3Active()"
+                             class="w-full text-xs font-bold text-purple-700 bg-white border border-purple-300 rounded px-2 py-0.5 focus:outline-none focus:ring-1 focus:ring-purple-500 disabled:bg-slate-100 disabled:text-slate-600"
+                             placeholder="Nhập tiêu chí kích hoạt...">
+                    </div>
+
+                    <!-- Direct Link to Early Warning List (Mở danh sách cảnh báo sớm) -->
+                    <button type="button" (click)="goToEarlyWarningList()"
+                            [disabled]="!directive3Active()"
+                            class="w-full py-1.5 px-3 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs disabled:cursor-not-allowed">
+                      <i class="fa-solid fa-triangle-exclamation"></i>
+                      <span>{{ currentLang() === 'vi' ? 'Mở Danh Sách Cảnh Báo Sớm (' + earlyWarningContracts().length + ' Hợp đồng) →' : 'Open Early Warning Portfolio (' + earlyWarningContracts().length + ' loans) →' }}</span>
+                    </button>
+
+                    <!-- Director Action Directive Note (Gõ trực tiếp) -->
+                    <div class="space-y-1.5">
+                      <label class="text-[11px] font-bold text-slate-800 block">
+                        <span>Chỉ đạo chi tiết của Giám đốc:</span>
+                      </label>
+                      <textarea [ngModel]="directive3ActionNote()" (ngModelChange)="directive3ActionNote.set($event)"
+                                [disabled]="!directive3Active()"
+                                rows="4"
+                                class="w-full text-xs text-slate-800 bg-white border border-slate-300 rounded-lg p-2.5 focus:border-purple-600 focus:ring-1 focus:ring-purple-500 focus:outline-none min-h-[95px] leading-relaxed disabled:bg-slate-100 disabled:text-slate-600"
+                                placeholder="Nhập biện pháp thu hồi nợ..."></textarea>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pt-2 border-t border-slate-200 text-[10px] text-slate-500 flex items-center justify-between transition-opacity"
+                     [class.opacity-40]="!directive3Active()">
+                  <span>Đơn vị thực thi:</span>
+                  <strong class="text-slate-800">Khối Xử lý và Thu hồi nợ</strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top 5 Early Warning Preview Table for Board/Director -->
+            <div class="pt-3 border-t border-slate-100 space-y-2.5">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                  <span class="w-2 h-2 rounded-full bg-rose-600"></span>
+                  <span class="text-xs font-bold text-slate-900 uppercase tracking-wide">
+                    5 Khoản Vay Rủi Ro Nhất Cần Xử Lý Sớm
+                  </span>
+                </div>
+                <button type="button" (click)="goToEarlyWarningList()"
+                        class="text-xs font-bold text-blue-700 hover:text-blue-900 flex items-center gap-1 cursor-pointer">
+                  <span>Xem toàn bộ {{ earlyWarningContracts().length }} hồ sơ cảnh báo sớm</span>
+                  <i class="fa-solid fa-arrow-right text-[11px]"></i>
+                </button>
+              </div>
+
+              <div class="overflow-x-auto rounded-lg border border-slate-200">
+                <table class="w-full text-left text-xs">
+                  <thead class="bg-slate-50 text-slate-600 uppercase font-semibold text-[10px]">
+                    <tr>
+                      <th class="p-2.5">Mã HĐ</th>
+                      <th class="p-2.5">Khách hàng</th>
+                      <th class="p-2.5">Ngành</th>
+                      <th class="p-2.5">Dư nợ</th>
+                      <th class="p-2.5">Dịch chuyển Nhóm</th>
+                      <th class="p-2.5">Xác suất vỡ nợ</th>
+                      <th class="p-2.5">Trích lập bổ sung</th>
+                      <th class="p-2.5">Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-slate-100">
+                    @for (item of topStressedContracts(); track item.contract_id) {
+                      <tr class="hover:bg-slate-50">
+                        <td class="p-2.5 font-bold text-blue-700">{{ item.contract_id }}</td>
+                        <td class="p-2.5 font-medium text-slate-900">{{ item.customer_name }}</td>
+                        <td class="p-2.5 text-slate-600">{{ item.sector_name_vn }}</td>
+                        <td class="p-2.5 font-bold text-slate-900">{{ formatVND(item.original_ead) }}</td>
+                        <td class="p-2.5">
+                          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700 border border-rose-200">
+                            Nhóm {{ item.baseline_stage }} → Nhóm {{ item.stressed_stage }}
+                          </span>
+                        </td>
+                        <td class="p-2.5 font-semibold text-amber-700">
+                          {{ (item.stressed_pd * 100).toFixed(2) }}%
+                          <span class="text-[10px] text-slate-400 font-normal">({{ (item.baseline_pd * 100).toFixed(2) }}%)</span>
+                        </td>
+                        <td class="p-2.5 font-extrabold text-rose-600">
+                          +{{ formatVND(item.delta_provision) }}
+                        </td>
+                        <td class="p-2.5">
+                          <button type="button" (click)="goToEarlyWarningList()"
+                                  class="text-[11px] font-bold text-purple-700 hover:text-purple-900 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 cursor-pointer">
+                            Xử lý nợ
+                          </button>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Signature footer -->
+            <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+              <div class="flex items-center gap-2">
+                <i class="fa-solid fa-stamp text-purple-600 text-base"></i>
+                <span>Chữ ký số xác thực bởi: <strong class="text-slate-900">Lê Hoàng Cường</strong> • Giám đốc Khối Quản trị Rủi ro</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      }
+
+      <!-- ========================================================== -->
+      <!-- TAB 4: CREDIT LOAN PORTFOLIO AND EARLY WARNING LIST -->
+      <!-- ========================================================== -->
+      @if (activeTab() === 'portfolio') {
+        <div class="space-y-5">
+
+          <!-- Section Header and Mode Switcher -->
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-base sm:text-lg font-bold text-slate-900">
+                Danh Sách Cảnh Báo Sớm
+              </h2>
+            </div>
+
+            <!-- Mode Switcher Buttons -->
+            <div class="flex items-center p-1 bg-slate-100 rounded-lg border border-slate-200">
+              <button type="button"
+                      (click)="portfolioMode.set('EARLY_WARNING')"
+                      class="px-3.5 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 cursor-pointer"
+                      [class]="portfolioMode() === 'EARLY_WARNING' ? 'bg-rose-600 text-white shadow-xs' : 'text-slate-700 hover:text-slate-900'">
+                <i class="fa-solid fa-bell"></i>
+                <span>Cảnh Báo Sớm ({{ earlyWarningContracts().length }} hợp đồng)</span>
+              </button>
+              <button type="button"
+                      (click)="portfolioMode.set('ALL')"
+                      class="px-3.5 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 cursor-pointer"
+                      [class]="portfolioMode() === 'ALL' ? 'bg-blue-700 text-white shadow-xs' : 'text-slate-700 hover:text-slate-900'">
+                <i class="fa-solid fa-list"></i>
+                <span>Toàn Bộ Danh Mục (100 hợp đồng)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 4 KPI Cards for Early Warning -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+              <div class="text-[11px] font-semibold text-slate-500 uppercase">Hợp đồng cảnh báo sớm</div>
+              <div class="text-2xl font-extrabold text-rose-600 mt-1">
+                {{ earlyWarningContracts().length }} <span class="text-xs font-normal text-slate-500">/ 100 hợp đồng</span>
+              </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+              <div class="text-[11px] font-semibold text-slate-500 uppercase">Dư nợ cảnh báo</div>
+              <div class="text-2xl font-extrabold text-slate-900 mt-1">
+                {{ formatVND(earlyWarningEAD()) }}
+              </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+              <div class="text-[11px] font-semibold text-slate-500 uppercase">Trích lập bổ sung</div>
+              <div class="text-2xl font-extrabold text-rose-700 mt-1">
+                +{{ formatVND(earlyWarningDeltaPS()) }}
+              </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+              <div class="text-[11px] font-semibold text-slate-500 uppercase">Điều lệnh điều hành</div>
+              <div class="text-sm font-bold text-purple-800 mt-2 flex items-center gap-1.5">
+                <i class="fa-solid fa-stamp text-purple-600"></i>
+                <span>Quyết định 3</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filters Bar -->
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-3">
+            <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto">
+              <!-- Search -->
+              <input type="text" [placeholder]="t('search_placeholder')"
+                     [ngModel]="searchQuery()" (ngModelChange)="searchQuery.set($event)"
+                     class="bg-slate-50 border border-slate-300 rounded-md px-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-600 w-full sm:w-60">
+
+              <!-- Sector Filter -->
+              <select [ngModel]="selectedSectorFilter()" (ngModelChange)="selectedSectorFilter.set($event)"
+                      class="bg-slate-50 border border-slate-300 rounded-md px-2.5 py-1.5 text-xs text-slate-700">
+                <option value="ALL">{{ t('filter_all_sectors') }}</option>
+                <option value="REAL_ESTATE">{{ getSectorName('REAL_ESTATE') }}</option>
+                <option value="CONSTRUCTION">{{ getSectorName('CONSTRUCTION') }}</option>
+                <option value="MANUFACTURING">{{ getSectorName('MANUFACTURING') }}</option>
+                <option value="WHOLESALE_RETAIL">{{ getSectorName('WHOLESALE_RETAIL') }}</option>
+                <option value="AGRICULTURE">{{ getSectorName('AGRICULTURE') }}</option>
+                <option value="CONSUMER_LOAN">{{ getSectorName('CONSUMER_LOAN') }}</option>
+              </select>
+
+              <!-- Stage Filter -->
+              <select [ngModel]="selectedStageFilter()" (ngModelChange)="selectedStageFilter.set($event)"
+                      class="bg-slate-50 border border-slate-300 rounded-md px-2.5 py-1.5 text-xs text-slate-700">
+                <option value="ALL">{{ t('filter_all_stages') }}</option>
+                <option value="1">{{ currentLang() === 'vi' ? 'Nhóm 1 - Nợ tiêu chuẩn' : 'Stage 1 - Performing' }}</option>
+                <option value="2">{{ currentLang() === 'vi' ? 'Nhóm 2 - Rủi ro gia tăng' : 'Stage 2 - Underperforming' }}</option>
+                <option value="3">{{ currentLang() === 'vi' ? 'Nhóm 3 - Nợ xấu' : 'Stage 3 - Impaired' }}</option>
+              </select>
+            </div>
+
+            <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-end">
+              <span class="text-xs text-slate-500 font-medium">
+                {{ currentLang() === 'vi' ? 'Hiển thị: ' : 'Showing: ' }}<strong>{{ filteredStressedContracts().length }}</strong> {{ currentLang() === 'vi' ? 'hồ sơ' : 'loans' }}
+              </span>
+              <button (click)="exportEarlyWarningCSV()"
+                      class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold rounded-md shadow-sm flex items-center gap-1.5 cursor-pointer">
+                <i class="fa-solid fa-file-excel"></i>
+                <span>{{ currentLang() === 'vi' ? 'Xuất Bảng Tính Excel' : 'Export Excel Spreadsheet' }}</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Stressed Contracts / Early Warning Table -->
+          <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto max-h-[600px] overflow-y-auto">
+              <table class="w-full text-left text-xs">
+                <thead class="bg-slate-50 text-slate-700 uppercase font-bold text-[11px] border-b border-slate-200 sticky top-0 z-10 shadow-xs">
+                  <tr>
+                    <th class="p-3">Mã Hợp Đồng</th>
+                    <th class="p-3">Khách Hàng</th>
+                    <th class="p-3">Ngành Kinh Tế</th>
+                    <th class="p-3">Dư Nợ</th>
+                    <th class="p-3">Tài Sản Bảo Đảm</th>
+                    <th class="p-3">Dịch Chuyển Nhóm Nợ</th>
+                    <th class="p-3">Xác Suất Vỡ Nợ</th>
+                    <th class="p-3">Trích Lập Bổ Sung</th>
+                    <th class="p-3">Biện Pháp Xử Lý Sớm</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                  @for (c of filteredStressedContracts(); track c.contract_id) {
+                    <tr class="hover:bg-slate-50 transition-colors" [class.bg-rose-50/20]="c.is_sicr">
+                      <!-- Contract ID -->
+                      <td class="p-3 font-bold text-blue-700 whitespace-nowrap">{{ c.contract_id }}</td>
+
+                      <!-- Customer Name -->
+                      <td class="p-3 font-sans font-medium text-slate-900">
+                        <div>{{ c.customer_name }}</div>
+                        <span class="text-[10px] text-slate-400">{{ c.customer_segment }}</span>
+                      </td>
+
+                      <!-- Sector -->
+                      <td class="p-3 font-sans text-slate-600 whitespace-nowrap">{{ c.sector_name_vn }}</td>
+
+                      <!-- EAD -->
+                      <td class="p-3 font-bold text-slate-900 whitespace-nowrap">{{ formatVND(c.original_ead) }}</td>
+
+                      <!-- Collateral Info -->
+                      <td class="p-3 font-sans text-slate-600 text-[11px]">
+                        <div>{{ (c.collateral_type || 'Bất động sản thương mại').replace('&', 'và') }}</div>
+                        <span class="text-[10px] text-slate-400">Định giá lại: {{ formatVND(c.collateral_value || c.original_ead * 1.2) }}</span>
+                      </td>
+
+                      <!-- Stage Migration with Alarm Badge -->
+                      <td class="p-3 font-sans whitespace-nowrap">
+                        @if (c.is_sicr) {
+                          <span class="px-2 py-0.5 rounded text-[10px] font-extrabold border bg-rose-100 text-rose-700 border-rose-300 inline-flex items-center gap-1 shadow-xs">
+                            <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
+                            <span>{{ currentLang() === 'vi' ? 'Nhóm ' + c.baseline_stage + ' → Nhóm ' + c.stressed_stage + ' - Rủi ro gia tăng' : 'Stage ' + c.baseline_stage + ' → Stage ' + c.stressed_stage + ' - Risk Elevated' }}</span>
+                          </span>
+                        } @else {
+                          <span class="px-2 py-0.5 rounded text-[10px] font-semibold border bg-emerald-50 text-emerald-700 border-emerald-200">
+                            {{ currentLang() === 'vi' ? 'Nhóm ' + c.baseline_stage + ' - Nợ tiêu chuẩn' : 'Stage ' + c.baseline_stage + ' - Performing' }}
+                          </span>
+                        }
+                      </td>
+
+                      <!-- PD Change -->
+                      <td class="p-3 font-sans whitespace-nowrap">
+                        <div class="font-bold" [class.text-rose-700]="c.stressed_pd > c.baseline_pd" [class.text-slate-800]="c.stressed_pd <= c.baseline_pd">
+                          {{ (c.stressed_pd * 100).toFixed(2) }}%
+                        </div>
+                        <span class="text-[10px] text-slate-400">Gốc: {{ (c.baseline_pd * 100).toFixed(2) }}%</span>
+                      </td>
+
+                      <!-- Delta Provision -->
+                      <td class="p-3 font-sans whitespace-nowrap">
+                        @if (c.delta_provision > 0) {
+                          <span class="font-extrabold text-rose-600">+{{ formatVND(c.delta_provision) }}</span>
+                        } @else {
+                          <span class="text-slate-400">0 VND</span>
+                        }
+                      </td>
+
+                      <!-- Early Warning Recommended Actions -->
+                      <td class="p-3 font-sans whitespace-nowrap">
+                        @if (c.is_sicr) {
+                          <div class="flex items-center gap-1.5">
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+                              Định giá lại tài sản
+                            </span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-purple-50 text-purple-700 border border-purple-200">
+                              Kiểm tra thực địa
+                            </span>
+                          </div>
+                        } @else {
+                          <span class="text-[11px] text-emerald-600 flex items-center gap-1">
+                            <i class="fa-solid fa-check text-[10px]"></i> Nợ chuẩn an toàn
+                          </span>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      }
+
+      <!-- ========================================================== -->
+      <!-- TAB 5: AUDIT TRAIL (NHẬT KÝ HOẠT ĐỘNG KIỂM TOÁN ĐỘC LẬP) -->
+      <!-- ========================================================== -->
+      @if (activeTab() === 'audit') {
+        <div class="space-y-6">
+          <div class="bg-white rounded-xl p-5 border border-slate-200 shadow-sm space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-3">
+              <div>
+                <h3 class="text-sm font-bold text-slate-900 uppercase tracking-wide">
+                  {{ t('tab_audit') }}
+                </h3>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="text-xs text-slate-500 font-medium">{{ filteredAuditLogs().length }} hành động kiểm toán</span>
+                <button type="button" (click)="fetchAuditLogs()"
+                        class="px-2.5 py-1 text-xs font-semibold text-slate-700 hover:text-blue-700 bg-slate-100 hover:bg-slate-200 rounded border border-slate-300 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs">
+                  <i class="fa-solid fa-arrows-rotate text-[11px]"></i>
+                  <span>Làm mới nhật ký</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Action Filters -->
+            <div class="flex flex-wrap items-center gap-1.5 pt-1">
+              <button type="button" (click)="auditActionFilter.set('ALL')"
+                      class="px-2.5 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
+                      [class]="auditActionFilter() === 'ALL' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                {{ currentLang() === 'vi' ? 'Tất cả hành động' : 'All Actions' }}
+              </button>
+              <button type="button" (click)="auditActionFilter.set('SUBMIT')"
+                      class="px-2.5 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
+                      [class]="auditActionFilter() === 'SUBMIT' ? 'bg-blue-700 text-white border-blue-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                {{ currentLang() === 'vi' ? 'Khởi tạo và Nộp' : 'Created and Submitted' }}
+              </button>
+              <button type="button" (click)="auditActionFilter.set('FORWARD_APPROVER')"
+                      class="px-2.5 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
+                      [class]="auditActionFilter() === 'FORWARD_APPROVER' ? 'bg-emerald-700 text-white border-emerald-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                {{ currentLang() === 'vi' ? 'Thẩm định Đạt' : 'Review Passed' }}
+              </button>
+              <button type="button" (click)="auditActionFilter.set('RECALCULATE')"
+                      class="px-2.5 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
+                      [class]="auditActionFilter() === 'RECALCULATE' ? 'bg-rose-700 text-white border-rose-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                {{ currentLang() === 'vi' ? 'Yêu cầu Tính lại' : 'Recalculation' }}
+              </button>
+              <button type="button" (click)="auditActionFilter.set('APPROVE')"
+                      class="px-2.5 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
+                      [class]="auditActionFilter() === 'APPROVE' ? 'bg-purple-700 text-white border-purple-700' : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-100'">
+                {{ currentLang() === 'vi' ? 'Ký số Ban hành' : 'CRO Authorized' }}
+              </button>
+            </div>
+
+            <!-- Audit Trail Records -->
+            <div class="space-y-2.5">
+              @for (log of filteredAuditLogs(); track log.id) {
+                <div class="p-3.5 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-2 hover:bg-slate-100/70 transition-colors">
+                  <div class="flex flex-wrap items-center justify-between gap-2">
+                    <div class="flex items-center gap-2">
+                      <span class="px-2 py-0.5 rounded text-[10px] font-bold"
+                            [class]="log.action === 'APPROVE' ? 'bg-purple-100 text-purple-800 border border-purple-200' :
+                                    (log.action === 'FORWARD_APPROVER' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' :
+                                    (log.action === 'RECALCULATE' ? 'bg-rose-100 text-rose-800 border border-rose-200' :
+                                    (log.action.includes('CANCEL') ? 'bg-amber-100 text-amber-800 border border-amber-200' : 
+                                    (log.action === 'UPDATE' || log.action === 'RESUBMIT' ? 'bg-teal-100 text-teal-800 border border-teal-200' : 'bg-blue-100 text-blue-800 border border-blue-200'))))">
+                        {{ getAuditActionLabel(log.action) }}
+                      </span>
+                      @if (log.run_code) {
+                        <span class="font-bold text-blue-700 bg-white px-2 py-0.5 rounded border border-slate-200 text-[11px]">
+                          {{ log.run_code }}
+                        </span>
+                      }
+                      <strong class="text-slate-900 font-semibold">{{ log.actor_name }}</strong>
+                      <span class="text-slate-500 font-medium">({{ getRoleLabel(log.actor_role) }})</span>
+                    </div>
+                    <span class="text-slate-400 font-medium text-[11px]">{{ log.created_at | date:'dd/MM/yyyy HH:mm:ss' }}</span>
+                  </div>
+                  <div class="text-slate-700 bg-white p-2.5 rounded border border-slate-200 text-[11px] leading-relaxed">
+                    {{ log.action_note }}
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+
+    </main>
+  }
+
+  <!-- SAVE MODAL -->
+  @if (saveRunModalOpen()) {
+    <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="bg-white rounded-xl max-w-md w-full p-5 border border-slate-200 shadow-xl space-y-4">
+        <h4 class="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center justify-between">
+          <span>{{ currentLang() === 'vi' ? 'Lưu Phiên Kiểm Định' : 'Save Stress Test Run' }}</span>
+          @if (editingRun()) {
+            <span class="text-[11px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-200">
+              <i class="fa-solid fa-arrows-rotate mr-1"></i>{{ currentLang() === 'vi' ? 'Chế độ Ghi đè' : 'Overwrite Mode' }}
+            </span>
+          }
+        </h4>
+
+        @if (editingRun(); as editing) {
+          <div class="p-2.5 bg-amber-50 border border-amber-200 rounded-lg text-xs flex items-center justify-between">
+            <span class="font-semibold text-amber-900 flex items-center gap-1.5">
+              <i class="fa-solid fa-file-pen text-amber-600"></i>
+              <span>{{ currentLang() === 'vi' ? 'Đang cập nhật đề án:' : 'Updating proposal:' }}</span>
+              <span class="font-mono text-xs font-bold text-amber-800 bg-white border border-amber-200 px-1.5 py-0.5 rounded">{{ editing.run_code }}</span>
+            </span>
+            <button type="button" (click)="editingRun.set(null)" class="text-[11px] text-blue-600 hover:text-blue-800 underline font-medium cursor-pointer">
+              {{ currentLang() === 'vi' ? 'Tạo đề án mới' : 'New run' }}
+            </button>
+          </div>
+        }
+
+        <div class="space-y-2 text-xs">
+          <label class="block font-medium text-slate-700">{{ currentLang() === 'vi' ? 'Tên phiên:' : 'Run Name:' }}</label>
+          <input type="text" [ngModel]="newRunName()" (ngModelChange)="newRunName.set($event)"
+                 class="w-full border border-slate-300 rounded-md p-2 text-slate-800">
+        </div>
+        <div class="flex justify-end space-x-2 pt-2 border-t border-slate-100 text-xs">
+          <button (click)="saveRunModalOpen.set(false)" class="px-3 py-1.5 text-slate-600 hover:bg-slate-100 rounded cursor-pointer">
+            {{ currentLang() === 'vi' ? 'Hủy' : 'Cancel' }}
+          </button>
+          <button (click)="confirmSaveRun(false)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-medium rounded cursor-pointer">
+            {{ editingRun() 
+                ? (currentLang() === 'vi' ? 'Ghi Đè Bản Thảo' : 'Overwrite Draft') 
+                : (currentLang() === 'vi' ? 'Lưu Bản Thảo' : 'Save Draft') }}
+          </button>
+          <button (click)="confirmSaveRun(true)" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded shadow-sm cursor-pointer">
+            {{ editingRun() 
+                ? (currentLang() === 'vi' ? 'Ghi Đè và Chuyển Thẩm Định' : 'Overwrite and Submit') 
+                : (currentLang() === 'vi' ? 'Lưu và Chuyển Thẩm Định' : 'Save and Submit') }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- RECALCULATION MODAL -->
+  @if (recalculationModalOpen()) {
+    <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="bg-white rounded-xl max-w-md w-full p-5 border border-slate-200 shadow-xl space-y-4">
+        <h4 class="text-sm font-bold text-rose-700 border-b border-slate-100 pb-2">
+          {{ t('btn_request_recalc') }}
+        </h4>
+        <div class="space-y-2 text-xs">
+          <label class="block font-medium text-slate-700">{{ currentLang() === 'vi' ? 'Lý do yêu cầu tính lại:' : 'Recalculation Instructions:' }}</label>
+          <textarea rows="3" [ngModel]="recalculationNote()" (ngModelChange)="recalculationNote.set($event)"
+                    class="w-full border border-slate-300 rounded-md p-2 text-slate-800"></textarea>
+        </div>
+        <div class="flex justify-end space-x-2 pt-2 border-t border-slate-100 text-xs">
+          <button (click)="recalculationModalOpen.set(false)" class="px-3 py-1.5 text-slate-600 hover:bg-slate-100 rounded">
+            {{ currentLang() === 'vi' ? 'Hủy' : 'Cancel' }}
+          </button>
+          <button (click)="executeWorkflow(selectedRunToReview()!.id, 'RECALCULATE', recalculationNote())"
+                  class="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-medium rounded shadow-sm">
+            {{ currentLang() === 'vi' ? 'Gửi Yêu Cầu' : 'Send Request' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- CALCULATION METHODOLOGY MODAL (POP-UP CHI TIẾT CÁCH TÍNH REALTIME) -->
+  @if (methodologyModalOpen() && simulationResult()) {
+    <div class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+      <div class="bg-white rounded-xl max-w-4xl w-full p-5 sm:p-6 border border-slate-200 shadow-2xl space-y-4 my-auto max-h-[92vh] overflow-y-auto">
+        
+        <!-- Modal Header -->
+        <div class="flex items-start justify-between border-b border-slate-200 pb-3">
+          <div>
+            <div class="text-[11px] font-semibold uppercase tracking-wider text-blue-700">
+              {{ currentLang() === 'vi' ? 'Phương Pháp Luận và Chi Tiết Công Thức' : 'Calculation Methodology and Live Formulas' }}
+            </div>
+            <h3 class="text-base font-bold text-slate-900 mt-0.5">
+              {{ currentLang() === 'vi' ? 'Chi Tiết Cách Tính Toán 5 Chỉ Số Rủi Ro (IFRS 9 - Basel II)' : 'Live Mathematical Breakdown for 5 Risk Indicators' }}
+            </h3>
+            <div class="mt-1 text-xs text-slate-500">
+              {{ currentLang() === 'vi' ? 'Sốc hiện tại:' : 'Live Shocks:' }} 
+              ΔGDP: <span class="text-blue-700 font-bold">{{ gdpShock() }}%</span> | 
+              ΔIR: <span class="text-amber-700 font-bold">+{{ irShock() }} bps</span> | 
+              ΔUNEMP: <span class="text-emerald-700 font-bold">+{{ unempShock() }}%</span> | 
+              ΔRE: <span class="text-rose-700 font-bold">{{ reShock() }}%</span>
+              <span class="text-slate-400 ml-1">({{ currentLang() === 'vi' ? 'Số liệu tự động cập nhật Realtime khi kéo thanh trượt' : 'Values update dynamically with sliders' }})</span>
+            </div>
+          </div>
+          <button (click)="methodologyModalOpen.set(false)" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-md hover:bg-slate-100">
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
+
+        <!-- 5 Tabs Navigation inside Modal -->
+        <div class="flex flex-wrap gap-1.5 border-b border-slate-200 pb-2">
+          <button (click)="selectedCalcTab.set('all')"
+                  [class]="selectedCalcTab() === 'all' ? 'bg-slate-900 text-white font-bold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+                  class="px-2.5 py-1 text-xs rounded-md transition-colors">
+            {{ currentLang() === 'vi' ? 'Toàn bộ' : 'All' }}
+          </button>
+          <button (click)="selectedCalcTab.set('ead')"
+                  [class]="selectedCalcTab() === 'ead' ? 'bg-blue-600 text-white font-bold' : 'bg-blue-50 text-blue-800 hover:bg-blue-100'"
+                  class="px-2.5 py-1 text-xs rounded-md transition-colors">
+            Dư nợ EAD
+          </button>
+          <button (click)="selectedCalcTab.set('ecl')"
+                  [class]="selectedCalcTab() === 'ecl' ? 'bg-amber-600 text-white font-bold' : 'bg-amber-50 text-amber-800 hover:bg-amber-100'"
+                  class="px-2.5 py-1 text-xs rounded-md transition-colors">
+            Tổn thất ECL
+          </button>
+          <button (click)="selectedCalcTab.set('deltaps')"
+                  [class]="selectedCalcTab() === 'deltaps' ? 'bg-rose-600 text-white font-bold' : 'bg-rose-50 text-rose-800 hover:bg-rose-100'"
+                  class="px-2.5 py-1 text-xs rounded-md transition-colors">
+            Trích lập ΔPS
+          </button>
+          <button (click)="selectedCalcTab.set('car')"
+                  [class]="selectedCalcTab() === 'car' ? 'bg-purple-600 text-white font-bold' : 'bg-purple-50 text-purple-800 hover:bg-purple-100'"
+                  class="px-2.5 py-1 text-xs rounded-md transition-colors">
+            Tỷ lệ CAR
+          </button>
+          <button (click)="selectedCalcTab.set('npl')"
+                  [class]="selectedCalcTab() === 'npl' ? 'bg-slate-700 text-white font-bold' : 'bg-slate-100 text-slate-800 hover:bg-slate-200'"
+                  class="px-2.5 py-1 text-xs rounded-md transition-colors">
+            Nợ xấu NPL
+          </button>
+        </div>
+
+        <!-- Metric Details List -->
+        <div class="space-y-4 text-xs">
+
+          <!-- EAD Breakdown -->
+          @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'ead') {
+            <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+              <div class="flex items-center justify-between border-b border-slate-200 pb-1.5">
+                <span class="font-bold text-slate-900 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Tổng Dư Nợ Chịu Rủi Ro' : 'Total Exposure at Default' }}</span>
+                <span class="text-xs font-bold text-blue-700 bg-white px-2.5 py-0.5 rounded border border-slate-200">
+                  {{ formatVND(simulationResult()!.summary.total_ead) }}
+                </span>
+              </div>
+              <div class="text-slate-800 bg-white p-3 rounded-lg border border-slate-200 text-xs space-y-1.5 leading-relaxed">
+                <div>• <strong>Công thức:</strong> EAD_Total = ∑ EAD_i (i=1..100)</div>
+                <div>• <strong>Thế số thực tế:</strong> Tổng cộng 100 hợp đồng tín dụng từ Core Banking / DWH = <strong>{{ formatVND(simulationResult()!.summary.total_ead) }}</strong></div>
+              </div>
+              <p class="text-[11px] text-slate-500">
+                {{ currentLang() === 'vi' ? 'Quy mô danh mục kiểm định giữ nguyên theo nguyên tắc kiểm định tĩnh.' : 'Portfolio exposure is held constant under the standard static balance sheet assumption.' }}
+              </p>
+            </div>
+          }
+
+          <!-- ECL Breakdown -->
+          @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'ecl') {
+            <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+              <div class="flex items-center justify-between border-b border-slate-200 pb-1.5">
+                <span class="font-bold text-slate-900 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Tổn Thất Tín Dụng Dự Kiến' : 'Stressed Expected Credit Loss' }}</span>
+                <span class="text-xs font-bold text-amber-700 bg-white px-2.5 py-0.5 rounded border border-slate-200">
+                  {{ formatVND(simulationResult()!.summary.total_stressed_ecl) }}
+                </span>
+              </div>
+              <div class="text-slate-800 bg-white p-3 rounded-lg border border-slate-200 text-xs space-y-1.5 leading-relaxed">
+                <div>• <strong>Công thức:</strong> ECL_stress = ∑ [ PD_stress × LGD_stress × EAD × DF ]</div>
+                <div>• <strong>Hàm liên kết PD:</strong> logit(PD_stress) = logit(PD_0) + β_GDP×(-ΔGDP) + β_IR×(ΔIR) + β_UNEMP×(ΔUNEMP) + |β_RE|×(-ΔRE)</div>
+                <div>• <strong>Thế số thực tế:</strong> Với sốc hiện tại (ΔGDP = {{ gdpShock() }}%, ΔIR = +{{ irShock() }} bps, ΔUNEMP = +{{ unempShock() }}%, ΔRE = {{ reShock() }}%), tổng tổn thất sau sốc = <strong>{{ formatVND(simulationResult()!.summary.total_stressed_ecl) }}</strong> (Mức cơ sở ban đầu: {{ formatVND(simulationResult()!.summary.total_baseline_ecl) }}).</div>
+              </div>
+              <p class="text-[11px] text-slate-500">
+                {{ currentLang() === 'vi' ? 'Khi hợp đồng có rủi ro tăng và chuyển nhóm nợ, thời gian trích lập chuyển từ 12 tháng sang toàn bộ vòng đời, làm tổng tổn thất tăng lên.' : 'Significant Increase in Credit Risk shifts provisions from 12-month to lifetime, sharply escalating ECL.' }}
+              </p>
+            </div>
+          }
+
+          <!-- Delta PS Breakdown -->
+          @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'deltaps') {
+            <div class="p-4 rounded-lg bg-rose-50/40 border border-rose-200 space-y-2">
+              <div class="flex items-center justify-between border-b border-rose-200 pb-1.5">
+                <span class="font-bold text-rose-800 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Chi Phí Trích Lập Dự Phòng Bổ Sung' : 'Additional Provision Allocation' }}</span>
+                <span class="text-xs font-bold text-rose-700 bg-white px-2.5 py-0.5 rounded border border-rose-200">
+                  +{{ formatVND(simulationResult()!.summary.total_delta_provision) }}
+                </span>
+              </div>
+              <div class="text-slate-800 bg-white p-3 rounded-lg border border-rose-200 text-xs space-y-1.5 leading-relaxed">
+                <div>• <strong>Công thức:</strong> ΔPS = ECL_stress - ECL_baseline</div>
+                <div>• <strong>Thế số trực tiếp:</strong> ΔPS = <strong>{{ formatVND(simulationResult()!.summary.total_stressed_ecl) }}</strong> - <strong>{{ formatVND(simulationResult()!.summary.total_baseline_ecl) }}</strong></div>
+                <div class="text-rose-700 font-bold">• Kết quả: ΔPS = +{{ formatVND(simulationResult()!.summary.total_delta_provision) }}</div>
+              </div>
+              <p class="text-[11px] text-slate-500">
+                {{ currentLang() === 'vi' ? 'Khoản trích lập bổ sung này là nghĩa vụ tài chính phải trích thêm, khấu trừ trực tiếp vào kết quả kinh doanh và Vốn Cấp 1 của ngân hàng.' : 'This additional provision directly subtracts from net earnings and Tier 1 regulatory capital.' }}
+              </p>
+            </div>
+          }
+
+          <!-- CAR Breakdown -->
+          @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'car') {
+            <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+              <div class="flex items-center justify-between border-b border-slate-200 pb-1.5">
+                <span class="font-bold text-slate-900 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Tỷ Lệ An Toàn Vốn' : 'Capital Adequacy Ratio' }}</span>
+                <span class="text-xs font-bold px-2.5 py-0.5 rounded border"
+                      [class]="simulationResult()!.summary.is_capital_adequate ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-rose-700 bg-rose-50 border-rose-200'">
+                  {{ formatPercent(simulationResult()!.summary.stressed_car) }}
+                </span>
+              </div>
+              <div class="text-slate-800 bg-white p-3 rounded-lg border border-slate-200 text-xs space-y-1.5 leading-relaxed">
+                <div>• <strong>Công thức CAR:</strong> CAR_stress = [ (Tier1_stress + Tier2) / RWA_stress ] × 100%</div>
+                <div>• <strong>Vốn Cấp 1 sau sốc:</strong> Tier1_stress = Tier1_base - ΔPS = {{ formatVND(simulationResult()!.summary.baseline_tier1) }} - {{ formatVND(simulationResult()!.summary.total_delta_provision) }} = <strong>{{ formatVND(simulationResult()!.summary.stressed_tier1) }}</strong></div>
+                <div>• <strong>Vốn Cấp 2:</strong> Tier2 = <strong>{{ formatVND(simulationResult()!.summary.total_ead * 0.035) }}</strong></div>
+                <div>• <strong>Tài sản rủi ro (RWA):</strong> RWA_stress = <strong>{{ formatVND(simulationResult()!.summary.stressed_rwa) }}</strong> (Tăng do khoản vay chuyển Stage chịu hệ số rủi ro cao hơn)</div>
+                <div class="font-bold text-blue-800">• CAR = [ ({{ formatVND(simulationResult()!.summary.stressed_tier1) }} + {{ formatVND(simulationResult()!.summary.total_ead * 0.035) }}) / {{ formatVND(simulationResult()!.summary.stressed_rwa) }} ] × 100% = <strong>{{ formatPercent(simulationResult()!.summary.stressed_car) }}</strong></div>
+              </div>
+              <div class="text-[11px] font-semibold"
+                   [class]="simulationResult()!.summary.is_capital_adequate ? 'text-emerald-700' : 'text-rose-700'">
+                {{ simulationResult()!.summary.is_capital_adequate ? '• Đạt chuẩn an toàn vốn (≥ 8.00% Thông tư 41/2016/TT-NHNN).' : '• Vi phạm ngưỡng an toàn vốn tối thiểu 8.00% (Thâm hụt vốn đệm cần giải pháp can thiệp).' }}
+              </div>
+            </div>
+          }
+
+          <!-- NPL Breakdown -->
+          @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'npl') {
+            <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
+              <div class="flex items-center justify-between border-b border-slate-200 pb-1.5">
+                <span class="font-bold text-slate-900 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Tỷ Lệ Nợ Xấu' : 'Non-Performing Loan Ratio' }}</span>
+                <span class="text-xs font-bold text-slate-900 bg-white px-2.5 py-0.5 rounded border border-slate-200">
+                  {{ formatPercent(simulationResult()!.summary.npl_ratio_post) }}
+                </span>
+              </div>
+              <div class="text-slate-800 bg-white p-3 rounded-lg border border-slate-200 text-xs space-y-1.5 leading-relaxed">
+                <div>• <strong>Công thức:</strong> NPL = [ Số HĐ Nhóm 3 / Tổng số HĐ ] × 100%</div>
+                <div>• <strong>Dịch chuyển nhóm nợ hiện tại:</strong></div>
+                <div class="pl-3 text-[11px] space-y-0.5">
+                  <div>{{ currentLang() === 'vi' ? '- Nhóm 1 - Nợ tiêu chuẩn:' : '- Stage 1 - Performing:' }} <strong>{{ simulationResult()!.stage_migration.post_stress[1] }}</strong> {{ currentLang() === 'vi' ? 'hợp đồng' : 'loans' }}</div>
+                  <div>{{ currentLang() === 'vi' ? '- Nhóm 2 - Rủi ro gia tăng:' : '- Stage 2 - Underperforming:' }} <strong>{{ simulationResult()!.stage_migration.post_stress[2] }}</strong> {{ currentLang() === 'vi' ? 'hợp đồng (+ ' + simulationResult()!.stage_migration.migrated_to_stage2 + ' hợp đồng nhảy nhóm)' : 'loans' }}</div>
+                  <div>{{ currentLang() === 'vi' ? '- Nhóm 3 - Nợ xấu:' : '- Stage 3 - Impaired:' }} <strong>{{ simulationResult()!.stage_migration.post_stress[3] }}</strong> {{ currentLang() === 'vi' ? 'hợp đồng (+ ' + simulationResult()!.stage_migration.migrated_to_stage3 + ' hợp đồng vỡ nợ mới)' : 'loans' }}</div>
+                </div>
+                <div class="font-bold text-slate-900">• NPL = <strong>{{ formatPercent(simulationResult()!.summary.npl_ratio_post) }}</strong> ({{ currentLang() === 'vi' ? 'Trước sốc: ' : 'Baseline: ' }}{{ formatPercent(simulationResult()!.summary.npl_ratio_pre) }})</div>
+              </div>
+            </div>
+          }
+
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="flex items-center justify-between pt-3 border-t border-slate-200 text-xs">
+          <span class="text-slate-400 text-xs">Chuẩn mực IFRS 9 và Basel II</span>
+          <button (click)="methodologyModalOpen.set(false)"
+                  class="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-md border border-slate-300 transition-colors">
+            {{ currentLang() === 'vi' ? 'Đóng Cửa Sổ' : 'Close' }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  }
+
+  <!-- RENAME PROPOSAL MODAL -->
+  @if (renameModalOpen() && runToRename()) {
+    <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
+      <div class="bg-white rounded-xl max-w-md w-full p-5 border border-slate-200 shadow-xl space-y-4">
+        <h4 class="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2 flex items-center gap-2">
+          <i class="fa-solid fa-pen-to-square text-blue-600"></i>
+          <span>{{ currentLang() === 'vi' ? 'Đổi Tên Đề Án Kiểm Định' : 'Rename Proposal' }}</span>
+        </h4>
+        <div class="text-xs text-slate-500">
+          Mã đề án: <strong class="font-mono text-blue-700 font-bold">{{ runToRename()!.run_code }}</strong>
+        </div>
+        <div class="space-y-2 text-xs">
+          <label class="block font-medium text-slate-700">{{ currentLang() === 'vi' ? 'Tên đề án mới:' : 'New Proposal Name:' }}</label>
+          <input type="text" [ngModel]="renameValue()" (ngModelChange)="renameValue.set($event)"
+                 class="w-full border border-slate-300 rounded-md p-2 text-slate-800 focus:ring-1 focus:ring-blue-500">
+        </div>
+        <div class="flex justify-end space-x-2 pt-2 border-t border-slate-100 text-xs">
+          <button (click)="renameModalOpen.set(false)" class="px-3 py-1.5 text-slate-600 hover:bg-slate-100 rounded cursor-pointer">
+            {{ currentLang() === 'vi' ? 'Hủy' : 'Cancel' }}
+          </button>
+          <button (click)="confirmRenameRun()" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded shadow-sm cursor-pointer">
+            {{ currentLang() === 'vi' ? 'Lưu Thay Đổi' : 'Save Changes' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- RUN DETAIL MODAL -->
+  @if (viewDetailModalOpen() && selectedRunDetail()) {
+    <div class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+      <div class="bg-white rounded-xl max-w-2xl w-full p-5 sm:p-6 border border-slate-200 shadow-2xl space-y-4 my-auto max-h-[90vh] overflow-y-auto">
+        <div class="flex items-start justify-between border-b border-slate-100 pb-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">{{ selectedRunDetail()!.run_code }}</span>
+              <span class="inline-block whitespace-nowrap px-2.5 py-1 rounded text-[11px] font-semibold"
+                    [class]="selectedRunDetail()!.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
+                            (selectedRunDetail()!.status === 'PENDING_APPROVAL' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
+                            (selectedRunDetail()!.status === 'SUBMITTED' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
+                            (selectedRunDetail()!.status === 'RECALCULATION_REQUESTED' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-slate-100 text-slate-700 border border-slate-200')))">
+                {{ getStatusLabel(selectedRunDetail()!.status) }}
+              </span>
+            </div>
+            <h3 class="text-sm font-bold text-slate-900 mt-1.5">{{ selectedRunDetail()!.run_name }}</h3>
+          </div>
+          <button (click)="viewDetailModalOpen.set(false)" class="w-8 h-8 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center cursor-pointer">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+
+        <!-- Detail KPIs Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+            <div class="text-[11px] text-slate-500 font-medium">Tổn thất Dự kiến</div>
+            <div class="text-sm font-bold text-slate-900 mt-0.5">{{ formatVND(selectedRunDetail()!.total_stressed_ecl) }}</div>
+          </div>
+          <div class="p-3 bg-rose-50/60 rounded-lg border border-rose-100">
+            <div class="text-[11px] text-rose-700 font-semibold">Trích lập Bổ sung</div>
+            <div class="text-sm font-bold text-rose-700 mt-0.5">+{{ formatVND(selectedRunDetail()!.total_delta_provision) }}</div>
+          </div>
+          <div class="p-3 bg-blue-50/60 rounded-lg border border-blue-100">
+            <div class="text-[11px] text-blue-700 font-semibold">Hệ số CAR sau sốc</div>
+            <div class="text-sm font-bold text-blue-800 mt-0.5">{{ formatPercent(selectedRunDetail()!.car_impact?.stressed_car) }}</div>
+          </div>
+          <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+            <div class="text-[11px] text-slate-500 font-medium">Kịch bản vĩ mô</div>
+            <div class="text-xs font-bold text-slate-800 mt-0.5">{{ selectedRunDetail()!.scenario_name }}</div>
+          </div>
+        </div>
+
+        <!-- Macro Shocks applied -->
+        <div class="p-3.5 bg-slate-50 rounded-lg border border-slate-200 text-xs space-y-2">
+          <div class="font-bold text-slate-800 text-[11px] uppercase tracking-wide">Bộ Tham Số Cú Sốc Vĩ Mô Áp Dụng</div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
+            <div>GDP: <strong class="text-blue-700">{{ formatShock(selectedRunDetail()!.custom_gdp_shock, 100, 1) }}%</strong></div>
+            <div>Lãi suất: <strong class="text-amber-700">+{{ formatShock(selectedRunDetail()!.custom_ir_shock, 10000, 0) }} bps</strong></div>
+            <div>Thất nghiệp: <strong class="text-emerald-700">+{{ formatShock(selectedRunDetail()!.custom_unemp_shock, 100, 1) }}%</strong></div>
+            <div>Bất động sản: <strong class="text-rose-700">{{ formatShock(selectedRunDetail()!.custom_re_shock, 100, 1) }}%</strong></div>
+          </div>
+        </div>
+
+        @if (selectedRunDetail()!.rejection_reason) {
+          <div class="p-3 bg-rose-50 border border-rose-200 rounded-lg text-xs space-y-1">
+            <div class="font-bold text-rose-900 flex items-center gap-1.5">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <span>Ý kiến phản hồi từ Trưởng phòng Quản lý rủi ro:</span>
+            </div>
+            <p class="text-rose-800 italic leading-relaxed">"{{ selectedRunDetail()!.rejection_reason }}"</p>
+          </div>
+        }
+
+        <div class="flex items-center justify-between pt-3 border-t border-slate-100 text-xs">
+          <button (click)="viewDetailModalOpen.set(false)" class="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-md cursor-pointer">
+            {{ currentLang() === 'vi' ? 'Đóng' : 'Close' }}
+          </button>
+          @if (selectedRunDetail()!.status !== 'PENDING_APPROVAL' && selectedRunDetail()!.status !== 'APPROVED') {
+            <button (click)="viewDetailModalOpen.set(false); editRunProposal(selectedRunDetail()!)"
+                    class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-md shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-pen-to-square"></i>
+              <span>{{ currentLang() === 'vi' ? 'Chỉnh Sửa và Tính Lại Đề Án Này' : 'Edit and Recalculate' }}</span>
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-slate-200 py-3 mt-auto text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex items-center justify-center">
+      <div>Hệ thống Kiểm định Tín dụng và Phân bổ Trích lập Dự phòng IFRS 9 © 2026</div>
+    </div>
+  </footer>
+
+</div>

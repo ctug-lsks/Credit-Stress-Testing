@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  postgres_credit_risk:
+    image: postgres:16-alpine
+    container_name: postgres_credit_risk
+    restart: always
+    environment:
+      POSTGRES_DB: credit_risk_db
+      POSTGRES_USER: risk_admin
+      POSTGRES_PASSWORD: RiskAdmin2026!
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./schema_postgresql.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./seed_data_postgresql.sql:/docker-entrypoint-initdb.d/02_seed.sql:ro
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin_credit_risk
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@bank.vn
+      PGADMIN_DEFAULT_PASSWORD: PgAdmin2026!
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres_credit_risk
+
+volumes:
+  pgdata:
