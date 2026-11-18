@@ -42,7 +42,7 @@
 
           <!-- Language Switcher Button -->
           <button (click)="toggleLanguage()"
-                  class="px-2.5 py-1 text-xs font-medium rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 shadow-sm flex items-center space-x-1 transition-colors">
+                  class="px-2.5 py-1 text-xs font-medium rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 shadow-sm flex items-center space-x-1 transition-colors cursor-pointer">
             <span [class.font-bold]="currentLang() === 'vi'" [class.text-blue-700]="currentLang() === 'vi'">VI</span>
             <span class="text-slate-300">|</span>
             <span [class.font-bold]="currentLang() === 'en'" [class.text-blue-700]="currentLang() === 'en'">EN</span>
@@ -61,13 +61,13 @@
                 {{ getRoleLabel(currentUser()!.role) }}
               </span>
               <button (click)="logout()" title="{{ t('btn_logout') }}"
-                      class="px-2.5 py-1 text-xs font-medium text-slate-600 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 rounded-md transition-colors">
+                      class="px-2.5 py-1 text-xs font-medium text-slate-600 hover:text-red-600 hover:bg-red-50 border border-slate-200 rounded-md transition-colors cursor-pointer">
                 {{ t('btn_logout') }}
               </button>
             </div>
           } @else {
             <button (click)="loginUsername.set('maker_an')"
-                    class="px-3 py-1 text-xs font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700 shadow-sm">
+                    class="px-3 py-1 text-xs font-medium bg-slate-900 text-white rounded-md hover:bg-slate-900 shadow-sm cursor-pointer">
               {{ t('btn_login') }}
             </button>
           }
@@ -80,19 +80,19 @@
         <nav class="flex space-x-6 overflow-x-auto border-t border-slate-200 pt-1 pb-2">
           @if (canAccess('maker')) {
             <button (click)="setMakerView('simulation')"
-                    [class]="activeTab() === 'maker' && makerActiveView() === 'simulation' ? 'border-blue-600 text-blue-700 font-semibold' : 'border-transparent text-slate-600 hover:text-slate-900'"
+                    [class]="activeTab() === 'maker' && makerActiveView() === 'simulation' ? 'border-slate-900 text-slate-900 font-bold' : 'border-transparent text-slate-600 hover:text-slate-900'"
                     class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-calculator text-blue-600"></i>
+              <i class="fa-solid fa-calculator text-slate-900"></i>
               <span>{{ currentLang() === 'vi' ? 'Mô Phỏng Kịch Bản' : 'Stress Simulation' }}</span>
             </button>
             <button (click)="setMakerView('reports')"
-                    [class]="activeTab() === 'maker' && makerActiveView() === 'reports' ? 'border-blue-600 text-blue-700 font-semibold' : 'border-transparent text-slate-600 hover:text-slate-900'"
+                    [class]="activeTab() === 'maker' && makerActiveView() === 'reports' ? 'border-slate-900 text-slate-900 font-bold' : 'border-transparent text-slate-600 hover:text-slate-900'"
                     class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
-              <i class="fa-solid fa-folder-open text-blue-600"></i>
+              <i class="fa-solid fa-folder-open text-slate-900"></i>
               <span>{{ currentLang() === 'vi' ? 'Quản Lý Báo Cáo và Đề Án' : 'My Reports and Proposals' }}</span>
-              <span class="px-1.5 py-0.2 text-[10px] bg-blue-100 text-blue-800 rounded font-bold">{{ allRuns().length }}</span>
+              <span class="px-1.5 py-0.2 text-[10px] bg-slate-200 text-slate-800 rounded font-bold">{{ allRuns().length }}</span>
               @if (recalcRuns().length > 0) {
-                <span class="px-1.5 py-0.2 text-[10px] bg-rose-600 text-white rounded-full font-bold animate-pulse">
+                <span class="px-1.5 py-0.2 text-[10px] bg-red-600 text-white rounded-full font-bold animate-pulse">
                   {{ recalcRuns().length }} {{ currentLang() === 'vi' ? 'cần sửa' : 'to revise' }}
                 </span>
               }
@@ -100,11 +100,11 @@
           }
           @if (canAccess('checker')) {
             <button (click)="activeTab.set('checker')"
-                    [class]="activeTab() === 'checker' ? 'border-amber-600 text-amber-700 font-semibold' : 'border-transparent text-slate-600 hover:text-slate-900'"
-                    class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5">
+                    [class]="activeTab() === 'checker' ? 'border-slate-900 text-slate-900 font-bold' : 'border-transparent text-slate-600 hover:text-slate-900'"
+                    class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
               {{ t('tab_checker') }}
               @if (submittedRunsCount() > 0) {
-                <span class="px-1.5 py-0.2 text-[10px] bg-amber-500 text-white rounded-full font-bold animate-pulse">{{ submittedRunsCount() }}</span>
+                <span class="px-1.5 py-0.2 text-[10px] bg-slate-900 text-white rounded-full font-bold">{{ submittedRunsCount() }}</span>
               } @else if (allRuns().length > 0) {
                 <span class="px-1.5 py-0.2 text-[10px] bg-slate-100 text-slate-600 rounded font-semibold">{{ allRuns().length }}</span>
               }
@@ -112,24 +112,24 @@
           }
           @if (canAccess('approver')) {
             <button (click)="activeTab.set('approver')"
-                    [class]="activeTab() === 'approver' ? 'border-purple-600 text-purple-700 font-semibold' : 'border-transparent text-slate-600 hover:text-slate-900'"
-                    class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5">
+                    [class]="activeTab() === 'approver' ? 'border-slate-900 text-slate-900 font-bold' : 'border-transparent text-slate-600 hover:text-slate-900'"
+                    class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
               {{ t('tab_approver') }}
             </button>
           }
           <button (click)="activeTab.set('portfolio')"
-                  [class]="activeTab() === 'portfolio' ? 'border-rose-600 text-rose-700 font-semibold' : 'border-transparent text-slate-600 hover:text-slate-900'"
+                  [class]="activeTab() === 'portfolio' ? 'border-slate-900 text-slate-900 font-bold' : 'border-transparent text-slate-600 hover:text-slate-900'"
                   class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
             <i class="fa-solid fa-triangle-exclamation text-amber-500"></i>
             <span>{{ currentLang() === 'vi' ? 'Cảnh Báo Sớm và Danh Mục' : 'Early Warning and Portfolio' }}</span>
             @if (earlyWarningContracts().length > 0) {
-              <span class="px-1.5 py-0.2 text-[10px] bg-rose-100 text-rose-700 rounded-full font-bold">
+              <span class="px-1.5 py-0.2 text-[10px] bg-rose-100 text-red-700 rounded-full font-bold">
                 {{ earlyWarningContracts().length }} cảnh báo
               </span>
             }
           </button>
           <button (click)="openAuditTab()"
-                  [class]="activeTab() === 'audit' ? 'border-blue-600 text-blue-700 font-semibold' : 'border-transparent text-slate-600 hover:text-slate-900'"
+                  [class]="activeTab() === 'audit' ? 'border-slate-900 text-slate-900 font-bold' : 'border-transparent text-slate-600 hover:text-slate-900'"
                   class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
             {{ t('tab_audit') }}
           </button>
@@ -141,7 +141,7 @@
   <!-- Notification Toast -->
   @if (notification()) {
     <div class="fixed bottom-6 right-6 z-50 max-w-md p-3.5 rounded-lg shadow-lg border text-xs font-medium flex items-center space-x-2"
-         [class]="notification()!.type === 'success' ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : 'bg-rose-50 border-rose-300 text-rose-800'">
+         [class]="notification()!.type === 'success' ? 'bg-emerald-50 border-emerald-300 text-emerald-800' : 'bg-red-50 border-red-300 text-rose-800'">
       <span>{{ notification()!.message }}</span>
     </div>
   }
@@ -162,7 +162,7 @@
         <!-- Standard Login Form -->
         <form (ngSubmit)="performLogin()" class="space-y-3.5">
           @if (loginError()) {
-            <div class="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
+            <div class="p-2.5 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
               {{ loginError() }}
             </div>
           }
@@ -194,7 +194,7 @@
           </div>
 
           <button type="submit"
-                  class="w-full py-2 px-4 bg-blue-700 hover:bg-blue-800 text-white font-semibold text-xs rounded-lg shadow-sm transition duration-150 flex items-center justify-center cursor-pointer">
+                  class="w-full py-2 px-4 bg-slate-900 hover:bg-slate-900 text-white font-semibold text-xs rounded-lg shadow-sm transition duration-150 flex items-center justify-center cursor-pointer">
             {{ t('btn_login') }}
           </button>
         </form>
@@ -257,24 +257,24 @@
 
           <!-- RECALCULATION REQUIRED ALERT BANNER (COMPACT) -->
           @if (recalcRuns().length > 0) {
-            <div class="bg-rose-50 border border-rose-300 rounded-xl p-2.5 shadow-xs space-y-1.5">
+            <div class="bg-red-50 border border-red-300 rounded-xl p-2.5 shadow-xs space-y-1.5">
               @for (run of recalcRuns(); track run.id) {
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-white px-3 py-2 rounded-lg border border-rose-200 text-xs">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-white px-3 py-2 rounded-lg border border-red-200 text-xs">
                   <div class="flex items-center gap-2 flex-wrap min-w-0">
-                    <span class="inline-flex items-center gap-1 text-[11px] font-bold text-rose-700 bg-rose-100 px-2 py-0.5 rounded-full shrink-0">
+                    <span class="inline-flex items-center gap-1 text-[11px] font-bold text-red-700 bg-rose-100 px-2 py-0.5 rounded-full shrink-0">
                       <i class="fa-solid fa-triangle-exclamation"></i>
                       <span>{{ currentLang() === 'vi' ? 'Cần tính lại' : 'Recalculate' }}</span>
                     </span>
                     <span class="font-bold text-rose-800 font-mono shrink-0">{{ run.run_code }}</span>
                     <span class="font-medium text-slate-800 truncate">{{ run.run_name }}</span>
                     @if (run.rejection_reason) {
-                      <span class="text-rose-700 text-[11px] italic truncate max-w-lg">
+                      <span class="text-red-700 text-[11px] italic truncate max-w-lg">
                         — "{{ run.rejection_reason }}"
                       </span>
                     }
                   </div>
                   <button (click)="editRunProposal(run)"
-                          class="px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-md shadow-xs transition-colors inline-flex items-center gap-1.5 cursor-pointer shrink-0">
+                          class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-md shadow-xs transition-colors inline-flex items-center gap-1.5 cursor-pointer shrink-0">
                     <i class="fa-solid fa-bolt"></i>
                     <span>{{ currentLang() === 'vi' ? 'Tính Lại Ngay' : 'Recalculate Now' }}</span>
                   </button>
@@ -292,7 +292,7 @@
                 <span class="font-mono text-xs font-bold text-amber-800 bg-white border border-amber-300 px-1.5 py-0.5 rounded">{{ editing.run_code }}</span>
                 <span class="text-amber-800 font-medium">({{ editing.run_name }})</span>
               </div>
-              <button type="button" (click)="cancelEditingRun()" class="px-2 py-1 bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 rounded-md font-semibold text-xs transition-colors cursor-pointer shrink-0 inline-flex items-center gap-1">
+              <button type="button" (click)="cancelEditingRun()" class="px-2 py-1 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-md font-semibold text-xs transition-colors cursor-pointer shrink-0 inline-flex items-center gap-1">
                 <i class="fa-solid fa-xmark text-slate-400"></i>
                 <span>{{ currentLang() === 'vi' ? 'Hủy / Tạo mới' : 'Cancel' }}</span>
               </button>
@@ -308,7 +308,7 @@
             </div>
             <div class="flex items-center space-x-2">
               <button (click)="openCalcDetail('all')"
-                      class="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold rounded-md border border-blue-200 transition-colors flex items-center gap-1.5 shadow-2xs">
+                      class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-md border border-slate-300 transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer">
                 <i class="fa-solid fa-calculator text-[11px]"></i>
                 <span>{{ t('btn_methodology_detail') }}</span>
               </button>
@@ -317,7 +317,7 @@
                 {{ isLoading() ? '...' : t('btn_recalculate') }}
               </button>
               <button (click)="openSaveModal()"
-                      class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-md shadow-sm transition-colors">
+                      class="px-3.5 py-1.5 bg-slate-900 hover:bg-slate-900 text-white text-xs font-semibold rounded-md shadow-sm transition-colors cursor-pointer">
                 {{ t('btn_submit_checker') }}
               </button>
             </div>
@@ -331,17 +331,17 @@
               <div class="inline-flex rounded-md border border-slate-200 p-0.5 bg-slate-50 space-x-1">
                 <button (click)="applyPreset('BASELINE')"
                         [class]="selectedPreset() === 'BASELINE' ? 'bg-white text-slate-900 font-semibold shadow-xs border border-slate-200' : 'text-slate-600 hover:text-slate-900'"
-                        class="px-2.5 py-1 text-xs rounded transition-all">
+                        class="px-2.5 py-1 text-xs rounded transition-all cursor-pointer">
                   {{ t('preset_baseline') }}
                 </button>
                 <button (click)="applyPreset('ADVERSE')"
                         [class]="selectedPreset() === 'ADVERSE' ? 'bg-white text-slate-900 font-semibold shadow-xs border border-slate-200' : 'text-slate-600 hover:text-slate-900'"
-                        class="px-2.5 py-1 text-xs rounded transition-all">
+                        class="px-2.5 py-1 text-xs rounded transition-all cursor-pointer">
                   {{ t('preset_adverse') }}
                 </button>
                 <button (click)="applyPreset('SEVERE')"
                         [class]="selectedPreset() === 'SEVERE' ? 'bg-white text-slate-900 font-semibold shadow-xs border border-slate-200' : 'text-slate-600 hover:text-slate-900'"
-                        class="px-2.5 py-1 text-xs rounded transition-all">
+                        class="px-2.5 py-1 text-xs rounded transition-all cursor-pointer">
                   {{ t('preset_severe') }}
                 </button>
               </div>
@@ -440,9 +440,9 @@
                            step="1"
                            min="-100"
                            max="50"
-                           class="w-12 text-xs font-bold text-rose-700 bg-transparent text-right outline-none focus:ring-0 p-0 border-none appearance-none"
+                           class="w-12 text-xs font-bold text-red-700 bg-transparent text-right outline-none focus:ring-0 p-0 border-none appearance-none"
                            title="Nhập số phần trăm sụt giảm giá BĐS">
-                    <span class="text-xs font-bold text-rose-700 ml-0.5 select-none">%</span>
+                    <span class="text-xs font-bold text-red-700 ml-0.5 select-none">%</span>
                   </div>
                 </div>
                 <input type="range" min="-50" max="0" step="1"
@@ -465,7 +465,7 @@
               <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
                 <div class="flex items-start justify-between gap-2">
                   <div class="text-xs text-slate-800 font-semibold">{{ t('kpi_ead') }}</div>
-                  <button (click)="openCalcDetail('ead')" class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
+                  <button (click)="openCalcDetail('ead')" class="text-xs text-slate-800 hover:text-slate-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
                     {{ currentLang() === 'vi' ? 'Chi tiết' : 'Details' }}
                   </button>
                 </div>
@@ -478,7 +478,7 @@
               <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
                 <div class="flex items-start justify-between gap-2">
                   <div class="text-xs text-slate-800 font-semibold">{{ t('kpi_ecl_stress') }}</div>
-                  <button (click)="openCalcDetail('ecl')" class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
+                  <button (click)="openCalcDetail('ecl')" class="text-xs text-slate-800 hover:text-slate-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
                     {{ currentLang() === 'vi' ? 'Chi tiết' : 'Details' }}
                   </button>
                 </div>
@@ -491,11 +491,11 @@
               <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
                 <div class="flex items-start justify-between gap-2">
                   <div class="text-xs text-rose-800 font-semibold">{{ t('kpi_delta_ps') }}</div>
-                  <button (click)="openCalcDetail('deltaps')" class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
+                  <button (click)="openCalcDetail('deltaps')" class="text-xs text-slate-800 hover:text-slate-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
                     {{ currentLang() === 'vi' ? 'Chi tiết' : 'Details' }}
                   </button>
                 </div>
-                <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight text-rose-700 whitespace-nowrap overflow-hidden text-ellipsis">
+                <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight text-red-700 whitespace-nowrap overflow-hidden text-ellipsis">
                   +{{ formatVND(simulationResult()!.summary.total_delta_provision) }}
                 </div>
               </div>
@@ -504,12 +504,12 @@
               <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
                 <div class="flex items-start justify-between gap-2">
                   <div class="text-xs text-slate-800 font-semibold">{{ t('kpi_car') }}</div>
-                  <button (click)="openCalcDetail('car')" class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
+                  <button (click)="openCalcDetail('car')" class="text-xs text-slate-800 hover:text-slate-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
                     {{ currentLang() === 'vi' ? 'Chi tiết' : 'Details' }}
                   </button>
                 </div>
                 <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight whitespace-nowrap overflow-hidden text-ellipsis"
-                     [class]="simulationResult()!.summary.is_capital_adequate ? 'text-emerald-700' : 'text-rose-700'">
+                     [class]="simulationResult()!.summary.is_capital_adequate ? 'text-emerald-700' : 'text-red-700'">
                   {{ formatPercent(simulationResult()!.summary.stressed_car) }}
                 </div>
               </div>
@@ -518,7 +518,7 @@
               <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm relative hover:border-blue-400 transition-colors flex flex-col justify-start">
                 <div class="flex items-start justify-between gap-2">
                   <div class="text-xs text-slate-800 font-semibold">{{ t('kpi_npl') }}</div>
-                  <button (click)="openCalcDetail('npl')" class="text-xs text-blue-600 hover:text-blue-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
+                  <button (click)="openCalcDetail('npl')" class="text-xs text-slate-800 hover:text-slate-800 font-semibold underline whitespace-nowrap cursor-pointer shrink-0 pt-0.5">
                     {{ currentLang() === 'vi' ? 'Chi tiết' : 'Details' }}
                   </button>
                 </div>
@@ -551,7 +551,7 @@
                       <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden flex">
                         <div class="h-full bg-slate-400"
                              [style.width.%]="(sec.baseline_ecl / (sec.stressed_ecl || 1)) * 100"></div>
-                        <div class="h-full bg-rose-500"
+                        <div class="h-full bg-red-500"
                              [style.width.%]="(sec.delta_provision / (sec.stressed_ecl || 1)) * 100"></div>
                       </div>
                     </div>
@@ -559,7 +559,7 @@
                 </div>
                 <div class="pt-2 border-t border-slate-100 flex items-center gap-4 text-[11px] text-slate-500">
                   <span class="flex items-center gap-1.5"><span class="w-2.5 h-2 bg-slate-400 rounded-xs"></span> {{ t('kpi_ecl_base') }}</span>
-                  <span class="flex items-center gap-1.5"><span class="w-2.5 h-2 bg-rose-500 rounded-xs"></span> {{ t('kpi_delta_ps') }}</span>
+                  <span class="flex items-center gap-1.5"><span class="w-2.5 h-2 bg-red-500 rounded-xs"></span> {{ t('kpi_delta_ps') }}</span>
                 </div>
               </div>
 
@@ -592,7 +592,7 @@
                     <div class="text-xs font-bold text-slate-700 h-9 flex items-center justify-center text-center leading-snug px-1">
                       {{ t('stage_3') }}
                     </div>
-                    <div class="mt-1.5 text-2xl font-black text-rose-700">
+                    <div class="mt-1.5 text-2xl font-black text-red-700">
                       {{ simulationResult()!.stage_migration.post_stress[3] }}
                     </div>
                   </div>
@@ -612,7 +612,7 @@
                 Hệ thống đang chạy mô hình truyền dẫn kinh tế lượng IFRS 9 cho danh mục tín dụng.
               </p>
               <button type="button" (click)="runSimulation()"
-                      class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold cursor-pointer inline-flex items-center gap-1.5 transition-colors">
+                      class="px-4 py-2 bg-slate-900 hover:bg-slate-900 text-white rounded-lg text-xs font-semibold cursor-pointer inline-flex items-center gap-1.5 transition-colors">
                 <i class="fa-solid fa-rotate-right"></i>
                 <span>Tải lại kết quả tính toán</span>
               </button>
@@ -634,14 +634,14 @@
                 </div>
               </div>
 
-              <div class="bg-white p-4 rounded-xl border border-rose-200 shadow-2xs space-y-1 bg-rose-50/40">
-                <div class="text-[11px] font-semibold text-rose-700 uppercase tracking-wide flex items-center justify-between">
+              <div class="bg-white p-4 rounded-xl border border-red-200 shadow-2xs space-y-1 bg-red-50/40">
+                <div class="text-[11px] font-semibold text-red-700 uppercase tracking-wide flex items-center justify-between">
                   <span>{{ currentLang() === 'vi' ? 'Cần Tính Lại' : 'Recalculation Req.' }}</span>
                   @if (recalcRuns().length > 0) {
-                    <span class="w-2 h-2 rounded-full bg-rose-600 animate-ping"></span>
+                    <span class="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
                   }
                 </div>
-                <div class="text-2xl font-black text-rose-700">{{ recalcRuns().length }}</div>
+                <div class="text-2xl font-black text-red-700">{{ recalcRuns().length }}</div>
                 <div class="text-[10px] text-rose-600 font-medium">
                   {{ recalcRuns().length > 0 ? (currentLang() === 'vi' ? 'Trưởng phòng yêu cầu sửa' : 'Checker requested') : (currentLang() === 'vi' ? 'Không có tồn đọng' : 'None') }}
                 </div>
@@ -677,7 +677,7 @@
                   <i class="fa-solid fa-folder-tree text-blue-600"></i>
                   <span>{{ currentLang() === 'vi' ? 'Danh Sách Báo Cáo và Đề Án Kiểm Định' : 'Stress Scenarios and Proposal Workspace' }}</span>
                 </h3>
-                <button (click)="makerActiveView.set('simulation')" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg shadow-xs transition-colors inline-flex items-center gap-1.5 cursor-pointer shrink-0">
+                <button (click)="makerActiveView.set('simulation')" class="px-3 py-1.5 bg-slate-900 hover:bg-slate-900 text-white text-xs font-bold rounded-lg shadow-xs transition-colors inline-flex items-center gap-1.5 cursor-pointer shrink-0">
                   <i class="fa-solid fa-plus"></i>
                   <span>{{ currentLang() === 'vi' ? 'Tạo Kịch Bản Mới' : 'Create New Scenario' }}</span>
                 </button>
@@ -700,10 +700,10 @@
                   </button>
                   <button type="button" (click)="makerRunFilter.set('RECALCULATE')"
                           class="px-2 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer flex items-center gap-1"
-                          [class]="makerRunFilter() === 'RECALCULATE' ? 'bg-rose-700 text-white border-rose-700' : 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100'">
+                          [class]="makerRunFilter() === 'RECALCULATE' ? 'bg-rose-700 text-white border-rose-700' : 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100'">
                     <i class="fa-solid fa-triangle-exclamation text-[10px]"></i>
                     <span>{{ currentLang() === 'vi' ? 'Cần tính lại' : 'Recalculate' }}</span>
-                    <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-rose-600 text-white font-bold">{{ recalcRuns().length }}</span>
+                    <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-red-600 text-white font-bold">{{ recalcRuns().length }}</span>
                   </button>
                   <button type="button" (click)="makerRunFilter.set('SUBMITTED')"
                           class="px-2 py-1 text-xs font-semibold rounded-md border transition-colors cursor-pointer"
@@ -741,7 +741,7 @@
                 <tbody class="divide-y divide-slate-100">
                   @for (run of filteredMakerRuns(); track run.id) {
                     <tr class="hover:bg-slate-50 transition-colors"
-                        [class.bg-rose-50/70]="run.status === 'RECALCULATION_REQUESTED'">
+                        [class.bg-red-50/70]="run.status === 'RECALCULATION_REQUESTED'">
                       <td class="p-3 font-bold text-blue-700 whitespace-nowrap font-mono">
                         {{ run.run_code }}
                         <div class="text-[10px] text-slate-400 font-normal font-sans">{{ run.created_at | date:'dd/MM/yyyy HH:mm' }}</div>
@@ -749,7 +749,7 @@
                       <td class="p-3 font-medium text-slate-900 min-w-[200px]">
                         <div class="font-semibold">{{ run.run_name }}</div>
                         @if (run.rejection_reason && run.status === 'RECALCULATION_REQUESTED') {
-                          <div class="mt-1 text-[11px] p-2 rounded border leading-relaxed bg-rose-100/70 border-rose-300 text-rose-900 font-medium">
+                          <div class="mt-1 text-[11px] p-2 rounded border leading-relaxed bg-rose-100/70 border-red-300 text-rose-900 font-medium">
                             <span class="font-bold">{{ currentLang() === 'vi' ? 'Ý kiến phản hồi:' : 'Feedback:' }}</span> "{{ run.rejection_reason }}"
                           </div>
                         }
@@ -761,12 +761,12 @@
                         </div>
                         <div class="space-y-0.5 mt-0.5">
                           <span>{{ currentLang() === 'vi' ? 'Thất nghiệp:' : 'Unemp:' }} <strong class="text-emerald-700">+{{ formatShock(run.custom_unemp_shock, 100, 1) }}%</strong></span> |
-                          <span>{{ currentLang() === 'vi' ? 'BĐS:' : 'RE:' }} <strong class="text-rose-700">{{ formatShock(run.custom_re_shock, 100, 1) }}%</strong></span>
+                          <span>{{ currentLang() === 'vi' ? 'BĐS:' : 'RE:' }} <strong class="text-red-700">{{ formatShock(run.custom_re_shock, 100, 1) }}%</strong></span>
                         </div>
                       </td>
-                      <td class="p-3 font-bold text-rose-700 whitespace-nowrap">+{{ formatVND(run.total_delta_provision) }}</td>
+                      <td class="p-3 font-bold text-red-700 whitespace-nowrap">+{{ formatVND(run.total_delta_provision) }}</td>
                       <td class="p-3 whitespace-nowrap">
-                        <span class="font-bold" [class]="(run.car_impact?.stressed_car || 0) >= 0.08 ? 'text-emerald-700' : 'text-rose-700'">
+                        <span class="font-bold" [class]="(run.car_impact?.stressed_car || 0) >= 0.08 ? 'text-emerald-700' : 'text-red-700'">
                           {{ formatPercent(run.car_impact?.stressed_car) }}
                         </span>
                       </td>
@@ -775,14 +775,14 @@
                               [class]="run.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
                                       (run.status === 'PENDING_APPROVAL' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
                                       (run.status === 'SUBMITTED' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                                      (run.status === 'RECALCULATION_REQUESTED' ? 'bg-rose-100 text-rose-800 border border-rose-300 font-bold' : 'bg-slate-100 text-slate-700 border border-slate-200')))">
+                                      (run.status === 'RECALCULATION_REQUESTED' ? 'bg-rose-100 text-rose-800 border border-red-300 font-bold' : 'bg-slate-100 text-slate-700 border border-slate-200')))">
                           {{ getStatusLabel(run.status) }}
                         </span>
                       </td>
                       <td class="p-3 text-right whitespace-nowrap space-x-1.5">
                         @if (run.status === 'RECALCULATION_REQUESTED') {
                           <button type="button" (click)="editRunProposal(run)"
-                                  class="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white font-bold text-[11px] rounded shadow-xs transition-colors cursor-pointer inline-flex items-center gap-1">
+                                  class="px-2.5 py-1 bg-red-600 hover:bg-red-700 text-white font-bold text-[11px] rounded shadow-xs transition-colors cursor-pointer inline-flex items-center gap-1">
                             <i class="fa-solid fa-bolt"></i>
                             <span>{{ currentLang() === 'vi' ? 'Tính Lại Ngay' : 'Recalculate' }}</span>
                           </button>
@@ -793,7 +793,7 @@
                           </button>
                         } @else if (run.status === 'DRAFT') {
                           <button type="button" (click)="editRunProposal(run)"
-                                  class="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold text-[11px] rounded border border-blue-200 transition-colors cursor-pointer inline-flex items-center gap-1">
+                                  class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-[11px] rounded border border-slate-300 transition-colors cursor-pointer inline-flex items-center gap-1">
                             <i class="fa-solid fa-pen-to-square"></i>
                             <span>{{ currentLang() === 'vi' ? 'Chỉnh Sửa' : 'Edit' }}</span>
                           </button>
@@ -803,13 +803,13 @@
                             <span>{{ currentLang() === 'vi' ? 'Đổi Tên' : 'Rename' }}</span>
                           </button>
                           <button type="button" (click)="deleteRun(run)"
-                                  class="px-2 py-1 bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold text-[11px] rounded border border-rose-200 transition-colors cursor-pointer inline-flex items-center gap-1">
+                                  class="px-2 py-1 bg-red-50 hover:bg-red-100 text-red-700 font-semibold text-[11px] rounded border border-red-200 transition-colors cursor-pointer inline-flex items-center gap-1">
                             <i class="fa-solid fa-trash-can"></i>
                             <span>{{ currentLang() === 'vi' ? 'Xóa' : 'Delete' }}</span>
                           </button>
                         } @else if (run.status === 'SUBMITTED') {
                           <button type="button" (click)="executeWorkflow(run.id, 'CANCEL_SUBMIT', 'Chuyên viên rút hồ sơ về bản nháp để hiệu chỉnh lại.')"
-                                  class="px-2 py-1 bg-amber-50 hover:bg-amber-100 text-amber-800 font-semibold text-[11px] rounded border border-amber-300 transition-colors cursor-pointer inline-flex items-center gap-1">
+                                  class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-[11px] rounded border border-slate-300 transition-colors cursor-pointer inline-flex items-center gap-1">
                             <i class="fa-solid fa-undo"></i>
                             <span>{{ currentLang() === 'vi' ? 'Rút Về Nháp Để Sửa' : 'Withdraw' }}</span>
                           </button>
@@ -841,7 +841,7 @@
             <div>
               <h2 class="text-base sm:text-lg font-bold text-slate-900">{{ t('tab_checker') }}</h2>
             </div>
-            <button (click)="fetchRuns()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-md border border-slate-300">
+            <button (click)="fetchRuns()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-md border border-slate-300 cursor-pointer">
               {{ currentLang() === 'vi' ? 'Làm mới' : 'Refresh' }}
             </button>
           </div>
@@ -872,7 +872,7 @@
                 </button>
                 <button (click)="checkerRunFilter.set('RECALCULATE')"
                         class="px-2.5 py-1 rounded-md text-[11px] font-semibold transition-colors cursor-pointer"
-                        [class]="checkerRunFilter() === 'RECALCULATE' ? 'bg-rose-600 text-white' : 'bg-rose-50 text-rose-800 hover:bg-rose-100 border border-rose-200'">
+                        [class]="checkerRunFilter() === 'RECALCULATE' ? 'bg-red-600 text-white' : 'bg-red-50 text-rose-800 hover:bg-red-100 border border-red-200'">
                   {{ currentLang() === 'vi' ? 'Yêu cầu tính lại' : 'Recalculation' }} ({{ recalcRuns().length }})
                 </button>
               </div>
@@ -899,13 +899,13 @@
                       <td class="p-3 font-medium text-slate-900 min-w-[200px]">{{ run.run_name }}</td>
                       <td class="p-3 text-slate-600 whitespace-nowrap">{{ run.maker_name }}</td>
                       <td class="p-3 text-slate-600 whitespace-nowrap">{{ run.scenario_name }}</td>
-                      <td class="p-3 font-bold text-rose-700 whitespace-nowrap">+{{ formatVND(run.total_delta_provision) }}</td>
+                      <td class="p-3 font-bold text-red-700 whitespace-nowrap">+{{ formatVND(run.total_delta_provision) }}</td>
                       <td class="p-3 whitespace-nowrap">
                         <span class="inline-block whitespace-nowrap px-2.5 py-1 rounded text-[11px] font-semibold"
                               [class]="run.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
                                       (run.status === 'PENDING_APPROVAL' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
                                       (run.status === 'SUBMITTED' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                                      (run.status === 'RECALCULATION_REQUESTED' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-slate-100 text-slate-700 border border-slate-200')))">
+                                      (run.status === 'RECALCULATION_REQUESTED' ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-slate-100 text-slate-700 border border-slate-200')))">
                           {{ getStatusLabel(run.status) }}
                         </span>
                       </td>
@@ -934,7 +934,7 @@
                           [class]="selectedRunToReview()!.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
                                   (selectedRunToReview()!.status === 'PENDING_APPROVAL' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
                                   (selectedRunToReview()!.status === 'SUBMITTED' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                                  (selectedRunToReview()!.status === 'RECALCULATION_REQUESTED' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-slate-100 text-slate-700 border border-slate-200')))">
+                                  (selectedRunToReview()!.status === 'RECALCULATION_REQUESTED' ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-slate-100 text-slate-700 border border-slate-200')))">
                       {{ getStatusLabel(selectedRunToReview()!.status) }}
                     </span>
                   </div>
@@ -952,7 +952,7 @@
                     </span>
                   } @else if (selectedRunToReview()!.status === 'PENDING_APPROVAL') {
                     <button (click)="submitCheckerFeedback('CANCEL_FORWARD')"
-                            class="px-3.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 cursor-pointer">
+                            class="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 cursor-pointer">
                       <i class="fa-solid fa-undo"></i>
                       <span>{{ currentLang() === 'vi' ? 'Hủy chuyển duyệt (Rút lại hồ sơ)' : 'Cancel Forward' }}</span>
                     </button>
@@ -962,22 +962,22 @@
                     </span>
                   } @else if (selectedRunToReview()!.status === 'RECALCULATION_REQUESTED') {
                     <button (click)="submitCheckerFeedback('CANCEL_RECALCULATE')"
-                            class="px-3.5 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 cursor-pointer">
+                            class="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 cursor-pointer">
                       <i class="fa-solid fa-undo"></i>
                       <span>{{ currentLang() === 'vi' ? 'Hủy yêu cầu tính lại' : 'Cancel Recalculate' }}</span>
                     </button>
-                    <span class="px-3 py-1.5 bg-rose-50 text-rose-700 border border-rose-200 text-xs font-semibold rounded-md flex items-center gap-1.5">
+                    <span class="px-3 py-1.5 bg-red-50 text-red-700 border border-red-200 text-xs font-semibold rounded-md flex items-center gap-1.5">
                       <i class="fa-solid fa-rotate-left"></i>
                       <span>{{ currentLang() === 'vi' ? 'Đã trả về Chuyên viên tính lại' : 'Returned to Maker' }}</span>
                     </span>
                   } @else {
                     <button (click)="submitCheckerFeedback('RECALCULATE')"
-                            class="px-3.5 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 cursor-pointer">
+                            class="px-3.5 py-1.5 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 text-xs font-semibold rounded-md transition-colors flex items-center gap-1.5 cursor-pointer">
                       <i class="fa-solid fa-rotate-left"></i>
                       {{ currentLang() === 'vi' ? 'Yêu cầu Tính lại' : t('btn_request_recalc') }}
                     </button>
                     <button (click)="submitCheckerFeedback('FORWARD_APPROVER')"
-                            class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-md shadow-sm transition-colors flex items-center gap-1.5 cursor-pointer">
+                            class="px-4 py-1.5 bg-slate-900 hover:bg-slate-900 text-white text-xs font-semibold rounded-md shadow-sm transition-colors flex items-center gap-1.5 cursor-pointer">
                       <i class="fa-solid fa-check-double"></i>
                       {{ currentLang() === 'vi' ? 'Xác nhận và Chuyển Phê duyệt' : t('btn_forward_approver') }}
                     </button>
@@ -987,8 +987,8 @@
 
               <!-- Rejection Notice (if recalculation requested) -->
               @if (selectedRunToReview()!.rejection_reason) {
-                <div class="p-3 bg-rose-50 border border-rose-200 rounded-lg text-xs text-rose-800 space-y-1">
-                  <div class="font-bold flex items-center gap-1.5 text-rose-700">
+                <div class="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-rose-800 space-y-1">
+                  <div class="font-bold flex items-center gap-1.5 text-red-700">
                     <i class="fa-solid fa-triangle-exclamation"></i>
                     {{ currentLang() === 'vi' ? 'Ý kiến phản hồi từ Trưởng phòng Quản lý rủi ro:' : 'Recalculation Request Note:' }}
                   </div>
@@ -1008,15 +1008,15 @@
                   <div class="text-xl font-bold text-amber-700 mt-1">{{ formatVND(selectedRunToReview()!.total_stressed_ecl) }}</div>
                 </div>
 
-                <div class="p-3.5 rounded-xl bg-rose-50/50 border border-rose-200">
+                <div class="p-3.5 rounded-xl bg-red-50/50 border border-red-200">
                   <div class="text-xs text-rose-800 font-semibold">{{ t('kpi_delta_ps') }}</div>
-                  <div class="text-xl font-bold text-rose-700 mt-1">+{{ formatVND(selectedRunToReview()!.total_delta_provision) }}</div>
+                  <div class="text-xl font-bold text-red-700 mt-1">+{{ formatVND(selectedRunToReview()!.total_delta_provision) }}</div>
                 </div>
 
                 <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200">
                   <div class="text-xs text-slate-600 font-semibold">{{ t('kpi_car_stress') }}</div>
                   <div class="text-xl font-bold mt-1"
-                       [class]="(selectedRunToReview()!.car_impact?.is_capital_adequate ?? true) ? 'text-emerald-700' : 'text-rose-700'">
+                       [class]="(selectedRunToReview()!.car_impact?.is_capital_adequate ?? true) ? 'text-emerald-700' : 'text-red-700'">
                     {{ selectedRunToReview()!.car_impact ? formatPercent(selectedRunToReview()!.car_impact!.stressed_car) : '19.41%' }}
                   </div>
                 </div>
@@ -1032,7 +1032,7 @@
                   <span>ΔGDP: <strong class="text-blue-700">{{ formatShock(selectedRunToReview()!.custom_gdp_shock, 100, 1) }}%</strong></span>
                   <span>ΔLãi suất: <strong class="text-amber-700">+{{ formatShock(selectedRunToReview()!.custom_ir_shock, 10000, 0) }} bps</strong></span>
                   <span>ΔThất nghiệp: <strong class="text-emerald-700">+{{ formatShock(selectedRunToReview()!.custom_unemp_shock, 100, 1) }}%</strong></span>
-                  <span>ΔGiá BĐS: <strong class="text-rose-700">{{ formatShock(selectedRunToReview()!.custom_re_shock, 100, 1) }}%</strong></span>
+                  <span>ΔGiá BĐS: <strong class="text-red-700">{{ formatShock(selectedRunToReview()!.custom_re_shock, 100, 1) }}%</strong></span>
                 </div>
               </div>
 
@@ -1064,7 +1064,7 @@
                             </span>
                           </div>
                           <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden flex">
-                            <div class="bg-rose-500 h-1.5 rounded-full transition-all duration-300"
+                            <div class="bg-red-500 h-1.5 rounded-full transition-all duration-300"
                                  [style.width.%]="(sec.delta_provision / (selectedRunToReview()!.total_delta_provision || 1)) * 100"></div>
                           </div>
                         </div>
@@ -1081,7 +1081,7 @@
                           {{ currentLang() === 'vi' ? 'Ma Trận Dịch Chuyển Nhóm Nợ (IFRS 9)' : 'Stage Migration Matrix' }}
                         </h4>
                       </div>
-                      <span class="text-[11px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
+                      <span class="text-[11px] font-bold text-rose-600 bg-red-50 px-2 py-0.5 rounded border border-red-200">
                         {{ selectedReviewDetail()!.stage_migration?.sicr_count || 0 }} SICR
                       </span>
                     </div>
@@ -1105,9 +1105,9 @@
                         </div>
                       </div>
 
-                      <div class="p-3 bg-rose-50/60 border border-rose-200 rounded-xl">
+                      <div class="p-3 bg-red-50/60 border border-red-200 rounded-xl">
                         <div class="text-[11px] font-semibold text-rose-800">{{ currentLang() === 'vi' ? 'Nhóm 3 (Nợ xấu)' : 'Stage 3' }}</div>
-                        <div class="text-2xl font-bold text-rose-700 mt-1">
+                        <div class="text-2xl font-bold text-red-700 mt-1">
                           {{ selectedReviewDetail()!.stage_migration?.post_stress?.[3] || 0 }}
                         </div>
                         <div class="text-[10px] text-rose-600 mt-0.5">
@@ -1132,14 +1132,14 @@
                   <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-3">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-2 gap-2">
                       <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 rounded-full bg-rose-600"></div>
+                        <div class="w-2 h-2 rounded-full bg-red-600"></div>
                         <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wide">
                           {{ currentLang() === 'vi' ? 'Top Khoản Vay Rủi Ro Nhất Cần Lưu Ý' : 'Top Stressed High-Risk Loans' }}
                         </h4>
                       </div>
                       <button type="button"
                               (click)="checkerContractModalOpen.set(true)"
-                              class="text-xs font-semibold text-blue-700 hover:text-blue-800 flex items-center gap-1 hover:underline cursor-pointer">
+                              class="text-xs font-semibold text-slate-800 hover:text-slate-800 flex items-center gap-1 hover:underline cursor-pointer">
                         <i class="fa-solid fa-table-list"></i>
                         <span>{{ currentLang() === 'vi' ? 'Xem Bảng Kê 100 Hợp Đồng Chi Tiết' : 'View Full 100 Contracts List' }}</span>
                       </button>
@@ -1171,10 +1171,10 @@
                                   N{{ loan.baseline_stage }} → N{{ loan.stressed_stage }}
                                 </span>
                               </td>
-                              <td class="p-2.5 text-center whitespace-nowrap font-bold text-rose-700">
+                              <td class="p-2.5 text-center whitespace-nowrap font-bold text-red-700">
                                 {{ (loan.stressed_pd * 100).toFixed(2) }}%
                               </td>
-                              <td class="p-2.5 text-right whitespace-nowrap font-bold text-rose-700">
+                              <td class="p-2.5 text-right whitespace-nowrap font-bold text-red-700">
                                 +{{ formatVND(loan.delta_provision) }}
                               </td>
                             </tr>
@@ -1193,7 +1193,7 @@
                     {{ currentLang() === 'vi' ? 'Phiếu Kiểm Tra và Thẩm Định Nghiệp Vụ (Bấm chọn hoặc bỏ chọn từng tiêu chí):' : 'Four-Eyes Review Checklist (Tick/Untick checkpoints):' }}
                   </div>
                   <span class="text-[11px] font-semibold"
-                        [class]="(checkerCheckDataIntegrity() && checkerCheckEconomicLogic() && checkerCheckCapitalAdequacy()) ? 'text-emerald-700' : 'text-rose-700'">
+                        [class]="(checkerCheckDataIntegrity() && checkerCheckEconomicLogic() && checkerCheckCapitalAdequacy()) ? 'text-emerald-700' : 'text-red-700'">
                     {{ (checkerCheckDataIntegrity() ? 1 : 0) + (checkerCheckEconomicLogic() ? 1 : 0) + (checkerCheckCapitalAdequacy() ? 1 : 0) }}/3 {{ currentLang() === 'vi' ? 'tiêu chuẩn đạt' : 'passed' }}
                   </span>
                 </div>
@@ -1201,7 +1201,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
                   <!-- Checkpoint 1 -->
                   <label class="p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-2 select-none"
-                         [class]="checkerCheckDataIntegrity() ? 'bg-emerald-50/50 border-emerald-300 shadow-xs' : 'bg-rose-50/40 border-rose-300'">
+                         [class]="checkerCheckDataIntegrity() ? 'bg-emerald-50/50 border-emerald-300 shadow-xs' : 'bg-red-50/40 border-red-300'">
                     <div class="flex items-start justify-between gap-2">
                       <div class="font-bold text-slate-900 flex items-center gap-2">
                         <input type="checkbox"
@@ -1220,7 +1220,7 @@
 
                   <!-- Checkpoint 2 -->
                   <label class="p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-2 select-none"
-                         [class]="checkerCheckEconomicLogic() ? 'bg-emerald-50/50 border-emerald-300 shadow-xs' : 'bg-rose-50/40 border-rose-300'">
+                         [class]="checkerCheckEconomicLogic() ? 'bg-emerald-50/50 border-emerald-300 shadow-xs' : 'bg-red-50/40 border-red-300'">
                     <div class="flex items-start justify-between gap-2">
                       <div class="font-bold text-slate-900 flex items-center gap-2">
                         <input type="checkbox"
@@ -1239,7 +1239,7 @@
 
                   <!-- Checkpoint 3 -->
                   <label class="p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-2 select-none"
-                         [class]="checkerCheckCapitalAdequacy() ? 'bg-emerald-50/50 border-emerald-300 shadow-xs' : 'bg-rose-50/40 border-rose-300'">
+                         [class]="checkerCheckCapitalAdequacy() ? 'bg-emerald-50/50 border-emerald-300 shadow-xs' : 'bg-red-50/40 border-red-300'">
                     <div class="flex items-start justify-between gap-2">
                       <div class="font-bold text-slate-900 flex items-center gap-2">
                         <input type="checkbox"
@@ -1306,7 +1306,7 @@
                   @if (selectedRunToReview()!.status === 'PENDING_APPROVAL') {
                     <button type="button"
                             (click)="submitCheckerFeedback('CANCEL_FORWARD')"
-                            class="px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs">
+                            class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs">
                       <i class="fa-solid fa-undo"></i>
                       <span>{{ currentLang() === 'vi' ? 'Hủy Chuyển Duyệt (Rút Lại)' : 'Cancel Forward' }}</span>
                     </button>
@@ -1317,11 +1317,11 @@
                   } @else if (selectedRunToReview()!.status === 'RECALCULATION_REQUESTED') {
                     <button type="button"
                             (click)="submitCheckerFeedback('CANCEL_RECALCULATE')"
-                            class="px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs">
+                            class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs">
                       <i class="fa-solid fa-undo"></i>
                       <span>{{ currentLang() === 'vi' ? 'Hủy Yêu Cầu Tính Lại' : 'Cancel Recalculate' }}</span>
                     </button>
-                    <span class="px-3 py-2 bg-rose-50 text-rose-700 border border-rose-200 text-xs font-semibold rounded-lg flex items-center gap-1.5">
+                    <span class="px-3 py-2 bg-red-50 text-red-700 border border-red-200 text-xs font-semibold rounded-lg flex items-center gap-1.5">
                       <i class="fa-solid fa-rotate-left"></i>
                       <span>{{ currentLang() === 'vi' ? 'Đang Chờ Chuyên Viên Tính Lại' : 'Awaiting Analyst Recalculation' }}</span>
                     </span>
@@ -1333,13 +1333,13 @@
                   } @else {
                     <button type="button"
                             (click)="submitCheckerFeedback('RECALCULATE')"
-                            class="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs">
+                            class="px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 border border-red-300 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs">
                       <i class="fa-solid fa-rotate-left"></i>
                       <span>{{ currentLang() === 'vi' ? 'Không Duyệt — Yêu Cầu Tính Lại' : 'Reject and Recalculate' }}</span>
                     </button>
                     <button type="button"
                             (click)="submitCheckerFeedback('FORWARD_APPROVER')"
-                            class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center gap-1.5 cursor-pointer">
+                            class="px-4 py-2 bg-slate-900 hover:bg-slate-900 text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center gap-1.5 cursor-pointer">
                       <i class="fa-solid fa-check-double"></i>
                       <span>{{ currentLang() === 'vi' ? 'Xác Nhận Đạt và Chuyển Phê Duyệt' : 'Verify and Forward to Approver' }}</span>
                     </button>
@@ -1369,7 +1369,7 @@
                 <div class="flex items-center gap-2">
                   @if (selectedApproverRun()!.status === 'APPROVED') {
                     <button (click)="executeWorkflow(selectedApproverRun()!.id, 'CANCEL_APPROVE', 'Giám đốc Khối Quản lý rủi ro / CEO đã hủy ký số phê duyệt đề án, chuyển lại trạng thái chờ xem xét.')"
-                            class="px-4 py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 text-xs font-bold rounded-lg shadow-sm transition-all flex items-center gap-2 cursor-pointer">
+                            class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300 text-xs font-bold rounded-lg shadow-sm transition-all flex items-center gap-2 cursor-pointer">
                       <i class="fa-solid fa-undo"></i>
                       <span>{{ currentLang() === 'vi' ? 'Hủy Phê Duyệt (Thu Hồi Ký Số)' : 'Revoke Approval' }}</span>
                     </button>
@@ -1378,7 +1378,7 @@
                     </span>
                   } @else {
                     <button (click)="executeWorkflow(selectedApproverRun()!.id, 'APPROVE', 'Giám đốc Khối Quản lý rủi ro / CEO Lê Hoàng Cường đã ký số phê duyệt đề án.')"
-                            class="px-5 py-2.5 bg-purple-700 hover:bg-purple-800 text-white text-xs font-bold rounded-lg shadow-sm transition-all flex items-center gap-2 cursor-pointer">
+                            class="px-5 py-2.5 bg-slate-900 hover:bg-slate-900 text-white text-xs font-bold rounded-lg shadow-sm transition-all flex items-center gap-2 cursor-pointer">
                       <i class="fa-solid fa-file-signature text-sm"></i>
                       <span>{{ t('btn_sign_approve') }}</span>
                     </button>
@@ -1414,7 +1414,7 @@
                       <div class="text-xs font-semibold text-slate-800 truncate">{{ run.run_name }}</div>
                       <div class="text-[11px] text-slate-500 mt-1 flex justify-between">
                         <span>Lập bởi: <strong class="text-slate-700">{{ run.maker_name }}</strong></span>
-                        <span class="text-rose-700 font-bold">+{{ formatVND(run.total_delta_provision) }}</span>
+                        <span class="text-red-700 font-bold">+{{ formatVND(run.total_delta_provision) }}</span>
                       </div>
                     </button>
                   }
@@ -1463,7 +1463,7 @@
                   </div>
                   <div class="p-2 bg-white rounded-lg border border-purple-100">
                     <span class="text-slate-500 text-[11px]">Cú sốc Bất động sản:</span>
-                    <div class="font-bold text-rose-700 text-sm">{{ formatShock(selectedApproverRun()!.custom_re_shock, 100, 1) }}%</div>
+                    <div class="font-bold text-red-700 text-sm">{{ formatShock(selectedApproverRun()!.custom_re_shock, 100, 1) }}%</div>
                   </div>
                 </div>
 
@@ -1501,19 +1501,19 @@
               </div>
 
               <!-- KPI 3: Delta PS -->
-              <div class="bg-rose-50/50 p-4 rounded-xl border border-rose-200 shadow-sm flex flex-col justify-start">
+              <div class="bg-red-50/50 p-4 rounded-xl border border-red-200 shadow-sm flex flex-col justify-start">
                 <div class="text-xs text-rose-900 font-semibold">{{ t('kpi_delta_ps') }}</div>
-                <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight text-rose-700 whitespace-nowrap overflow-hidden text-ellipsis">
+                <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight text-red-700 whitespace-nowrap overflow-hidden text-ellipsis">
                   +{{ formatVND(selectedApproverRun()?.total_delta_provision || simulationResult()?.summary?.total_delta_provision || 0) }}
                 </div>
               </div>
 
               <!-- KPI 4: CAR -->
               <div class="bg-white p-4 rounded-xl border shadow-sm flex flex-col justify-start"
-                   [class]="(selectedApproverRun()?.car_impact?.is_capital_adequate ?? (simulationResult()?.summary?.is_capital_adequate ?? true)) ? 'border-emerald-200 bg-emerald-50/20' : 'border-rose-300 bg-rose-50/20'">
+                   [class]="(selectedApproverRun()?.car_impact?.is_capital_adequate ?? (simulationResult()?.summary?.is_capital_adequate ?? true)) ? 'border-emerald-200 bg-emerald-50/20' : 'border-red-300 bg-red-50/20'">
                 <div class="text-xs text-slate-700 font-semibold">{{ t('kpi_car') }}</div>
                 <div class="mt-2 text-xl xl:text-2xl font-bold tracking-tight whitespace-nowrap overflow-hidden text-ellipsis"
-                     [class]="(selectedApproverRun()?.car_impact?.is_capital_adequate ?? (simulationResult()?.summary?.is_capital_adequate ?? true)) ? 'text-emerald-700' : 'text-rose-700'">
+                     [class]="(selectedApproverRun()?.car_impact?.is_capital_adequate ?? (simulationResult()?.summary?.is_capital_adequate ?? true)) ? 'text-emerald-700' : 'text-red-700'">
                   {{ formatPercent(selectedApproverRun()?.car_impact ? selectedApproverRun()!.car_impact!.stressed_car : (simulationResult()?.summary?.stressed_car || 0)) }}
                 </div>
               </div>
@@ -1540,7 +1540,7 @@
                 <div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-1">
                   @for (sec of currentSectorBreakdown(); track sec.sector_code) {
                     <div class="p-3 rounded-xl border flex flex-col justify-between transition-all"
-                         [class]="sec.sector_code === 'REAL_ESTATE' ? 'bg-rose-50/70 border-rose-300 ring-1 ring-rose-200' : (sec.sector_code === 'CONSTRUCTION' ? 'bg-amber-50/50 border-amber-200' : 'bg-slate-50/70 border-slate-200 hover:border-slate-300')">
+                         [class]="sec.sector_code === 'REAL_ESTATE' ? 'bg-red-50/70 border-red-300 ring-1 ring-rose-200' : (sec.sector_code === 'CONSTRUCTION' ? 'bg-amber-50/50 border-amber-200' : 'bg-slate-50/70 border-slate-200 hover:border-slate-300')">
                       <div>
                         <div class="flex items-center justify-between gap-1 mb-1">
                           <span class="text-[11px] font-bold text-slate-800 flex items-center gap-1.5 truncate">
@@ -1601,23 +1601,23 @@
                     <div class="text-xs font-bold text-amber-900">Căng thẳng Vừa</div>
                     <div class="pt-1 border-t border-amber-200">
                       <div class="text-xs text-amber-700">Trích thêm (ΔPS):</div>
-                      <div class="text-sm font-bold text-rose-700">+471,4 tỷ</div>
+                      <div class="text-sm font-bold text-red-700">+471,4 tỷ</div>
                     </div>
                     <div class="pt-1 border-t border-amber-200">
                       <div class="text-xs text-amber-700">Tỷ lệ CAR:</div>
-                      <div class="text-sm font-bold text-rose-700">2,18%</div>
+                      <div class="text-sm font-bold text-red-700">2,18%</div>
                     </div>
                   </div>
 
                   <!-- Scenario 3: Severe -->
-                  <div class="p-3 bg-rose-50/50 rounded-lg border border-rose-200 space-y-2 text-center">
+                  <div class="p-3 bg-red-50/50 rounded-lg border border-red-200 space-y-2 text-center">
                     <div class="text-xs font-bold text-rose-900">Khủng hoảng Sâu</div>
-                    <div class="pt-1 border-t border-rose-200">
-                      <div class="text-xs text-rose-700">Trích thêm (ΔPS):</div>
+                    <div class="pt-1 border-t border-red-200">
+                      <div class="text-xs text-red-700">Trích thêm (ΔPS):</div>
                       <div class="text-sm font-bold text-rose-800">+1.110 tỷ</div>
                     </div>
-                    <div class="pt-1 border-t border-rose-200">
-                      <div class="text-xs text-rose-700">Tỷ lệ CAR:</div>
+                    <div class="pt-1 border-t border-red-200">
+                      <div class="text-xs text-red-700">Tỷ lệ CAR:</div>
                       <div class="text-sm font-bold text-rose-900">Dưới 0%</div>
                     </div>
                   </div>
@@ -1638,7 +1638,7 @@
               </div>
               <div class="flex items-center gap-2">
                 <button type="button" (click)="resetDirectivesToAI()"
-                        class="px-2.5 py-1 text-[11px] font-semibold text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100 rounded border border-purple-200 transition-colors flex items-center gap-1 cursor-pointer">
+                        class="px-2.5 py-1 text-[11px] font-semibold text-slate-800 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded border border-slate-300 transition-colors flex items-center gap-1 cursor-pointer">
                   <i class="fa-solid fa-rotate-left text-[10px]"></i>
                   <span>Khôi phục đề xuất AI</span>
                 </button>
@@ -1890,7 +1890,7 @@
                     <!-- Direct Link to Early Warning List (Mở danh sách cảnh báo sớm) -->
                     <button type="button" (click)="goToEarlyWarningList()"
                             [disabled]="!directive3Active()"
-                            class="w-full py-1.5 px-3 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs disabled:cursor-not-allowed">
+                            class="w-full py-1.5 px-3 bg-red-600 hover:bg-red-700 text-white font-bold text-xs rounded-lg transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-xs disabled:cursor-not-allowed">
                       <i class="fa-solid fa-triangle-exclamation"></i>
                       <span>{{ currentLang() === 'vi' ? 'Mở Danh Sách Cảnh Báo Sớm (' + earlyWarningContracts().length + ' Hợp đồng) →' : 'Open Early Warning Portfolio (' + earlyWarningContracts().length + ' loans) →' }}</span>
                     </button>
@@ -1921,13 +1921,13 @@
             <div class="pt-3 border-t border-slate-100 space-y-2.5">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                  <span class="w-2 h-2 rounded-full bg-rose-600"></span>
+                  <span class="w-2 h-2 rounded-full bg-red-600"></span>
                   <span class="text-xs font-bold text-slate-900 uppercase tracking-wide">
                     5 Khoản Vay Rủi Ro Nhất Cần Xử Lý Sớm
                   </span>
                 </div>
                 <button type="button" (click)="goToEarlyWarningList()"
-                        class="text-xs font-bold text-blue-700 hover:text-blue-900 flex items-center gap-1 cursor-pointer">
+                        class="text-xs font-bold text-slate-800 hover:text-slate-800 flex items-center gap-1 cursor-pointer">
                   <span>Xem toàn bộ {{ earlyWarningContracts().length }} hồ sơ cảnh báo sớm</span>
                   <i class="fa-solid fa-arrow-right text-[11px]"></i>
                 </button>
@@ -1955,7 +1955,7 @@
                         <td class="p-2.5 text-slate-600">{{ item.sector_name_vn }}</td>
                         <td class="p-2.5 font-bold text-slate-900">{{ formatVND(item.original_ead) }}</td>
                         <td class="p-2.5">
-                          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700 border border-rose-200">
+                          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-red-700 border border-red-200">
                             Nhóm {{ item.baseline_stage }} → Nhóm {{ item.stressed_stage }}
                           </span>
                         </td>
@@ -1968,7 +1968,7 @@
                         </td>
                         <td class="p-2.5">
                           <button type="button" (click)="goToEarlyWarningList()"
-                                  class="text-[11px] font-bold text-purple-700 hover:text-purple-900 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 cursor-pointer">
+                                  class="text-[11px] font-bold text-slate-800 hover:text-slate-800 bg-slate-100 px-2 py-0.5 rounded border border-slate-300 cursor-pointer">
                             Xử lý nợ
                           </button>
                         </td>
@@ -2010,7 +2010,7 @@
               <button type="button"
                       (click)="portfolioMode.set('EARLY_WARNING')"
                       class="px-3.5 py-1.5 text-xs font-bold rounded-md transition-all flex items-center gap-1.5 cursor-pointer"
-                      [class]="portfolioMode() === 'EARLY_WARNING' ? 'bg-rose-600 text-white shadow-xs' : 'text-slate-700 hover:text-slate-900'">
+                      [class]="portfolioMode() === 'EARLY_WARNING' ? 'bg-red-600 text-white shadow-xs' : 'text-slate-700 hover:text-slate-900'">
                 <i class="fa-solid fa-bell"></i>
                 <span>Cảnh Báo Sớm ({{ earlyWarningContracts().length }} hợp đồng)</span>
               </button>
@@ -2042,7 +2042,7 @@
 
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
               <div class="text-[11px] font-semibold text-slate-500 uppercase">Trích lập bổ sung</div>
-              <div class="text-2xl font-extrabold text-rose-700 mt-1">
+              <div class="text-2xl font-extrabold text-red-700 mt-1">
                 +{{ formatVND(earlyWarningDeltaPS()) }}
               </div>
             </div>
@@ -2091,7 +2091,7 @@
                 {{ currentLang() === 'vi' ? 'Hiển thị: ' : 'Showing: ' }}<strong>{{ filteredStressedContracts().length }}</strong> {{ currentLang() === 'vi' ? 'hồ sơ' : 'loans' }}
               </span>
               <button (click)="exportEarlyWarningCSV()"
-                      class="px-3 py-1.5 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold rounded-md shadow-sm flex items-center gap-1.5 cursor-pointer">
+                      class="px-3 py-1.5 bg-slate-900 hover:bg-slate-900 text-white text-xs font-semibold rounded-md shadow-sm flex items-center gap-1.5 cursor-pointer">
                 <i class="fa-solid fa-file-excel"></i>
                 <span>{{ currentLang() === 'vi' ? 'Xuất Bảng Tính Excel' : 'Export Excel Spreadsheet' }}</span>
               </button>
@@ -2117,7 +2117,7 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                   @for (c of filteredStressedContracts(); track c.contract_id) {
-                    <tr class="hover:bg-slate-50 transition-colors" [class.bg-rose-50/20]="c.is_sicr">
+                    <tr class="hover:bg-slate-50 transition-colors" [class.bg-red-50/20]="c.is_sicr">
                       <!-- Contract ID -->
                       <td class="p-3 font-bold text-blue-700 whitespace-nowrap">{{ c.contract_id }}</td>
 
@@ -2142,7 +2142,7 @@
                       <!-- Stage Migration with Alarm Badge -->
                       <td class="p-3 font-sans whitespace-nowrap">
                         @if (c.is_sicr) {
-                          <span class="px-2 py-0.5 rounded text-[10px] font-extrabold border bg-rose-100 text-rose-700 border-rose-300 inline-flex items-center gap-1 shadow-xs">
+                          <span class="px-2 py-0.5 rounded text-[10px] font-extrabold border bg-rose-100 text-red-700 border-red-300 inline-flex items-center gap-1 shadow-xs">
                             <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
                             <span>{{ currentLang() === 'vi' ? 'Nhóm ' + c.baseline_stage + ' → Nhóm ' + c.stressed_stage + ' - Rủi ro gia tăng' : 'Stage ' + c.baseline_stage + ' → Stage ' + c.stressed_stage + ' - Risk Elevated' }}</span>
                           </span>
@@ -2155,7 +2155,7 @@
 
                       <!-- PD Change -->
                       <td class="p-3 font-sans whitespace-nowrap">
-                        <div class="font-bold" [class.text-rose-700]="c.stressed_pd > c.baseline_pd" [class.text-slate-800]="c.stressed_pd <= c.baseline_pd">
+                        <div class="font-bold" [class.text-red-700]="c.stressed_pd > c.baseline_pd" [class.text-slate-800]="c.stressed_pd <= c.baseline_pd">
                           {{ (c.stressed_pd * 100).toFixed(2) }}%
                         </div>
                         <span class="text-[10px] text-slate-400">Gốc: {{ (c.baseline_pd * 100).toFixed(2) }}%</span>
@@ -2212,7 +2212,7 @@
               <div class="flex items-center gap-2">
                 <span class="text-xs text-slate-500 font-medium">{{ filteredAuditLogs().length }} hành động kiểm toán</span>
                 <button type="button" (click)="fetchAuditLogs()"
-                        class="px-2.5 py-1 text-xs font-semibold text-slate-700 hover:text-blue-700 bg-slate-100 hover:bg-slate-200 rounded border border-slate-300 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs">
+                        class="px-2.5 py-1 text-xs font-semibold text-slate-700 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded border border-slate-300 transition-colors flex items-center gap-1.5 cursor-pointer shadow-2xs">
                   <i class="fa-solid fa-arrows-rotate text-[11px]"></i>
                   <span>Làm mới nhật ký</span>
                 </button>
@@ -2257,7 +2257,7 @@
                       <span class="px-2 py-0.5 rounded text-[10px] font-bold"
                             [class]="log.action === 'APPROVE' ? 'bg-purple-100 text-purple-800 border border-purple-200' :
                                     (log.action === 'FORWARD_APPROVER' ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' :
-                                    (log.action === 'RECALCULATE' ? 'bg-rose-100 text-rose-800 border border-rose-200' :
+                                    (log.action === 'RECALCULATE' ? 'bg-rose-100 text-rose-800 border border-red-200' :
                                     (log.action.includes('CANCEL') ? 'bg-amber-100 text-amber-800 border border-amber-200' : 
                                     (log.action === 'UPDATE' || log.action === 'RESUBMIT' ? 'bg-teal-100 text-teal-800 border border-teal-200' : 'bg-blue-100 text-blue-800 border border-blue-200'))))">
                         {{ getAuditActionLabel(log.action) }}
@@ -2305,7 +2305,7 @@
               <span>{{ currentLang() === 'vi' ? 'Đang cập nhật đề án:' : 'Updating proposal:' }}</span>
               <span class="font-mono text-xs font-bold text-amber-800 bg-white border border-amber-200 px-1.5 py-0.5 rounded">{{ editing.run_code }}</span>
             </span>
-            <button type="button" (click)="editingRun.set(null)" class="text-[11px] text-blue-600 hover:text-blue-800 underline font-medium cursor-pointer">
+            <button type="button" (click)="editingRun.set(null)" class="text-[11px] text-slate-800 hover:text-slate-800 underline font-medium cursor-pointer">
               {{ currentLang() === 'vi' ? 'Tạo đề án mới' : 'New run' }}
             </button>
           </div>
@@ -2325,7 +2325,7 @@
                 ? (currentLang() === 'vi' ? 'Ghi Đè Bản Thảo' : 'Overwrite Draft') 
                 : (currentLang() === 'vi' ? 'Lưu Bản Thảo' : 'Save Draft') }}
           </button>
-          <button (click)="confirmSaveRun(true)" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded shadow-sm cursor-pointer">
+          <button (click)="confirmSaveRun(true)" class="px-3.5 py-1.5 bg-slate-900 hover:bg-black text-white font-medium rounded shadow-sm cursor-pointer">
             {{ editingRun() 
                 ? (currentLang() === 'vi' ? 'Ghi Đè và Chuyển Thẩm Định' : 'Overwrite and Submit') 
                 : (currentLang() === 'vi' ? 'Lưu và Chuyển Thẩm Định' : 'Save and Submit') }}
@@ -2339,7 +2339,7 @@
   @if (recalculationModalOpen()) {
     <div class="fixed inset-0 z-50 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4">
       <div class="bg-white rounded-xl max-w-md w-full p-5 border border-slate-200 shadow-xl space-y-4">
-        <h4 class="text-sm font-bold text-rose-700 border-b border-slate-100 pb-2">
+        <h4 class="text-sm font-bold text-red-700 border-b border-slate-100 pb-2">
           {{ t('btn_request_recalc') }}
         </h4>
         <div class="space-y-2 text-xs">
@@ -2348,11 +2348,11 @@
                     class="w-full border border-slate-300 rounded-md p-2 text-slate-800"></textarea>
         </div>
         <div class="flex justify-end space-x-2 pt-2 border-t border-slate-100 text-xs">
-          <button (click)="recalculationModalOpen.set(false)" class="px-3 py-1.5 text-slate-600 hover:bg-slate-100 rounded">
+          <button (click)="recalculationModalOpen.set(false)" class="px-3 py-1.5 text-slate-600 hover:bg-slate-100 rounded cursor-pointer">
             {{ currentLang() === 'vi' ? 'Hủy' : 'Cancel' }}
           </button>
           <button (click)="executeWorkflow(selectedRunToReview()!.id, 'RECALCULATE', recalculationNote())"
-                  class="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white font-medium rounded shadow-sm">
+                  class="px-3.5 py-1.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded shadow-sm cursor-pointer">
             {{ currentLang() === 'vi' ? 'Gửi Yêu Cầu' : 'Send Request' }}
           </button>
         </div>
@@ -2379,11 +2379,11 @@
               ΔGDP: <span class="text-blue-700 font-bold">{{ gdpShock() }}%</span> | 
               ΔIR: <span class="text-amber-700 font-bold">+{{ irShock() }} bps</span> | 
               ΔUNEMP: <span class="text-emerald-700 font-bold">+{{ unempShock() }}%</span> | 
-              ΔRE: <span class="text-rose-700 font-bold">{{ reShock() }}%</span>
+              ΔRE: <span class="text-red-700 font-bold">{{ reShock() }}%</span>
               <span class="text-slate-400 ml-1">({{ currentLang() === 'vi' ? 'Số liệu tự động cập nhật Realtime khi kéo thanh trượt' : 'Values update dynamically with sliders' }})</span>
             </div>
           </div>
-          <button (click)="methodologyModalOpen.set(false)" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-md hover:bg-slate-100">
+          <button (click)="methodologyModalOpen.set(false)" class="text-slate-400 hover:text-slate-700 p-1.5 rounded-md hover:bg-slate-100 cursor-pointer">
             <i class="fa-solid fa-xmark text-lg"></i>
           </button>
         </div>
@@ -2392,32 +2392,32 @@
         <div class="flex flex-wrap gap-1.5 border-b border-slate-200 pb-2">
           <button (click)="selectedCalcTab.set('all')"
                   [class]="selectedCalcTab() === 'all' ? 'bg-slate-900 text-white font-bold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
-                  class="px-2.5 py-1 text-xs rounded-md transition-colors">
+                  class="px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer">
             {{ currentLang() === 'vi' ? 'Toàn bộ' : 'All' }}
           </button>
           <button (click)="selectedCalcTab.set('ead')"
                   [class]="selectedCalcTab() === 'ead' ? 'bg-blue-600 text-white font-bold' : 'bg-blue-50 text-blue-800 hover:bg-blue-100'"
-                  class="px-2.5 py-1 text-xs rounded-md transition-colors">
+                  class="px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer">
             Dư nợ EAD
           </button>
           <button (click)="selectedCalcTab.set('ecl')"
                   [class]="selectedCalcTab() === 'ecl' ? 'bg-amber-600 text-white font-bold' : 'bg-amber-50 text-amber-800 hover:bg-amber-100'"
-                  class="px-2.5 py-1 text-xs rounded-md transition-colors">
+                  class="px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer">
             Tổn thất ECL
           </button>
           <button (click)="selectedCalcTab.set('deltaps')"
-                  [class]="selectedCalcTab() === 'deltaps' ? 'bg-rose-600 text-white font-bold' : 'bg-rose-50 text-rose-800 hover:bg-rose-100'"
-                  class="px-2.5 py-1 text-xs rounded-md transition-colors">
+                  [class]="selectedCalcTab() === 'deltaps' ? 'bg-red-600 text-white font-bold' : 'bg-red-50 text-rose-800 hover:bg-red-100'"
+                  class="px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer">
             Trích lập ΔPS
           </button>
           <button (click)="selectedCalcTab.set('car')"
                   [class]="selectedCalcTab() === 'car' ? 'bg-purple-600 text-white font-bold' : 'bg-purple-50 text-purple-800 hover:bg-purple-100'"
-                  class="px-2.5 py-1 text-xs rounded-md transition-colors">
+                  class="px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer">
             Tỷ lệ CAR
           </button>
           <button (click)="selectedCalcTab.set('npl')"
                   [class]="selectedCalcTab() === 'npl' ? 'bg-slate-700 text-white font-bold' : 'bg-slate-100 text-slate-800 hover:bg-slate-200'"
-                  class="px-2.5 py-1 text-xs rounded-md transition-colors">
+                  class="px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer">
             Nợ xấu NPL
           </button>
         </div>
@@ -2466,17 +2466,17 @@
 
           <!-- Delta PS Breakdown -->
           @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'deltaps') {
-            <div class="p-4 rounded-lg bg-rose-50/40 border border-rose-200 space-y-2">
-              <div class="flex items-center justify-between border-b border-rose-200 pb-1.5">
+            <div class="p-4 rounded-lg bg-red-50/40 border border-red-200 space-y-2">
+              <div class="flex items-center justify-between border-b border-red-200 pb-1.5">
                 <span class="font-bold text-rose-800 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Chi Phí Trích Lập Dự Phòng Bổ Sung' : 'Additional Provision Allocation' }}</span>
-                <span class="text-xs font-bold text-rose-700 bg-white px-2.5 py-0.5 rounded border border-rose-200">
+                <span class="text-xs font-bold text-red-700 bg-white px-2.5 py-0.5 rounded border border-red-200">
                   +{{ formatVND(simulationResult()!.summary.total_delta_provision) }}
                 </span>
               </div>
-              <div class="text-slate-800 bg-white p-3 rounded-lg border border-rose-200 text-xs space-y-1.5 leading-relaxed">
+              <div class="text-slate-800 bg-white p-3 rounded-lg border border-red-200 text-xs space-y-1.5 leading-relaxed">
                 <div>• <strong>Công thức:</strong> ΔPS = ECL_stress - ECL_baseline</div>
                 <div>• <strong>Thế số trực tiếp:</strong> ΔPS = <strong>{{ formatVND(simulationResult()!.summary.total_stressed_ecl) }}</strong> - <strong>{{ formatVND(simulationResult()!.summary.total_baseline_ecl) }}</strong></div>
-                <div class="text-rose-700 font-bold">• Kết quả: ΔPS = +{{ formatVND(simulationResult()!.summary.total_delta_provision) }}</div>
+                <div class="text-red-700 font-bold">• Kết quả: ΔPS = +{{ formatVND(simulationResult()!.summary.total_delta_provision) }}</div>
               </div>
               <p class="text-[11px] text-slate-500">
                 {{ currentLang() === 'vi' ? 'Khoản trích lập bổ sung này là nghĩa vụ tài chính phải trích thêm, khấu trừ trực tiếp vào kết quả kinh doanh và Vốn Cấp 1 của ngân hàng.' : 'This additional provision directly subtracts from net earnings and Tier 1 regulatory capital.' }}
@@ -2490,7 +2490,7 @@
               <div class="flex items-center justify-between border-b border-slate-200 pb-1.5">
                 <span class="font-bold text-slate-900 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Tỷ Lệ An Toàn Vốn' : 'Capital Adequacy Ratio' }}</span>
                 <span class="text-xs font-bold px-2.5 py-0.5 rounded border"
-                      [class]="simulationResult()!.summary.is_capital_adequate ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-rose-700 bg-rose-50 border-rose-200'">
+                      [class]="simulationResult()!.summary.is_capital_adequate ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-red-700 bg-red-50 border-red-200'">
                   {{ formatPercent(simulationResult()!.summary.stressed_car) }}
                 </span>
               </div>
@@ -2502,7 +2502,7 @@
                 <div class="font-bold text-blue-800">• CAR = [ ({{ formatVND(simulationResult()!.summary.stressed_tier1) }} + {{ formatVND(simulationResult()!.summary.total_ead * 0.035) }}) / {{ formatVND(simulationResult()!.summary.stressed_rwa) }} ] × 100% = <strong>{{ formatPercent(simulationResult()!.summary.stressed_car) }}</strong></div>
               </div>
               <div class="text-[11px] font-semibold"
-                   [class]="simulationResult()!.summary.is_capital_adequate ? 'text-emerald-700' : 'text-rose-700'">
+                   [class]="simulationResult()!.summary.is_capital_adequate ? 'text-emerald-700' : 'text-red-700'">
                 {{ simulationResult()!.summary.is_capital_adequate ? '• Đạt chuẩn an toàn vốn (≥ 8.00% Thông tư 41/2016/TT-NHNN).' : '• Vi phạm ngưỡng an toàn vốn tối thiểu 8.00% (Thâm hụt vốn đệm cần giải pháp can thiệp).' }}
               </div>
             </div>
@@ -2536,7 +2536,7 @@
         <div class="flex items-center justify-between pt-3 border-t border-slate-200 text-xs">
           <span class="text-slate-400 text-xs">Chuẩn mực IFRS 9 và Basel II</span>
           <button (click)="methodologyModalOpen.set(false)"
-                  class="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-md border border-slate-300 transition-colors">
+                  class="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-md border border-slate-300 transition-colors cursor-pointer">
             {{ currentLang() === 'vi' ? 'Đóng Cửa Sổ' : 'Close' }}
           </button>
         </div>
@@ -2565,7 +2565,7 @@
           <button (click)="renameModalOpen.set(false)" class="px-3 py-1.5 text-slate-600 hover:bg-slate-100 rounded cursor-pointer">
             {{ currentLang() === 'vi' ? 'Hủy' : 'Cancel' }}
           </button>
-          <button (click)="confirmRenameRun()" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded shadow-sm cursor-pointer">
+          <button (click)="confirmRenameRun()" class="px-3.5 py-1.5 bg-slate-900 hover:bg-black text-white font-medium rounded shadow-sm cursor-pointer">
             {{ currentLang() === 'vi' ? 'Lưu Thay Đổi' : 'Save Changes' }}
           </button>
         </div>
@@ -2585,7 +2585,7 @@
                     [class]="selectedRunDetail()!.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' :
                             (selectedRunDetail()!.status === 'PENDING_APPROVAL' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
                             (selectedRunDetail()!.status === 'SUBMITTED' ? 'bg-amber-50 text-amber-700 border border-amber-200' :
-                            (selectedRunDetail()!.status === 'RECALCULATION_REQUESTED' ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-slate-100 text-slate-700 border border-slate-200')))">
+                            (selectedRunDetail()!.status === 'RECALCULATION_REQUESTED' ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-slate-100 text-slate-700 border border-slate-200')))">
                 {{ getStatusLabel(selectedRunDetail()!.status) }}
               </span>
             </div>
@@ -2602,9 +2602,9 @@
             <div class="text-[11px] text-slate-500 font-medium">Tổn thất Dự kiến</div>
             <div class="text-sm font-bold text-slate-900 mt-0.5">{{ formatVND(selectedRunDetail()!.total_stressed_ecl) }}</div>
           </div>
-          <div class="p-3 bg-rose-50/60 rounded-lg border border-rose-100">
-            <div class="text-[11px] text-rose-700 font-semibold">Trích lập Bổ sung</div>
-            <div class="text-sm font-bold text-rose-700 mt-0.5">+{{ formatVND(selectedRunDetail()!.total_delta_provision) }}</div>
+          <div class="p-3 bg-red-50/60 rounded-lg border border-rose-100">
+            <div class="text-[11px] text-red-700 font-semibold">Trích lập Bổ sung</div>
+            <div class="text-sm font-bold text-red-700 mt-0.5">+{{ formatVND(selectedRunDetail()!.total_delta_provision) }}</div>
           </div>
           <div class="p-3 bg-blue-50/60 rounded-lg border border-blue-100">
             <div class="text-[11px] text-blue-700 font-semibold">Hệ số CAR sau sốc</div>
@@ -2623,12 +2623,12 @@
             <div>GDP: <strong class="text-blue-700">{{ formatShock(selectedRunDetail()!.custom_gdp_shock, 100, 1) }}%</strong></div>
             <div>Lãi suất: <strong class="text-amber-700">+{{ formatShock(selectedRunDetail()!.custom_ir_shock, 10000, 0) }} bps</strong></div>
             <div>Thất nghiệp: <strong class="text-emerald-700">+{{ formatShock(selectedRunDetail()!.custom_unemp_shock, 100, 1) }}%</strong></div>
-            <div>Bất động sản: <strong class="text-rose-700">{{ formatShock(selectedRunDetail()!.custom_re_shock, 100, 1) }}%</strong></div>
+            <div>Bất động sản: <strong class="text-red-700">{{ formatShock(selectedRunDetail()!.custom_re_shock, 100, 1) }}%</strong></div>
           </div>
         </div>
 
         @if (selectedRunDetail()!.rejection_reason) {
-          <div class="p-3 bg-rose-50 border border-rose-200 rounded-lg text-xs space-y-1">
+          <div class="p-3 bg-red-50 border border-red-200 rounded-lg text-xs space-y-1">
             <div class="font-bold text-rose-900 flex items-center gap-1.5">
               <i class="fa-solid fa-triangle-exclamation"></i>
               <span>Ý kiến phản hồi từ Trưởng phòng Quản lý rủi ro:</span>
@@ -2643,7 +2643,7 @@
           </button>
           @if (selectedRunDetail()!.status !== 'PENDING_APPROVAL' && selectedRunDetail()!.status !== 'APPROVED') {
             <button (click)="viewDetailModalOpen.set(false); editRunProposal(selectedRunDetail()!)"
-                    class="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-md shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer">
+                    class="px-4 py-1.5 bg-slate-900 hover:bg-slate-900 text-white font-bold rounded-md shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer">
               <i class="fa-solid fa-pen-to-square"></i>
               <span>{{ currentLang() === 'vi' ? 'Chỉnh Sửa và Tính Lại Đề Án Này' : 'Edit and Recalculate' }}</span>
             </button>
@@ -2724,12 +2724,12 @@
                     </span>
                   </td>
                   <td class="p-2.5 text-center whitespace-nowrap font-medium text-slate-700">
-                    {{ (c.baseline_pd * 100).toFixed(2) }}% → <strong class="text-rose-700">{{ (c.stressed_pd * 100).toFixed(2) }}%</strong>
+                    {{ (c.baseline_pd * 100).toFixed(2) }}% → <strong class="text-red-700">{{ (c.stressed_pd * 100).toFixed(2) }}%</strong>
                   </td>
                   <td class="p-2.5 text-center whitespace-nowrap text-slate-700 font-medium">
                     {{ (c.stressed_lgd * 100).toFixed(1) }}%
                   </td>
-                  <td class="p-2.5 text-right whitespace-nowrap font-bold text-rose-700">
+                  <td class="p-2.5 text-right whitespace-nowrap font-bold text-red-700">
                     +{{ formatVND(c.delta_provision) }}
                   </td>
                 </tr>
@@ -2789,7 +2789,7 @@
               Sử Dụng Localhost
             </button>
             <button (click)="saveCustomApi('https://credit-stress-testing.onrender.com/api')"
-                    class="px-2.5 py-1.5 text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 rounded border border-blue-200 font-medium cursor-pointer">
+                    class="px-2.5 py-1.5 text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 rounded border border-slate-300 font-medium cursor-pointer">
               Sử Dụng Render Mặc Định
             </button>
           </div>
@@ -2801,7 +2801,7 @@
             Hủy
           </button>
           <button (click)="saveCustomApi(customApiInput.value)"
-                  class="px-4 py-2 text-xs bg-blue-700 hover:bg-blue-800 text-white rounded-lg font-semibold shadow-xs cursor-pointer">
+                  class="px-4 py-2 text-xs bg-slate-900 hover:bg-black text-white rounded-lg font-semibold shadow-xs cursor-pointer">
             Lưu & Kết Nối Lại
           </button>
         </div>
