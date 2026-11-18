@@ -223,8 +223,17 @@ def calculate_stress_test(loan_contracts, gdp_shock, ir_shock, re_shock, unemp_s
             'npl_ratio_post': round((stage_counts_post[3] / max(1, len(loan_contracts))) * 100.0, 2),
         },
         'stage_migration': {
-            'pre_stress': stage_counts_pre,
-            'post_stress': stage_counts_post,
+            'pre_stress': {
+                1: stage_counts_pre[1], 2: stage_counts_pre[2], 3: stage_counts_pre[3],
+                '1': stage_counts_pre[1], '2': stage_counts_pre[2], '3': stage_counts_pre[3],
+                'stage_1': stage_counts_pre[1], 'stage_2': stage_counts_pre[2], 'stage_3': stage_counts_pre[3]
+            },
+            'post_stress': {
+                1: stage_counts_post[1], 2: stage_counts_post[2], 3: stage_counts_post[3],
+                '1': stage_counts_post[1], '2': stage_counts_post[2], '3': stage_counts_post[3],
+                'stage_1': stage_counts_post[1], 'stage_2': stage_counts_post[2], 'stage_3': stage_counts_post[3]
+            },
+            'sicr_count': sum(1 for r in contract_results if r['is_sicr']),
             'migrated_to_stage2': sum(1 for r in contract_results if r['baseline_stage'] == 1 and r['stressed_stage'] == 2),
             'migrated_to_stage3': sum(1 for r in contract_results if r['baseline_stage'] != 3 and r['stressed_stage'] == 3),
         },

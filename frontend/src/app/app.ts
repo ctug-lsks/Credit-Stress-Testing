@@ -1033,6 +1033,44 @@ export class App implements OnInit {
     });
   }
 
+  openCheckerTab() {
+    this.activeTab.set('checker');
+    const target = this.selectedRunToReview() || (this.allRuns().length > 0 ? this.allRuns()[0] : null);
+    if (target) {
+      this.selectedRunToReview.set(target);
+      this.fetchRunReviewDetail(target.id);
+    }
+  }
+
+  getStageCount(stageObj: any, stageNum: number | string): number {
+    if (!stageObj) return 0;
+    return stageObj[stageNum] ?? stageObj[String(stageNum)] ?? stageObj[`stage_${stageNum}`] ?? 0;
+  }
+
+  getReviewSectorBreakdown(): SectorBreakdown[] {
+    const detail = this.selectedReviewDetail();
+    if (detail && Array.isArray(detail.sector_breakdown) && detail.sector_breakdown.length > 0) {
+      return detail.sector_breakdown;
+    }
+    const sim = this.simulationResult();
+    if (sim && Array.isArray(sim.sector_breakdown)) {
+      return sim.sector_breakdown;
+    }
+    return [];
+  }
+
+  getReviewStageMigration(): any {
+    const detail = this.selectedReviewDetail();
+    if (detail && detail.stage_migration && (detail.stage_migration.post_stress || detail.stage_migration.sicr_count !== undefined)) {
+      return detail.stage_migration;
+    }
+    const sim = this.simulationResult();
+    if (sim && sim.stage_migration) {
+      return sim.stage_migration;
+    }
+    return null;
+  }
+
   selectRunForReview(run: StressTestRun) {
     this.selectedRunToReview.set(run);
     this.checkerCheckDataIntegrity.set(true);

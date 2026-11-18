@@ -99,7 +99,7 @@
             </button>
           }
           @if (canAccess('checker')) {
-            <button (click)="activeTab.set('checker')"
+            <button (click)="openCheckerTab()"
                     [class]="activeTab() === 'checker' ? 'border-slate-900 text-slate-900 font-bold' : 'border-transparent text-slate-600 hover:text-slate-900'"
                     class="py-2 px-1 border-b-2 text-xs transition-colors flex items-center gap-1.5 cursor-pointer">
               {{ t('tab_checker') }}
@@ -1037,7 +1037,7 @@
               </div>
 
               <!-- PHÂN TÍCH CHUYÊN SÂU DANH MỤC: PHÂN BỔ THEO NGÀNH VÀ MA TRẬN NHÓM NỢ -->
-              @if (selectedReviewDetail()) {
+              @if (selectedReviewDetail() || simulationResult()) {
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <!-- Phân bổ Tổn thất theo Ngành Kinh tế -->
                   <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-3">
@@ -1049,12 +1049,12 @@
                         </h4>
                       </div>
                       <span class="text-[11px] font-medium text-slate-500">
-                        {{ selectedReviewDetail()!.sector_breakdown?.length || 0 }} {{ currentLang() === 'vi' ? 'nhóm ngành' : 'sectors' }}
+                        {{ getReviewSectorBreakdown().length }} {{ currentLang() === 'vi' ? 'nhóm ngành' : 'sectors' }}
                       </span>
                     </div>
 
                     <div class="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
-                      @for (sec of selectedReviewDetail()!.sector_breakdown; track sec.sector_code) {
+                      @for (sec of getReviewSectorBreakdown(); track sec.sector_code) {
                         <div class="text-xs">
                           <div class="flex justify-between font-medium text-slate-700 mb-1">
                             <span class="truncate max-w-[180px]">{{ sec.sector_name }} ({{ sec.contract_count }})</span>
@@ -1082,7 +1082,7 @@
                         </h4>
                       </div>
                       <span class="text-[11px] font-bold text-rose-600 bg-red-50 px-2 py-0.5 rounded border border-red-200">
-                        {{ selectedReviewDetail()!.stage_migration?.sicr_count || 0 }} SICR
+                        {{ getReviewStageMigration()?.sicr_count || 0 }} SICR
                       </span>
                     </div>
 
@@ -1090,7 +1090,7 @@
                       <div class="p-3 bg-emerald-50/60 border border-emerald-200 rounded-xl">
                         <div class="text-[11px] font-semibold text-emerald-800">{{ currentLang() === 'vi' ? 'Nhóm 1 (Chuẩn)' : 'Stage 1' }}</div>
                         <div class="text-2xl font-bold text-emerald-700 mt-1">
-                          {{ selectedReviewDetail()!.stage_migration?.post_stress?.[1] || 0 }}
+                          {{ getStageCount(getReviewStageMigration()?.post_stress, 1) }}
                         </div>
                         <div class="text-[10px] text-emerald-600 mt-0.5">{{ currentLang() === 'vi' ? 'Dự phòng 12T' : '12-month ECL' }}</div>
                       </div>
@@ -1098,20 +1098,20 @@
                       <div class="p-3 bg-amber-50/60 border border-amber-200 rounded-xl">
                         <div class="text-[11px] font-semibold text-amber-800">{{ currentLang() === 'vi' ? 'Nhóm 2 (Gia tăng)' : 'Stage 2' }}</div>
                         <div class="text-2xl font-bold text-amber-700 mt-1">
-                          {{ selectedReviewDetail()!.stage_migration?.post_stress?.[2] || 0 }}
+                          {{ getStageCount(getReviewStageMigration()?.post_stress, 2) }}
                         </div>
                         <div class="text-[10px] text-amber-600 mt-0.5">
-                          +{{ selectedReviewDetail()!.stage_migration?.migrated_to_stage2 || 0 }} {{ currentLang() === 'vi' ? 'từ Nhóm 1' : 'from S1' }}
+                          +{{ getReviewStageMigration()?.migrated_to_stage2 || 0 }} {{ currentLang() === 'vi' ? 'từ Nhóm 1' : 'from S1' }}
                         </div>
                       </div>
 
                       <div class="p-3 bg-red-50/60 border border-red-200 rounded-xl">
                         <div class="text-[11px] font-semibold text-rose-800">{{ currentLang() === 'vi' ? 'Nhóm 3 (Nợ xấu)' : 'Stage 3' }}</div>
                         <div class="text-2xl font-bold text-red-700 mt-1">
-                          {{ selectedReviewDetail()!.stage_migration?.post_stress?.[3] || 0 }}
+                          {{ getStageCount(getReviewStageMigration()?.post_stress, 3) }}
                         </div>
                         <div class="text-[10px] text-rose-600 mt-0.5">
-                          +{{ selectedReviewDetail()!.stage_migration?.migrated_to_stage3 || 0 }} {{ currentLang() === 'vi' ? 'suy giảm' : 'impaired' }}
+                          +{{ getReviewStageMigration()?.migrated_to_stage3 || 0 }} {{ currentLang() === 'vi' ? 'suy giảm' : 'impaired' }}
                         </div>
                       </div>
                     </div>
@@ -1122,13 +1122,13 @@
                         <i class="fa-solid fa-triangle-exclamation text-amber-600"></i>
                         <span>{{ currentLang() === 'vi' ? 'Khoản vay rủi ro tín dụng tăng đáng kể (SICR):' : 'Significant Increase in Credit Risk:' }}</span>
                       </span>
-                      <strong class="text-slate-900">{{ selectedReviewDetail()!.stage_migration?.sicr_count || 0 }} / 100 HĐ</strong>
+                      <strong class="text-slate-900">{{ getReviewStageMigration()?.sicr_count || 0 }} / 100 HĐ</strong>
                     </div>
                   </div>
                 </div>
 
                 <!-- TOP 5 KHOẢN VAY RỦI RO CAO NHẤT CỦA PHIÊN KIỂM ĐỊNH -->
-                @if (selectedReviewDetail()!.top_risk_loans?.length > 0) {
+                @if (selectedReviewDetail()?.top_risk_loans?.length > 0) {
                   <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-3">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-2 gap-2">
                       <div class="flex items-center gap-2">

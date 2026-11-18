@@ -242,6 +242,39 @@ def get_stress_test_run_detail(request, run_id):
 
     serializer = StressTestRunSerializer(run)
     ecl_results = ECLResult.objects.filter(run=run).select_related('contract')
+    if not ecl_results.exists():
+        # Tự động tính toán và lưu kết quả ECL nếu phiên này chưa có chi tiết hợp đồng
+        contracts = list(LoanContract.objects.all())
+        calc = calculate_stress_test(
+            contracts,
+            float(run.custom_gdp_shock or 0.0),
+            float(run.custom_ir_shock or 0.0),
+            float(run.custom_re_shock or 0.0),
+            float(run.custom_unemp_shock or 0.0)
+        )
+        contract_dict = {c.contract_id: c for c in contracts}
+        ecl_objs = [
+            ECLResult(
+                run=run,
+                contract=contract_dict[r['contract_id']],
+                baseline_pd=r['baseline_pd'],
+                stressed_pd=r['stressed_pd'],
+                baseline_lgd=r['baseline_lgd'],
+                stressed_lgd=r['stressed_lgd'],
+                baseline_stage=r['baseline_stage'],
+                stressed_stage=r['stressed_stage'],
+                is_sicr=r['is_sicr'],
+                baseline_ecl=r['baseline_ecl'],
+                stressed_ecl=r['stressed_ecl'],
+                delta_provision=r['delta_provision']
+            )
+            for r in calc['contract_results']
+            if r['contract_id'] in contract_dict
+        ]
+        if ecl_objs:
+            ECLResult.objects.bulk_create(ecl_objs)
+            ecl_results = ECLResult.objects.filter(run=run).select_related('contract')
+
     ecl_data = ECLResultSerializer(ecl_results, many=True).data
 
     sensitivities = {
@@ -315,8 +348,16 @@ def get_stress_test_run_detail(request, run_id):
     data['detailed_contracts'] = ecl_data
     data['sector_breakdown'] = sector_breakdown
     data['stage_migration'] = {
-        'pre_stress': stage_pre,
-        'post_stress': stage_post,
+        'pre_stress': {
+            1: stage_pre.get(1, 0), 2: stage_pre.get(2, 0), 3: stage_pre.get(3, 0),
+            '1': stage_pre.get(1, 0), '2': stage_pre.get(2, 0), '3': stage_pre.get(3, 0),
+            'stage_1': stage_pre.get(1, 0), 'stage_2': stage_pre.get(2, 0), 'stage_3': stage_pre.get(3, 0)
+        },
+        'post_stress': {
+            1: stage_post.get(1, 0), 2: stage_post.get(2, 0), 3: stage_post.get(3, 0),
+            '1': stage_post.get(1, 0), '2': stage_post.get(2, 0), '3': stage_post.get(3, 0),
+            'stage_1': stage_post.get(1, 0), 'stage_2': stage_post.get(2, 0), 'stage_3': stage_post.get(3, 0)
+        },
         'sicr_count': sicr_count,
         'migrated_to_stage2': sum(1 for item in ecl_results if item.baseline_stage == 1 and item.stressed_stage == 2),
         'migrated_to_stage3': sum(1 for item in ecl_results if item.baseline_stage != 3 and item.stressed_stage == 3)
