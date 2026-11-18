@@ -244,8 +244,84 @@ def get_stress_test_run_detail(request, run_id):
     ecl_results = ECLResult.objects.filter(run=run).select_related('contract')
     ecl_data = ECLResultSerializer(ecl_results, many=True).data
 
+    sensitivities = {
+        s.sector_code: s.sector_name_vn
+        for s in IndustrySensitivity.objects.all()
+    }
+
+    sectors_dict = {}
+    stage_post = {1: 0, 2: 0, 3: 0}
+    stage_pre = {1: 0, 2: 0, 3: 0}
+    sicr_count = 0
+    top_loans = []
+
+    for item in ecl_results:
+        sec = item.contract.industry_sector
+        sec_name = sensitivities.get(sec, sec)
+        ead = float(item.contract.original_ead)
+        base_ecl = float(item.baseline_ecl)
+        str_ecl = float(item.stressed_ecl)
+        delta_p = float(item.delta_provision)
+
+        if sec_name not in sectors_dict:
+            sectors_dict[sec_name] = {
+                'sector_code': sec,
+                'sector_name': sec_name,
+                'contract_count': 0,
+                'ead': 0.0,
+                'baseline_ecl': 0.0,
+                'stressed_ecl': 0.0,
+                'delta_provision': 0.0,
+            }
+        sectors_dict[sec_name]['contract_count'] += 1
+        sectors_dict[sec_name]['ead'] += ead
+        sectors_dict[sec_name]['baseline_ecl'] += base_ecl
+        sectors_dict[sec_name]['stressed_ecl'] += str_ecl
+        sectors_dict[sec_name]['delta_provision'] += delta_p
+
+        stage_pre[item.baseline_stage] = stage_pre.get(item.baseline_stage, 0) + 1
+        stage_post[item.stressed_stage] = stage_post.get(item.stressed_stage, 0) + 1
+        if item.is_sicr:
+            sicr_count += 1
+
+        top_loans.append({
+            'contract_id': item.contract.contract_id,
+            'customer_name': item.contract.customer_name,
+            'customer_segment': item.contract.customer_segment,
+            'industry_sector': sec,
+            'sector_name_vn': sec_name,
+            'original_ead': ead,
+            'collateral_type': item.contract.collateral_type,
+            'collateral_value': float(item.contract.collateral_value),
+            'baseline_pd': float(item.baseline_pd),
+            'stressed_pd': float(item.stressed_pd),
+            'baseline_lgd': float(item.baseline_lgd),
+            'stressed_lgd': float(item.stressed_lgd),
+            'baseline_stage': item.baseline_stage,
+            'stressed_stage': item.stressed_stage,
+            'is_sicr': item.is_sicr,
+            'baseline_ecl': base_ecl,
+            'stressed_ecl': str_ecl,
+            'delta_provision': delta_p,
+        })
+
+    top_loans.sort(key=lambda x: x['delta_provision'], reverse=True)
+    top_risk_loans = top_loans[:5]
+
+    sector_breakdown = list(sectors_dict.values())
+    sector_breakdown.sort(key=lambda x: x['delta_provision'], reverse=True)
+
     data = serializer.data
     data['detailed_contracts'] = ecl_data
+    data['sector_breakdown'] = sector_breakdown
+    data['stage_migration'] = {
+        'pre_stress': stage_pre,
+        'post_stress': stage_post,
+        'sicr_count': sicr_count,
+        'migrated_to_stage2': sum(1 for item in ecl_results if item.baseline_stage == 1 and item.stressed_stage == 2),
+        'migrated_to_stage3': sum(1 for item in ecl_results if item.baseline_stage != 3 and item.stressed_stage == 3)
+    }
+    data['top_risk_loans'] = top_risk_loans
     return Response(data)
 
 

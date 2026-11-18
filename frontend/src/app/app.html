@@ -852,7 +852,7 @@
                   @for (run of filteredCheckerRuns(); track run.id) {
                     <tr class="hover:bg-slate-50 cursor-pointer transition-colors"
                         [class.bg-blue-50]="selectedRunToReview()?.id === run.id"
-                        (click)="selectedRunToReview.set(run)">
+                        (click)="selectRunForReview(run)">
                       <td class="p-3 font-bold text-blue-700 whitespace-nowrap font-mono">{{ run.run_code }}</td>
                       <td class="p-3 font-medium text-slate-900 min-w-[200px]">{{ run.run_name }}</td>
                       <td class="p-3 text-slate-600 whitespace-nowrap">{{ run.maker_name }}</td>
@@ -868,7 +868,7 @@
                         </span>
                       </td>
                       <td class="p-3 text-right whitespace-nowrap">
-                        <button (click)="selectedRunToReview.set(run)" class="px-2.5 py-1 text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-700 rounded border border-slate-200 font-semibold cursor-pointer">
+                        <button (click)="selectRunForReview(run); $event.stopPropagation()" class="px-2.5 py-1 text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-700 rounded border border-slate-200 font-semibold cursor-pointer">
                           {{ currentLang() === 'vi' ? 'Xem xét' : 'Review' }}
                         </button>
                       </td>
@@ -994,27 +994,225 @@
                 </div>
               </div>
 
-              <!-- 3 Detailed Validation Checkpoints (Thẩm định nghiệp vụ) -->
+              <!-- PHÂN TÍCH CHUYÊN SÂU DANH MỤC: PHÂN BỔ THEO NGÀNH VÀ MA TRẬN NHÓM NỢ -->
+              @if (selectedReviewDetail()) {
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <!-- Phân bổ Tổn thất theo Ngành Kinh tế -->
+                  <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-3">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                      <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-blue-600"></div>
+                        <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wide">
+                          {{ currentLang() === 'vi' ? 'Phân bổ Tổn thất theo Ngành Kinh tế' : 'ECL Distribution by Economic Sector' }}
+                        </h4>
+                      </div>
+                      <span class="text-[11px] font-medium text-slate-500">
+                        {{ selectedReviewDetail()!.sector_breakdown?.length || 0 }} {{ currentLang() === 'vi' ? 'nhóm ngành' : 'sectors' }}
+                      </span>
+                    </div>
+
+                    <div class="space-y-2.5 max-h-[220px] overflow-y-auto pr-1">
+                      @for (sec of selectedReviewDetail()!.sector_breakdown; track sec.sector_code) {
+                        <div class="text-xs">
+                          <div class="flex justify-between font-medium text-slate-700 mb-1">
+                            <span class="truncate max-w-[180px]">{{ sec.sector_name }} ({{ sec.contract_count }})</span>
+                            <span class="font-bold text-slate-900 whitespace-nowrap">
+                              {{ formatVND(sec.stressed_ecl) }}
+                              <span class="text-rose-600 text-[11px] font-normal">(+{{ formatVND(sec.delta_provision) }})</span>
+                            </span>
+                          </div>
+                          <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden flex">
+                            <div class="bg-rose-500 h-1.5 rounded-full transition-all duration-300"
+                                 [style.width.%]="(sec.delta_provision / (selectedRunToReview()!.total_delta_provision || 1)) * 100"></div>
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  </div>
+
+                  <!-- Ma Trận Dịch Chuyển Nhóm Nợ IFRS 9 -->
+                  <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-3">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+                      <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-indigo-600"></div>
+                        <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wide">
+                          {{ currentLang() === 'vi' ? 'Ma Trận Dịch Chuyển Nhóm Nợ (IFRS 9)' : 'Stage Migration Matrix' }}
+                        </h4>
+                      </div>
+                      <span class="text-[11px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
+                        {{ selectedReviewDetail()!.stage_migration?.sicr_count || 0 }} SICR
+                      </span>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 text-center pt-1">
+                      <div class="p-3 bg-emerald-50/60 border border-emerald-200 rounded-xl">
+                        <div class="text-[11px] font-semibold text-emerald-800">{{ currentLang() === 'vi' ? 'Nhóm 1 (Chuẩn)' : 'Stage 1' }}</div>
+                        <div class="text-2xl font-bold text-emerald-700 mt-1">
+                          {{ selectedReviewDetail()!.stage_migration?.post_stress?.[1] || 0 }}
+                        </div>
+                        <div class="text-[10px] text-emerald-600 mt-0.5">{{ currentLang() === 'vi' ? 'Dự phòng 12T' : '12-month ECL' }}</div>
+                      </div>
+
+                      <div class="p-3 bg-amber-50/60 border border-amber-200 rounded-xl">
+                        <div class="text-[11px] font-semibold text-amber-800">{{ currentLang() === 'vi' ? 'Nhóm 2 (Gia tăng)' : 'Stage 2' }}</div>
+                        <div class="text-2xl font-bold text-amber-700 mt-1">
+                          {{ selectedReviewDetail()!.stage_migration?.post_stress?.[2] || 0 }}
+                        </div>
+                        <div class="text-[10px] text-amber-600 mt-0.5">
+                          +{{ selectedReviewDetail()!.stage_migration?.migrated_to_stage2 || 0 }} {{ currentLang() === 'vi' ? 'từ Nhóm 1' : 'from S1' }}
+                        </div>
+                      </div>
+
+                      <div class="p-3 bg-rose-50/60 border border-rose-200 rounded-xl">
+                        <div class="text-[11px] font-semibold text-rose-800">{{ currentLang() === 'vi' ? 'Nhóm 3 (Nợ xấu)' : 'Stage 3' }}</div>
+                        <div class="text-2xl font-bold text-rose-700 mt-1">
+                          {{ selectedReviewDetail()!.stage_migration?.post_stress?.[3] || 0 }}
+                        </div>
+                        <div class="text-[10px] text-rose-600 mt-0.5">
+                          +{{ selectedReviewDetail()!.stage_migration?.migrated_to_stage3 || 0 }} {{ currentLang() === 'vi' ? 'suy giảm' : 'impaired' }}
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Tóm tắt SICR và Nợ xấu -->
+                    <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 flex items-center justify-between">
+                      <span class="flex items-center gap-1.5">
+                        <i class="fa-solid fa-triangle-exclamation text-amber-600"></i>
+                        <span>{{ currentLang() === 'vi' ? 'Khoản vay rủi ro tín dụng tăng đáng kể (SICR):' : 'Significant Increase in Credit Risk:' }}</span>
+                      </span>
+                      <strong class="text-slate-900">{{ selectedReviewDetail()!.stage_migration?.sicr_count || 0 }} / 100 HĐ</strong>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- TOP 5 KHOẢN VAY RỦI RO CAO NHẤT CỦA PHIÊN KIỂM ĐỊNH -->
+                @if (selectedReviewDetail()!.top_risk_loans?.length > 0) {
+                  <div class="p-4 rounded-xl border border-slate-200 bg-white space-y-3">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-2 gap-2">
+                      <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 rounded-full bg-rose-600"></div>
+                        <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wide">
+                          {{ currentLang() === 'vi' ? 'Top Khoản Vay Rủi Ro Nhất Cần Lưu Ý' : 'Top Stressed High-Risk Loans' }}
+                        </h4>
+                      </div>
+                      <button type="button"
+                              (click)="checkerContractModalOpen.set(true)"
+                              class="text-xs font-semibold text-blue-700 hover:text-blue-800 flex items-center gap-1 hover:underline cursor-pointer">
+                        <i class="fa-solid fa-table-list"></i>
+                        <span>{{ currentLang() === 'vi' ? 'Xem Bảng Kê 100 Hợp Đồng Chi Tiết' : 'View Full 100 Contracts List' }}</span>
+                      </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                      <table class="w-full text-left text-xs">
+                        <thead class="bg-slate-50 text-slate-600 uppercase font-semibold text-[11px] border-b border-slate-200 whitespace-nowrap">
+                          <tr>
+                            <th class="p-2.5 whitespace-nowrap">{{ currentLang() === 'vi' ? 'Mã HĐ' : 'Contract ID' }}</th>
+                            <th class="p-2.5 min-w-[150px]">{{ currentLang() === 'vi' ? 'Khách Hàng' : 'Customer' }}</th>
+                            <th class="p-2.5 whitespace-nowrap">{{ currentLang() === 'vi' ? 'Ngành Nghề' : 'Sector' }}</th>
+                            <th class="p-2.5 whitespace-nowrap">{{ currentLang() === 'vi' ? 'Dư Nợ' : 'EAD' }}</th>
+                            <th class="p-2.5 text-center whitespace-nowrap">{{ currentLang() === 'vi' ? 'Dịch Chuyển Nhóm' : 'Stage' }}</th>
+                            <th class="p-2.5 text-center whitespace-nowrap">{{ currentLang() === 'vi' ? 'Xác Suất Vỡ Nợ (PD)' : 'Stressed PD' }}</th>
+                            <th class="p-2.5 text-right whitespace-nowrap">{{ currentLang() === 'vi' ? 'Trích Lập Bổ Sung' : 'Delta Provision' }}</th>
+                          </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                          @for (loan of selectedReviewDetail()!.top_risk_loans; track loan.contract_id) {
+                            <tr class="hover:bg-slate-50 transition-colors">
+                              <td class="p-2.5 font-bold text-blue-700 whitespace-nowrap font-mono">{{ loan.contract_id }}</td>
+                              <td class="p-2.5 font-medium text-slate-900">{{ loan.customer_name }}</td>
+                              <td class="p-2.5 text-slate-600 whitespace-nowrap">{{ loan.sector_name_vn }}</td>
+                              <td class="p-2.5 font-bold text-slate-900 whitespace-nowrap">{{ formatVND(loan.original_ead) }}</td>
+                              <td class="p-2.5 text-center whitespace-nowrap">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold"
+                                      [class]="loan.stressed_stage === 3 ? 'bg-rose-100 text-rose-800' : (loan.stressed_stage === 2 ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800')">
+                                  N{{ loan.baseline_stage }} → N{{ loan.stressed_stage }}
+                                </span>
+                              </td>
+                              <td class="p-2.5 text-center whitespace-nowrap font-bold text-rose-700">
+                                {{ (loan.stressed_pd * 100).toFixed(2) }}%
+                              </td>
+                              <td class="p-2.5 text-right whitespace-nowrap font-bold text-rose-700">
+                                +{{ formatVND(loan.delta_provision) }}
+                              </td>
+                            </tr>
+                          }
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                }
+              }
+
+              <!-- 3 Detailed Validation Checkpoints (Interactive Checkboxes for Checker) -->
               <div class="space-y-2">
-                <div class="text-xs font-bold text-slate-900 uppercase tracking-wide">
-                  {{ currentLang() === 'vi' ? 'Phiếu Kiểm Tra và Thẩm Định Nghiệp Vụ:' : 'Four-Eyes Review Checklist:' }}
+                <div class="flex items-center justify-between">
+                  <div class="text-xs font-bold text-slate-900 uppercase tracking-wide">
+                    {{ currentLang() === 'vi' ? 'Phiếu Kiểm Tra và Thẩm Định Nghiệp Vụ (Bấm chọn hoặc bỏ chọn từng tiêu chí):' : 'Four-Eyes Review Checklist (Tick/Untick checkpoints):' }}
+                  </div>
+                  <span class="text-[11px] font-semibold"
+                        [class]="(checkerCheckDataIntegrity() && checkerCheckEconomicLogic() && checkerCheckCapitalAdequacy()) ? 'text-emerald-700' : 'text-rose-700'">
+                    {{ (checkerCheckDataIntegrity() ? 1 : 0) + (checkerCheckEconomicLogic() ? 1 : 0) + (checkerCheckCapitalAdequacy() ? 1 : 0) }}/3 {{ currentLang() === 'vi' ? 'tiêu chuẩn đạt' : 'passed' }}
+                  </span>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                  <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between font-bold text-slate-900">
-                    <span>1. {{ currentLang() === 'vi' ? 'Tính Toàn Vẹn Dữ Liệu' : 'Data Integrity and Quality' }}</span>
-                    <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
-                  </div>
+                  <!-- Checkpoint 1 -->
+                  <label class="p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-2 select-none"
+                         [class]="checkerCheckDataIntegrity() ? 'bg-emerald-50/50 border-emerald-300 shadow-xs' : 'bg-rose-50/40 border-rose-300'">
+                    <div class="flex items-start justify-between gap-2">
+                      <div class="font-bold text-slate-900 flex items-center gap-2">
+                        <input type="checkbox"
+                               [checked]="checkerCheckDataIntegrity()"
+                               (change)="checkerCheckDataIntegrity.set(!checkerCheckDataIntegrity())"
+                               class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer">
+                        <span>1. {{ currentLang() === 'vi' ? 'Tính Toàn Vẹn Dữ Liệu' : 'Data Integrity and Quality' }}</span>
+                      </div>
+                      <i class="fa-solid"
+                         [class]="checkerCheckDataIntegrity() ? 'fa-circle-check text-emerald-600 text-base' : 'fa-circle-xmark text-rose-600 text-base'"></i>
+                    </div>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">
+                      {{ currentLang() === 'vi' ? 'Kiểm tra 100 hợp đồng từ Core Banking, số liệu EAD và định giá tài sản bảo đảm chuẩn hóa.' : 'Verify 100 contracts, EAD values and collateral evaluation from Core Banking.' }}
+                    </p>
+                  </label>
 
-                  <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between font-bold text-slate-900">
-                    <span>2. {{ currentLang() === 'vi' ? 'Tính Logic Kinh Tế' : 'Economic Sensitivity Logic' }}</span>
-                    <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
-                  </div>
+                  <!-- Checkpoint 2 -->
+                  <label class="p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-2 select-none"
+                         [class]="checkerCheckEconomicLogic() ? 'bg-emerald-50/50 border-emerald-300 shadow-xs' : 'bg-rose-50/40 border-rose-300'">
+                    <div class="flex items-start justify-between gap-2">
+                      <div class="font-bold text-slate-900 flex items-center gap-2">
+                        <input type="checkbox"
+                               [checked]="checkerCheckEconomicLogic()"
+                               (change)="checkerCheckEconomicLogic.set(!checkerCheckEconomicLogic())"
+                               class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer">
+                        <span>2. {{ currentLang() === 'vi' ? 'Tính Logic Kinh Tế' : 'Economic Sensitivity Logic' }}</span>
+                      </div>
+                      <i class="fa-solid"
+                         [class]="checkerCheckEconomicLogic() ? 'fa-circle-check text-emerald-600 text-base' : 'fa-circle-xmark text-rose-600 text-base'"></i>
+                    </div>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">
+                      {{ currentLang() === 'vi' ? 'Hệ số nhạy cảm ngành và mức tăng PD/LGD phản ánh đúng kịch bản vĩ mô đặt ra.' : 'Industry sensitivities and PD/LGD shock response align with macroeconomic conditions.' }}
+                    </p>
+                  </label>
 
-                  <div class="p-3.5 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between font-bold text-slate-900">
-                    <span>3. {{ currentLang() === 'vi' ? 'Điều Kiện Trình Phê Duyệt' : 'Readiness for Approval' }}</span>
-                    <i class="fa-solid fa-circle-check text-emerald-600 text-base"></i>
-                  </div>
+                  <!-- Checkpoint 3 -->
+                  <label class="p-3.5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between gap-2 select-none"
+                         [class]="checkerCheckCapitalAdequacy() ? 'bg-emerald-50/50 border-emerald-300 shadow-xs' : 'bg-rose-50/40 border-rose-300'">
+                    <div class="flex items-start justify-between gap-2">
+                      <div class="font-bold text-slate-900 flex items-center gap-2">
+                        <input type="checkbox"
+                               [checked]="checkerCheckCapitalAdequacy()"
+                               (change)="checkerCheckCapitalAdequacy.set(!checkerCheckCapitalAdequacy())"
+                               class="w-4 h-4 text-emerald-600 rounded border-slate-300 focus:ring-emerald-500 cursor-pointer">
+                        <span>3. {{ currentLang() === 'vi' ? 'Điều Kiện Trình Phê Duyệt' : 'Readiness for Approval' }}</span>
+                      </div>
+                      <i class="fa-solid"
+                         [class]="checkerCheckCapitalAdequacy() ? 'fa-circle-check text-emerald-600 text-base' : 'fa-circle-xmark text-rose-600 text-base'"></i>
+                    </div>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">
+                      {{ currentLang() === 'vi' ? 'Mức trích lập bổ sung và mức xói mòn vốn đệm CAR đáp ứng giới hạn an toàn quy định.' : 'Required additional provisions and stressed CAR ratio comply with capital regulations.' }}
+                    </p>
+                  </label>
                 </div>
               </div>
 
@@ -1027,10 +1225,40 @@
                   </h4>
                 </div>
 
+                <!-- Gợi ý nhận xét nhanh -->
+                <div class="space-y-1.5">
+                  <div class="text-[11px] font-semibold text-slate-600 flex items-center gap-1">
+                    <i class="fa-regular fa-lightbulb text-amber-500"></i>
+                    <span>{{ currentLang() === 'vi' ? 'Mẫu nhận xét nhanh (Bấm để thêm vào ý kiến phản hồi):' : 'Quick suggestion chips (Click to append):' }}</span>
+                  </div>
+                  <div class="flex flex-wrap gap-1.5">
+                    <button type="button"
+                            (click)="applyQuickSuggestion('Đề nghị Maker kiểm tra lại số liệu ngành BĐS và chạy thêm sốc lãi suất +300 bps')"
+                            class="text-[11px] px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 cursor-pointer transition-colors">
+                      + Sốc lãi suất +300 bps
+                    </button>
+                    <button type="button"
+                            (click)="applyQuickSuggestion('Hệ số suy giảm GDP chưa đủ độ sâu so với chỉ đạo quý mới')"
+                            class="text-[11px] px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 cursor-pointer transition-colors">
+                      + Điều chỉnh lại GDP
+                    </button>
+                    <button type="button"
+                            (click)="applyQuickSuggestion('Tỷ lệ CAR sau sốc suy giảm dưới ngưỡng an toàn, yêu cầu rà soát lại tài sản bảo đảm')"
+                            class="text-[11px] px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 cursor-pointer transition-colors">
+                      + Rà soát vốn đệm CAR
+                    </button>
+                    <button type="button"
+                            (click)="applyQuickSuggestion('Dữ liệu định giá tài sản bảo đảm nhóm khách hàng lớn chưa được cập nhật quý gần nhất')"
+                            class="text-[11px] px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 cursor-pointer transition-colors">
+                      + Cập nhật định giá TSBĐ
+                    </button>
+                  </div>
+                </div>
+
                 <textarea [ngModel]="recalculationNote()" (ngModelChange)="recalculationNote.set($event)"
                           rows="3"
-                          class="w-full text-xs text-slate-800 bg-slate-50/50 border border-slate-300 rounded-lg p-3 focus:bg-white focus:border-amber-600 focus:ring-1 focus:ring-amber-500 focus:outline-none leading-relaxed min-h-[90px]"
-                          [placeholder]="currentLang() === 'vi' ? 'Nhập nhận xét thẩm định, lý do không duyệt hoặc yêu cầu Chuyên viên tính toán lại...' : 'Enter feedback notes, reasons for not approving, or instructions for Analyst to recalculate...'"></textarea>
+                          class="w-full text-xs text-slate-800 bg-slate-50/50 border border-slate-300 rounded-lg p-3 focus:bg-white focus:border-amber-600 focus:ring-1 focus:ring-amber-500 focus:outline-none leading-relaxed min-h-[80px]"
+                          [placeholder]="currentLang() === 'vi' ? 'Nhập nhận xét thẩm định, lý do không duyệt (hoặc để trống để hệ thống tự động lấy các tiêu chí chưa đạt ở trên gửi về cho Chuyên viên)...' : 'Enter feedback notes, or leave blank to automatically send unchecked criteria as rejection reasons...'"></textarea>
 
                 <div class="flex flex-wrap justify-end gap-2 pt-1">
                   @if (selectedRunToReview()!.status === 'PENDING_APPROVAL') {
@@ -1040,28 +1268,40 @@
                       <i class="fa-solid fa-undo"></i>
                       <span>{{ currentLang() === 'vi' ? 'Hủy Chuyển Duyệt (Rút Lại)' : 'Cancel Forward' }}</span>
                     </button>
-                  }
-                  @if (selectedRunToReview()!.status === 'RECALCULATION_REQUESTED') {
+                    <span class="px-3 py-2 bg-purple-50 text-purple-700 border border-purple-200 text-xs font-semibold rounded-lg flex items-center gap-1.5">
+                      <i class="fa-solid fa-clock"></i>
+                      <span>{{ currentLang() === 'vi' ? 'Đã Chuyển Giám Đốc Phê Duyệt' : 'Forwarded to Approver' }}</span>
+                    </span>
+                  } @else if (selectedRunToReview()!.status === 'RECALCULATION_REQUESTED') {
                     <button type="button"
                             (click)="submitCheckerFeedback('CANCEL_RECALCULATE')"
                             class="px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs">
                       <i class="fa-solid fa-undo"></i>
                       <span>{{ currentLang() === 'vi' ? 'Hủy Yêu Cầu Tính Lại' : 'Cancel Recalculate' }}</span>
                     </button>
+                    <span class="px-3 py-2 bg-rose-50 text-rose-700 border border-rose-200 text-xs font-semibold rounded-lg flex items-center gap-1.5">
+                      <i class="fa-solid fa-rotate-left"></i>
+                      <span>{{ currentLang() === 'vi' ? 'Đang Chờ Chuyên Viên Tính Lại' : 'Awaiting Analyst Recalculation' }}</span>
+                    </span>
+                  } @else if (selectedRunToReview()!.status === 'APPROVED') {
+                    <span class="px-4 py-2 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold rounded-lg flex items-center gap-1.5">
+                      <i class="fa-solid fa-circle-check"></i>
+                      <span>{{ currentLang() === 'vi' ? 'Đã được Giám đốc phê duyệt chính thức' : 'Officially Approved' }}</span>
+                    </span>
+                  } @else {
+                    <button type="button"
+                            (click)="submitCheckerFeedback('RECALCULATE')"
+                            class="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs">
+                      <i class="fa-solid fa-rotate-left"></i>
+                      <span>{{ currentLang() === 'vi' ? 'Không Duyệt — Yêu Cầu Tính Lại' : 'Reject and Recalculate' }}</span>
+                    </button>
+                    <button type="button"
+                            (click)="submitCheckerFeedback('FORWARD_APPROVER')"
+                            class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center gap-1.5 cursor-pointer">
+                      <i class="fa-solid fa-check-double"></i>
+                      <span>{{ currentLang() === 'vi' ? 'Xác Nhận Đạt và Chuyển Phê Duyệt' : 'Verify and Forward to Approver' }}</span>
+                    </button>
                   }
-                  <button type="button"
-                          (click)="submitCheckerFeedback('RECALCULATE')"
-                          class="px-4 py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-300 text-xs font-bold rounded-lg transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs">
-                    <i class="fa-solid fa-rotate-left"></i>
-                    <span>{{ currentLang() === 'vi' ? 'Không Duyệt — Yêu Cầu Tính Lại' : 'Reject and Recalculate' }}</span>
-                  </button>
-                  <button type="button"
-                          (click)="submitCheckerFeedback('FORWARD_APPROVER')"
-                          [disabled]="selectedRunToReview()!.status === 'PENDING_APPROVAL' || selectedRunToReview()!.status === 'APPROVED'"
-                          class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white text-xs font-bold rounded-lg shadow-sm transition-colors flex items-center gap-1.5 cursor-pointer">
-                    <i class="fa-solid fa-check-double"></i>
-                    <span>{{ currentLang() === 'vi' ? (selectedRunToReview()!.status === 'PENDING_APPROVAL' ? 'Đã Chuyển Phê Duyệt' : (selectedRunToReview()!.status === 'APPROVED' ? 'Đã Phê Duyệt' : 'Xác Nhận Đạt và Chuyển Phê Duyệt')) : 'Verify and Forward to Approver' }}</span>
-                  </button>
                 </div>
               </div>
 
@@ -2366,6 +2606,102 @@
               <span>{{ currentLang() === 'vi' ? 'Chỉnh Sửa và Tính Lại Đề Án Này' : 'Edit and Recalculate' }}</span>
             </button>
           }
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- CHECKER 100 CONTRACTS REVIEW MODAL -->
+  @if (checkerContractModalOpen() && selectedReviewDetail()) {
+    <div class="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+      <div class="bg-white rounded-xl max-w-5xl w-full p-5 sm:p-6 border border-slate-200 shadow-2xl space-y-4 my-auto max-h-[92vh] flex flex-col">
+        <!-- Header -->
+        <div class="flex items-start justify-between border-b border-slate-200 pb-3">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">
+                {{ selectedReviewDetail()!.run_code }}
+              </span>
+              <span class="text-xs font-semibold text-slate-500">
+                {{ selectedReviewDetail()!.scenario_name }}
+              </span>
+            </div>
+            <h3 class="text-sm font-bold text-slate-900 mt-1">
+              {{ currentLang() === 'vi' ? 'Bảng Kê Chi Tiết 100 Hợp Đồng Kiểm Định Của Đề Án' : 'Detailed Portfolio Loans Audit Inspection' }}
+            </h3>
+            <p class="text-xs text-slate-500">
+              {{ currentLang() === 'vi' ? 'Dữ liệu tính toán định lượng từng hợp đồng: Dư nợ EAD, dịch chuyển nhóm nợ, PD sốc và trích lập bổ sung.' : 'Loan-level quantitative audit data: EAD, stage transition, stressed PD and incremental provision.' }}
+            </p>
+          </div>
+          <button (click)="checkerContractModalOpen.set(false)" class="w-8 h-8 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center cursor-pointer">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+
+        <!-- Filter bar -->
+        <div class="flex items-center justify-between gap-3">
+          <div class="relative flex-1 max-w-sm">
+            <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
+            <input type="text"
+                   [ngModel]="checkerContractSearch()"
+                   (ngModelChange)="checkerContractSearch.set($event)"
+                   placeholder="Tìm kiếm mã HĐ, tên khách hàng..."
+                   class="w-full text-xs pl-8 pr-3 py-1.5 border border-slate-300 rounded-lg focus:outline-none focus:border-blue-500 bg-slate-50/50">
+          </div>
+          <span class="text-xs text-slate-500 font-medium">
+            {{ filteredReviewContracts().length }} / {{ selectedReviewDetail()!.detailed_contracts?.length || 0 }} hợp đồng
+          </span>
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-y-auto flex-1 border border-slate-200 rounded-lg max-h-[55vh]">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-50 text-slate-600 uppercase font-semibold text-[11px] border-b border-slate-200 sticky top-0 whitespace-nowrap">
+              <tr>
+                <th class="p-2.5">Mã HĐ</th>
+                <th class="p-2.5 min-w-[140px]">Khách Hàng</th>
+                <th class="p-2.5">Ngành Nghề</th>
+                <th class="p-2.5">Dư Nợ EAD</th>
+                <th class="p-2.5 text-center">Nhóm Nợ</th>
+                <th class="p-2.5 text-center">PD Cơ Sở → Sốc</th>
+                <th class="p-2.5 text-center">LGD Sốc</th>
+                <th class="p-2.5 text-right">Trích Lập Bổ Sung</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+              @for (c of filteredReviewContracts(); track c.id) {
+                <tr class="hover:bg-slate-50 transition-colors">
+                  <td class="p-2.5 font-bold text-blue-700 whitespace-nowrap font-mono">{{ c.contract }}</td>
+                  <td class="p-2.5 font-medium text-slate-900">{{ c.contract_customer_name }}</td>
+                  <td class="p-2.5 text-slate-600 whitespace-nowrap">{{ c.contract_sector }}</td>
+                  <td class="p-2.5 font-bold text-slate-900 whitespace-nowrap">{{ formatVND(c.contract_ead) }}</td>
+                  <td class="p-2.5 text-center whitespace-nowrap">
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold"
+                          [class]="c.stressed_stage === 3 ? 'bg-rose-100 text-rose-800' : (c.stressed_stage === 2 ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800')">
+                      N{{ c.baseline_stage }} → N{{ c.stressed_stage }}
+                    </span>
+                  </td>
+                  <td class="p-2.5 text-center whitespace-nowrap font-medium text-slate-700">
+                    {{ (c.baseline_pd * 100).toFixed(2) }}% → <strong class="text-rose-700">{{ (c.stressed_pd * 100).toFixed(2) }}%</strong>
+                  </td>
+                  <td class="p-2.5 text-center whitespace-nowrap text-slate-700 font-medium">
+                    {{ (c.stressed_lgd * 100).toFixed(1) }}%
+                  </td>
+                  <td class="p-2.5 text-right whitespace-nowrap font-bold text-rose-700">
+                    +{{ formatVND(c.delta_provision) }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Footer -->
+        <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
+          <span class="text-slate-400">Kiểm tra tính toàn vẹn 100 hợp đồng danh mục IFRS 9</span>
+          <button (click)="checkerContractModalOpen.set(false)" class="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-md cursor-pointer">
+            {{ currentLang() === 'vi' ? 'Đóng Bảng Kê' : 'Close' }}
+          </button>
         </div>
       </div>
     </div>

@@ -426,6 +426,26 @@ export class App implements OnInit {
 
   checkerRunFilter = signal<'ALL' | 'SUBMITTED' | 'PENDING' | 'RECALCULATE'>('ALL');
 
+  // Checker Review Detailed Metrics and Checkbox Checkpoints
+  checkerCheckDataIntegrity = signal<boolean>(true);
+  checkerCheckEconomicLogic = signal<boolean>(true);
+  checkerCheckCapitalAdequacy = signal<boolean>(true);
+  selectedReviewDetail = signal<any | null>(null);
+  checkerContractModalOpen = signal<boolean>(false);
+  checkerContractSearch = signal<string>('');
+
+  filteredReviewContracts = computed(() => {
+    const detail = this.selectedReviewDetail();
+    if (!detail || !detail.detailed_contracts) return [];
+    const q = this.checkerContractSearch().trim().toLowerCase();
+    if (!q) return detail.detailed_contracts;
+    return detail.detailed_contracts.filter((c: any) =>
+      (c.contract && String(c.contract).toLowerCase().includes(q)) ||
+      (c.contract_customer_name && String(c.contract_customer_name).toLowerCase().includes(q)) ||
+      (c.contract_sector && String(c.contract_sector).toLowerCase().includes(q))
+    );
+  });
+
   filteredCheckerRuns = computed(() => {
     const list = this.allRuns();
     const filter = this.checkerRunFilter();
@@ -961,8 +981,11 @@ export class App implements OnInit {
     this.http.get<StressTestRun[]>(`${this.API_BASE}/stress-test/runs/`).subscribe({
       next: (runs) => {
         this.allRuns.set(runs);
-        if (runs.length > 0 && !this.selectedRunToReview()) {
-          this.selectedRunToReview.set(runs[0]);
+        if (runs.length > 0) {
+          const currentReview = this.selectedRunToReview();
+          const target = currentReview ? (runs.find(r => r.id === currentReview.id) || runs[0]) : runs[0];
+          this.selectedRunToReview.set(target);
+          this.fetchRunReviewDetail(target.id);
         }
         
         // For Director: ONLY select proposals verified/forwarded by Checker
@@ -981,6 +1004,32 @@ export class App implements OnInit {
       next: (logs) => this.allAuditLogs.set(logs),
       error: () => console.log('Could not fetch audit logs')
     });
+  }
+
+  selectRunForReview(run: StressTestRun) {
+    this.selectedRunToReview.set(run);
+    this.checkerCheckDataIntegrity.set(true);
+    this.checkerCheckEconomicLogic.set(true);
+    this.checkerCheckCapitalAdequacy.set(true);
+    this.fetchRunReviewDetail(run.id);
+  }
+
+  fetchRunReviewDetail(runId: number) {
+    this.http.get<any>(`${this.API_BASE}/stress-test/runs/${runId}/`).subscribe({
+      next: (data) => {
+        this.selectedReviewDetail.set(data);
+      },
+      error: (err) => console.log('Could not fetch review detail', err)
+    });
+  }
+
+  applyQuickSuggestion(text: string) {
+    const current = this.recalculationNote().trim();
+    if (!current) {
+      this.recalculationNote.set(text);
+    } else {
+      this.recalculationNote.set(current + '; ' + text);
+    }
   }
 
   applyPreset(preset: 'BASELINE' | 'ADVERSE' | 'SEVERE') {
@@ -1091,13 +1140,49 @@ export class App implements OnInit {
         : 'Checker revoked recalculation request.');
       this.executeWorkflow(run.id, 'CANCEL_RECALCULATE', cancelNote);
     } else if (action === 'RECALCULATE') {
-      const feedback = note || (this.currentLang() === 'vi' 
-        ? 'Trưởng phòng Quản lý rủi ro yêu cầu Chuyên viên kiểm tra lại số liệu và điều chỉnh tham số kịch bản vĩ mô.'
-        : 'Risk Management Head requested recalculation of scenario parameters.');
+      const ok1 = this.checkerCheckDataIntegrity();
+      const ok2 = this.checkerCheckEconomicLogic();
+      const ok3 = this.checkerCheckCapitalAdequacy();
+
+      const failedCriteria: string[] = [];
+      if (!ok1) failedCriteria.push(this.currentLang() === 'vi' ? '1. Tính Toàn Vẹn Dữ Liệu' : '1. Data Integrity and Quality');
+      if (!ok2) failedCriteria.push(this.currentLang() === 'vi' ? '2. Tính Logic Kinh Tế' : '2. Economic Sensitivity Logic');
+      if (!ok3) failedCriteria.push(this.currentLang() === 'vi' ? '3. Điều Kiện Trình Phê Duyệt' : '3. Readiness for Approval');
+
+      let feedback = '';
+      if (failedCriteria.length > 0) {
+        if (note) {
+          feedback = `${note} (Tiêu chí chưa đạt: ${failedCriteria.join('; ')})`;
+        } else {
+          feedback = this.currentLang() === 'vi'
+            ? `Đề án chưa đạt tiêu chuẩn thẩm định: [${failedCriteria.join('; ')}]. Đề nghị Chuyên viên kiểm tra lại và tính toán lại mô hình.`
+            : `Proposal failed verification criteria: [${failedCriteria.join('; ')}]. Please review and recalculate.`;
+        }
+      } else {
+        feedback = note || (this.currentLang() === 'vi' 
+          ? 'Trưởng phòng Quản lý rủi ro yêu cầu Chuyên viên kiểm tra lại số liệu và điều chỉnh tham số kịch bản vĩ mô.'
+          : 'Risk Management Head requested recalculation of scenario parameters.');
+      }
       this.executeWorkflow(run.id, 'RECALCULATE', feedback);
     } else {
+      const ok1 = this.checkerCheckDataIntegrity();
+      const ok2 = this.checkerCheckEconomicLogic();
+      const ok3 = this.checkerCheckCapitalAdequacy();
+      if (!ok1 || !ok2 || !ok3) {
+        const missing: string[] = [];
+        if (!ok1) missing.push(this.currentLang() === 'vi' ? 'Tính Toàn Vẹn Dữ Liệu' : 'Data Integrity');
+        if (!ok2) missing.push(this.currentLang() === 'vi' ? 'Tính Logic Kinh Tế' : 'Economic Sensitivity Logic');
+        if (!ok3) missing.push(this.currentLang() === 'vi' ? 'Điều Kiện Trình Phê Duyệt' : 'Readiness for Approval');
+
+        const warnMsg = this.currentLang() === 'vi'
+          ? `Chưa thể chuyển phê duyệt: Tiêu chí kiểm soát [${missing.join(', ')}] chưa được đánh dấu đạt. Vui lòng rà soát và tích chọn đủ 3 tiêu chí.`
+          : `Cannot forward: Checkpoints [${missing.join(', ')}] are not confirmed. Please verify all 3 checkpoints.`;
+        this.showNotification(warnMsg, 'error');
+        return;
+      }
+
       const forwardNote = note || (this.currentLang() === 'vi' 
-        ? 'Trưởng phòng Quản lý rủi ro đã thẩm định đạt tính toàn vẹn và logic kinh tế, chuyển Ban Điều hành phê duyệt.'
+        ? 'Trưởng phòng Quản lý rủi ro đã thẩm định đạt 3 tiêu chuẩn: Tính toàn vẹn dữ liệu từ Core Banking, tính logic nhạy cảm chu kỳ kinh tế và mức độ xói mòn vốn đệm CAR. Kính trình Giám đốc Khối Quản lý rủi ro / CEO ký số phê duyệt.'
         : 'Risk Management Head verified and forwarded for executive approval.');
       this.executeWorkflow(run.id, 'FORWARD_APPROVER', forwardNote);
     }
@@ -1113,6 +1198,7 @@ export class App implements OnInit {
       next: (updated) => {
         this.fetchRuns();
         this.selectedRunToReview.set(updated);
+        this.fetchRunReviewDetail(updated.id);
         this.selectedApproverRun.set(updated);
         this.recalculationModalOpen.set(false);
         this.recalculationNote.set('');
