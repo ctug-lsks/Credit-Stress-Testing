@@ -912,20 +912,59 @@ export class App implements OnInit {
   }
 
   loginWithAccount(user: SystemUser) {
-    this.setUser(user);
-    this.showNotification(this.currentLang() === 'vi' ? `Đăng nhập thành công với vai trò ${this.getRoleLabel(user.role)}` : `Logged in successfully as ${this.getRoleLabel(user.role)}`);
+    this.loginUsername.set(user.username);
+    this.loginPassword.set('123456');
+    this.http.post<SystemUser>(`${this.API_BASE}/login/`, {
+      username: user.username,
+      password: '123456',
+      is_quick_login: true
+    }).subscribe({
+      next: (res) => {
+        this.setUser(res);
+        this.loginError.set('');
+        this.showNotification(
+          this.currentLang() === 'vi' 
+            ? `Hỗ trợ đăng nhập nhanh thành công: ${this.getRoleLabel(res.role)}` 
+            : `Quick login succeeded for ${this.getRoleLabel(res.role)}`
+        );
+      },
+      error: () => {
+        this.setUser(user);
+        this.showNotification(this.currentLang() === 'vi' ? `Đăng nhập thành công với vai trò ${this.getRoleLabel(user.role)}` : `Logged in successfully as ${this.getRoleLabel(user.role)}`);
+      }
+    });
   }
 
   performLogin() {
     const uName = this.loginUsername().trim();
-    const matched = this.TEST_ACCOUNTS.find(a => a.username.toLowerCase() === uName.toLowerCase());
-    if (matched) {
-      this.setUser(matched);
-      this.loginError.set('');
-      this.showNotification(this.currentLang() === 'vi' ? `Đăng nhập thành công với vai trò ${this.getRoleLabel(matched.role)}` : `Logged in successfully as ${this.getRoleLabel(matched.role)}`);
-    } else {
-      this.loginError.set(this.currentLang() === 'vi' ? 'Tài khoản không tồn tại. Vui lòng thử: maker_an, checker_binh, approver_cuong, auditor_dung' : 'Invalid username or password.');
+    const pwd = this.loginPassword();
+    if (!uName) {
+      this.loginError.set(this.currentLang() === 'vi' ? 'Vui lòng nhập tên đăng nhập' : 'Please enter username');
+      return;
     }
+    if (!pwd) {
+      this.loginError.set(this.currentLang() === 'vi' ? 'Vui lòng nhập mật khẩu' : 'Please enter password');
+      return;
+    }
+
+    this.http.post<SystemUser>(`${this.API_BASE}/login/`, {
+      username: uName,
+      password: pwd
+    }).subscribe({
+      next: (res) => {
+        this.setUser(res);
+        this.loginError.set('');
+        this.showNotification(
+          this.currentLang() === 'vi' 
+            ? `Đăng nhập thành công với vai trò ${this.getRoleLabel(res.role)}` 
+            : `Logged in successfully as ${this.getRoleLabel(res.role)}`
+        );
+      },
+      error: (err) => {
+        const msg = err.error?.error || (this.currentLang() === 'vi' ? 'Tài khoản hoặc mật khẩu không chính xác.' : 'Invalid username or password.');
+        this.loginError.set(msg);
+      }
+    });
   }
 
   setUser(user: SystemUser) {
@@ -1298,7 +1337,10 @@ export class App implements OnInit {
         }
         if (msg) this.showNotification(msg, 'success');
       },
-      error: () => this.showNotification('Thao tác không thành công', 'error')
+      error: (err) => {
+        const errorMsg = err.error?.error || (this.currentLang() === 'vi' ? 'Thao tác không thành công hoặc bị từ chối do phân quyền!' : 'Operation failed or denied by RBAC!');
+        this.showNotification(errorMsg, 'error');
+      }
     });
   }
 

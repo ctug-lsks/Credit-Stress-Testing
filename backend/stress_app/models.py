@@ -19,8 +19,20 @@ class SystemUser(models.Model):
     email = models.EmailField(max_length=100, unique=True, verbose_name="Email")
     role = models.CharField(max_length=30, choices=ROLES, verbose_name="Vai trò")
     department = models.CharField(max_length=100, default='Khối Quản lý Rủi ro', verbose_name="Phòng ban")
+    password_hash = models.CharField(max_length=255, default='', blank=True, verbose_name="Mật khẩu mã hóa (PBKDF2)")
+    last_login = models.DateTimeField(null=True, blank=True, verbose_name="Thời điểm đăng nhập gần nhất")
     is_active = models.BooleanField(default=True, verbose_name="Đang hoạt động")
     created_at = models.DateTimeField(default=timezone.now, verbose_name="Thời điểm tạo")
+
+    def set_password(self, raw_password):
+        from django.contrib.auth.hashers import make_password
+        self.password_hash = make_password(raw_password)
+
+    def check_password(self, raw_password):
+        from django.contrib.auth.hashers import check_password
+        if not self.password_hash:
+            return False
+        return check_password(raw_password, self.password_hash)
 
     class Meta:
         db_table = 'SYSTEM_USERS'
@@ -102,7 +114,7 @@ class LoanCollateral(models.Model):
     """
     Bảng 27 / Bảng 34 Báo cáo: Bảng trung gian liên kết Khoản vay và TSBĐ (LOAN_COLLATERAL)
     """
-    loan = models.ForeignKey(LoanAccount, to_field='loan_id', db_column='loan_id', on_delete=models.CASCADE, related_name='collateral_links', verbose_name="Khoản vay")
+    loan = models.ForeignKey(LoanAccount, to_field='loan_id', db_column='loan_id', on_delete=models.CASCADE, related_name='collateral_allocations', verbose_name="Khoản vay")
     collateral = models.ForeignKey(Collateral, to_field='collateral_id', db_column='collateral_id', on_delete=models.CASCADE, related_name='loan_links', verbose_name="Tài sản bảo đảm")
     allocated_value = models.DecimalField(max_digits=18, decimal_places=2, verbose_name="Phần giá trị phân bổ cho khoản vay")
 
@@ -226,59 +238,13 @@ class StressTestRun(models.Model):
 ECLReport = StressTestRun
 
 
-class LoanContract(models.Model):
-    """
-    Bản ghi hợp đồng tổng hợp phục vụ hiển thị nhanh và tương thích ngược (LOAN_CONTRACTS)
-    """
-    SEGMENTS = [
-        ('CORPORATE', 'Corporate'),
-        ('SME', 'SME'),
-        ('RETAIL', 'Retail'),
-    ]
-
-    SECTORS = [
-        ('REAL_ESTATE', 'Bất động sản'),
-        ('CONSTRUCTION', 'Xây dựng và Hạ tầng'),
-        ('MANUFACTURING', 'Sản xuất và Chế biến'),
-        ('WHOLESALE_RETAIL', 'Bán buôn và Bán lẻ'),
-        ('AGRICULTURE', 'Nông - Lâm - Thủy sản'),
-        ('CONSUMER_LOAN', 'Cho vay tiêu dùng và Bán lẻ'),
-    ]
-
-    contract_id = models.CharField(max_length=30, primary_key=True, verbose_name="Mã hợp đồng")
-    customer_id = models.CharField(max_length=30, verbose_name="Mã khách hàng")
-    customer_name = models.CharField(max_length=150, verbose_name="Tên khách hàng")
-    customer_segment = models.CharField(max_length=30, choices=SEGMENTS, verbose_name="Phân khúc")
-    industry_sector = models.CharField(max_length=50, choices=SECTORS, verbose_name="Ngành kinh tế")
-    original_ead = models.DecimalField(max_digits=18, decimal_places=2, verbose_name="Dư nợ gốc (VNĐ)")
-    interest_rate = models.DecimalField(max_digits=6, decimal_places=4, verbose_name="Lãi suất (EIR)")
-    remaining_tenor_months = models.IntegerField(verbose_name="Kỳ hạn còn lại (tháng)")
-    collateral_type = models.CharField(max_length=100, verbose_name="Loại TSBĐ")
-    collateral_value = models.DecimalField(max_digits=18, decimal_places=2, default=0, verbose_name="Giá trị TSBĐ (VNĐ)")
-    baseline_haircut = models.DecimalField(max_digits=5, decimal_places=4, default=0.3000, verbose_name="Tỷ lệ Haircut")
-    internal_rating = models.CharField(max_length=10, verbose_name="Hạng tín dụng")
-    baseline_pd = models.DecimalField(max_digits=6, decimal_places=5, verbose_name="PD cơ sở")
-    baseline_lgd = models.DecimalField(max_digits=6, decimal_places=5, verbose_name="LGD cơ sở")
-    initial_stage = models.IntegerField(default=1, verbose_name="Stage ban đầu")
-    overdue_days = models.IntegerField(default=0, verbose_name="Số ngày quá hạn")
-    created_at = models.DateTimeField(default=timezone.now, verbose_name="Thời điểm tạo")
-
-    class Meta:
-        db_table = 'LOAN_CONTRACTS'
-        verbose_name = 'Hợp đồng Tín dụng (Hợp nhất)'
-        verbose_name_plural = '12. Hợp đồng Tín dụng Tổng hợp'
-
-    def __str__(self):
-        return f"{self.contract_id} - {self.customer_name} ({self.industry_sector})"
-
-
 class ECLResult(models.Model):
     """
     Bảng 31 / Bảng 38 Báo cáo: Kết quả kiểm định chi tiết từng khoản vay (STRESS_RESULTS)
+    Liên kết trực tiếp tới LOAN_ACCOUNTS chuẩn hóa theo mô hình 11 thực thể của ngân hàng.
     """
     run = models.ForeignKey(StressTestRun, on_delete=models.CASCADE, related_name='ecl_results', verbose_name="Báo cáo kiểm định")
-    contract = models.ForeignKey(LoanContract, on_delete=models.CASCADE, related_name='ecl_evaluations', null=True, blank=True, verbose_name="Hợp đồng")
-    loan_account = models.ForeignKey(LoanAccount, to_field='loan_id', db_column='loan_account_id', on_delete=models.SET_NULL, null=True, blank=True, related_name='stress_evaluations', verbose_name="Khoản vay LOAN_ACCOUNTS")
+    loan_account = models.ForeignKey(LoanAccount, to_field='loan_id', db_column='loan_account_id', on_delete=models.CASCADE, null=True, blank=True, related_name='stress_evaluations', verbose_name="Khoản vay LOAN_ACCOUNTS")
     baseline_pd = models.DecimalField(max_digits=8, decimal_places=6, verbose_name="PD 12 tháng cơ sở")
     stressed_pd = models.DecimalField(max_digits=8, decimal_places=6, verbose_name="PD 12 tháng sau sốc")
     baseline_lgd = models.DecimalField(max_digits=6, decimal_places=5, verbose_name="LGD cơ sở")
@@ -292,6 +258,10 @@ class ECLResult(models.Model):
     stressed_ecl = models.DecimalField(max_digits=18, decimal_places=2, default=0, verbose_name="ECL sau sốc")
     delta_provision = models.DecimalField(max_digits=18, decimal_places=2, default=0, verbose_name="Dự phòng phát sinh tăng (ΔPS)")
     calculation_timestamp = models.DateTimeField(default=timezone.now, verbose_name="Thời điểm tính toán")
+
+    @property
+    def contract_id(self):
+        return self.loan_account_id
 
     class Meta:
         db_table = 'STRESS_RESULTS'
@@ -335,9 +305,10 @@ class CarImpact(models.Model):
 
 class AuditLog(models.Model):
     """
-    Nhật ký hoạt động và kiểm toán (AUDIT_LOGS)
+    Nhật ký hoạt động và kiểm toán (AUDIT_LOGS) - Lưu trữ bất biến (Append-only)
     """
-    run = models.ForeignKey(StressTestRun, on_delete=models.CASCADE, related_name='audit_logs', verbose_name="Phiên kiểm định")
+    run = models.ForeignKey(StressTestRun, on_delete=models.SET_NULL, null=True, blank=True, related_name='audit_logs', verbose_name="Phiên kiểm định")
+    run_code = models.CharField(max_length=50, blank=True, default='', verbose_name="Mã phiên kiểm định")
     actor = models.ForeignKey(SystemUser, on_delete=models.CASCADE, verbose_name="Người thực hiện")
     action = models.CharField(max_length=50, verbose_name="Hành động")
     action_note = models.TextField(blank=True, verbose_name="Ghi chú chi tiết")

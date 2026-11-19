@@ -10,8 +10,7 @@ from .models import (
     ECLResult,
     SystemUser,
     AuditLog,
-    CarImpact,
-    LoanContract
+    CarImpact
 )
 
 
@@ -68,9 +67,9 @@ class StressTestRunAdmin(admin.ModelAdmin):
 
 @admin.register(ECLResult)
 class ECLResultAdmin(admin.ModelAdmin):
-    list_display = ('id', 'run', 'contract', 'baseline_stage', 'stressed_stage', 'is_sicr', 'early_warning_flag', 'delta_provision')
+    list_display = ('id', 'run', 'loan_account', 'baseline_stage', 'stressed_stage', 'is_sicr', 'early_warning_flag', 'delta_provision')
     list_filter = ('is_sicr', 'early_warning_flag', 'baseline_stage', 'stressed_stage')
-    search_fields = ('contract__contract_id', 'contract__customer_name', 'run__run_code')
+    search_fields = ('loan_account__loan_id', 'loan_account__customer__customer_name', 'run__run_code')
 
 
 @admin.register(SystemUser)

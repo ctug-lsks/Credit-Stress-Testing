@@ -6,19 +6,24 @@ from django.utils import timezone
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 django.setup()
 
+from django.contrib.auth.hashers import make_password
+
 from stress_app.models import (
     SystemUser, MacroScenario, IndustrySensitivity,
-    Customer, LoanAccount, Collateral, LoanCollateral, LoanContract
+    Customer, LoanAccount, Collateral, LoanCollateral
 )
 
 print("Starting DB Seeding...")
 
 # 1. System Users (SYSTEM_USERS)
+default_pwd_hash = make_password('123456')
+
 users_data = [
     (1, 'maker_an', 'Nguyễn Văn An', 'an.nguyen@bank.vn', 'MAKER', 'Phòng Đo lường Rủi ro'),
     (2, 'checker_binh', 'Trần Thị Bình', 'binh.tran@bank.vn', 'CHECKER', 'Phòng Quản lý rủi ro'),
     (3, 'approver_cuong', 'Lê Hoàng Cường', 'cuong.le@bank.vn', 'APPROVER', 'Ban Điều hành / Khối Quản lý rủi ro'),
-    (4, 'auditor_dung', 'Phạm Minh Dũng', 'dung.pham@bank.vn', 'AUDITOR', 'Khối Kiểm toán Nội bộ')
+    (4, 'auditor_dung', 'Phạm Minh Dũng', 'dung.pham@bank.vn', 'AUDITOR', 'Khối Kiểm toán Nội bộ'),
+    (5, 'admin_system', 'Quản trị viên Hệ thống (IT Admin)', 'admin@bank.vn', 'ADMIN', 'Khối CNTT & Quản trị Hệ thống')
 ]
 for uid, username, full_name, email, role, dept in users_data:
     SystemUser.objects.update_or_create(
@@ -28,10 +33,11 @@ for uid, username, full_name, email, role, dept in users_data:
             'full_name': full_name,
             'email': email,
             'role': role,
-            'department': dept
+            'department': dept,
+            'password_hash': default_pwd_hash
         }
     )
-print("Seeded 4 System Users (SYSTEM_USERS).")
+print("Seeded 5 System Users (SYSTEM_USERS) with hashed passwords.")
 
 # 2. Macro Scenarios (MACRO_SCENARIOS)
 scenarios_data = [
@@ -103,7 +109,6 @@ customers_map = {}
 loans_to_create = []
 collaterals_to_create = []
 loan_collateral_to_create = []
-contracts_to_create = []
 
 now = timezone.now()
 
@@ -197,27 +202,6 @@ for i in range(1, 101):
         allocated_value=collateral_val
     ))
 
-    # 5. LoanContract (Composite)
-    contracts_to_create.append(LoanContract(
-        contract_id=cid,
-        customer_id=cust_id,
-        customer_name=cust_name,
-        customer_segment=segment,
-        industry_sector=sec_code,
-        original_ead=ead,
-        interest_rate=int_rate,
-        remaining_tenor_months=tenor,
-        collateral_type=c_type,
-        collateral_value=collateral_val,
-        baseline_haircut=haircut,
-        internal_rating=rating,
-        baseline_pd=pd_base,
-        baseline_lgd=lgd_base,
-        initial_stage=stage,
-        overdue_days=overdue,
-        created_at=now
-    ))
-
 Customer.objects.all().delete()
 Customer.objects.bulk_create(list(customers_map.values()))
 
@@ -230,7 +214,4 @@ Collateral.objects.bulk_create(collaterals_to_create)
 LoanCollateral.objects.all().delete()
 LoanCollateral.objects.bulk_create(loan_collateral_to_create)
 
-LoanContract.objects.all().delete()
-LoanContract.objects.bulk_create(contracts_to_create)
-
-print(f"Seeded 100 CUSTOMERS, 100 LOAN_ACCOUNTS, 100 COLLATERALS, 100 LOAN_COLLATERAL, and 100 LOAN_CONTRACTS successfully!")
+print(f"Seeded 100 CUSTOMERS, 100 LOAN_ACCOUNTS, 100 COLLATERALS, and 100 LOAN_COLLATERAL successfully!")
