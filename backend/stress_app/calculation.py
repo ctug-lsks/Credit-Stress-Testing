@@ -140,7 +140,7 @@ def calculate_stress_test(
         stage_counts_pre[stage_base] += 1
 
         sens = sensitivities.get(sector, default_sens)
-        beta_unemp = 1.3 if sector in ['CONSUMER_LOAN', 'WHOLESALE_RETAIL', 'RETAIL'] else 1.0
+        beta_unemp = 1.3 if sector in ['RETAIL', 'COMMERCE', 'CONSUMER_LOAN', 'WHOLESALE_RETAIL'] else 1.0
 
         # ----------------------------------------------------------------------
         # 1. TÍNH TOÁN PD SỐC (PROBABILITY OF DEFAULT)

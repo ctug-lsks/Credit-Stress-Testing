@@ -65,27 +65,25 @@ for sid, code, name, stype, desc, gdp, ir, re, fx, rec_yrs, weight in scenarios_
     )
 print("Seeded 3 Macro Scenarios (MACRO_SCENARIOS).")
 
-# 3. Industry Sensitivities (SECTOR_SENSITIVITY)
+# 3. Industry Sensitivities (SECTOR_SENSITIVITY) - 5 Nhóm ngành chuẩn theo Báo cáo
+IndustrySensitivity.objects.all().delete()
 sensitivities_data = [
-    ('REAL_ESTATE', 'Bất động sản', 1.8500, 2.1000, -2.4000, 2.200),
-    ('CONSTRUCTION', 'Xây dựng & Hạ tầng', 1.5000, 1.8000, -1.6000, 1.800),
-    ('MANUFACTURING', 'Sản xuất & Chế biến', 1.2000, 1.3000, -0.4000, 1.400),
-    ('WHOLESALE_RETAIL', 'Bán buôn & Bán lẻ', 0.9500, 1.1000, -0.3000, 1.100),
-    ('AGRICULTURE', 'Nông - Lâm - Thủy sản', 0.8000, 0.9000, -0.2000, 0.950),
-    ('CONSUMER_LOAN', 'Cho vay tiêu dùng & Bán lẻ', 1.1000, 1.5000, -0.8000, 1.250)
+    ('REAL_ESTATE_CONSTRUCTION', 'BĐS và Xây dựng', 1.8000, 2.0000, -2.2000, 3.500),
+    ('MANUFACTURING', 'Sản xuất và Chế biến', 1.3000, 1.4000, -0.4000, 2.200),
+    ('AGRICULTURE', 'Nông - Lâm - Thủy sản', 0.8000, 0.9000, -0.2000, 1.800),
+    ('COMMERCE', 'Thương mại', 1.2000, 1.3000, -0.5000, 2.500),
+    ('RETAIL', 'Bán lẻ', 1.1000, 1.6000, -0.7000, 2.800)
 ]
 for code, name_vn, b_gdp, b_ir, b_re, mult in sensitivities_data:
-    IndustrySensitivity.objects.update_or_create(
+    IndustrySensitivity.objects.create(
         sector_code=code,
-        defaults={
-            'sector_name_vn': name_vn,
-            'beta_gdp': b_gdp,
-            'beta_interest': b_ir,
-            'beta_real_estate': b_re,
-            'pd_multiplier': mult
-        }
+        sector_name_vn=name_vn,
+        beta_gdp=b_gdp,
+        beta_interest=b_ir,
+        beta_real_estate=b_re,
+        pd_multiplier=mult
     )
-print("Seeded 6 Industry Sensitivities (SECTOR_SENSITIVITY).")
+print("Seeded 5 Industry Sensitivities (SECTOR_SENSITIVITY).")
 
 # 4. 100 Loan Contracts, Customers, Loan Accounts, Collaterals, and LoanCollateral
 random.seed(42)
@@ -116,32 +114,32 @@ for i in range(1, 101):
     cid = f'LN-2026-{i:04d}'
     cust_id = f'CUST-{i:04d}'
     rand_val = random.random()
-    if rand_val < 0.28:
-        sec_code = 'REAL_ESTATE'
+    if rand_val < 0.35:
+        sec_code = 'REAL_ESTATE_CONSTRUCTION'
         c_type = 'Bất động sản thương mại và Đất dự án'
         haircut = 0.30
-    elif rand_val < 0.46:
-        sec_code = 'CONSTRUCTION'
-        c_type = 'Bất động sản và Máy móc thi công'
-        haircut = 0.35
-    elif rand_val < 0.66:
+    elif rand_val < 0.58:
         sec_code = 'MANUFACTURING'
         c_type = 'Nhà xưởng và Dây chuyền thiết bị'
         haircut = 0.40
-    elif rand_val < 0.82:
-        sec_code = 'WHOLESALE_RETAIL'
-        c_type = 'Hàng tồn kho và Kho bãi'
-        haircut = 0.45
-    elif rand_val < 0.92:
+    elif rand_val < 0.72:
         sec_code = 'AGRICULTURE'
         c_type = 'Đất nông nghiệp và Nông sản'
         haircut = 0.50
+    elif rand_val < 0.86:
+        sec_code = 'COMMERCE'
+        c_type = 'Hàng tồn kho và Kho bãi'
+        haircut = 0.45
     else:
-        sec_code = 'CONSUMER_LOAN'
+        sec_code = 'RETAIL'
         c_type = 'Bất động sản nhà ở và Xe ô tô'
         haircut = 0.25
 
     segment = 'CORPORATE' if i <= 50 else ('SME' if i <= 85 else 'RETAIL')
+    if sec_code == 'RETAIL':
+        segment = 'RETAIL'
+    elif segment == 'RETAIL':
+        sec_code = 'RETAIL'
     cust_name = corp_names[(i - 1) % len(corp_names)] + f' - Chi nhánh {i%7 + 1}' if segment != 'RETAIL' else f'Khách hàng cá nhân #{i:04d}'
     ead = round(random.uniform(10_000_000_000, 95_000_000_000), -6) if segment == 'CORPORATE' else round(random.uniform(1_500_000_000, 15_000_000_000), -6)
     int_rate = round(random.uniform(0.082, 0.125), 4)

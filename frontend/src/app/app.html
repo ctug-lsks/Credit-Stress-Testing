@@ -1428,22 +1428,22 @@
                     </h3>
                   </div>
                   <span class="whitespace-nowrap shrink-0 text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded border border-blue-200">
-                    6 Nhóm ngành
+                    5 Nhóm ngành
                   </span>
                 </div>
 
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                   @for (sec of currentSectorBreakdown(); track sec.sector_code) {
                     <div class="p-3.5 rounded-xl border flex flex-col justify-between transition-all bg-white"
-                         [class]="sec.sector_code === 'REAL_ESTATE' ? 'border-red-300 shadow-2xs' : (sec.sector_code === 'CONSTRUCTION' ? 'border-amber-300 shadow-2xs' : 'border-slate-200 hover:border-slate-300 shadow-2xs')">
+                         [class]="sec.sector_code === 'REAL_ESTATE_CONSTRUCTION' || sec.sector_code === 'REAL_ESTATE' ? 'border-red-300 shadow-2xs' : 'border-slate-200 hover:border-slate-300 shadow-2xs'">
                       <div>
                         <div class="flex items-center justify-between gap-2 mb-1.5">
                           <span class="text-xs font-bold text-slate-900 flex items-center gap-1.5 whitespace-nowrap">
-                            <i class="fa-solid text-xs shrink-0" [class]="getSectorBadgeClass(sec.sector_code).icon" [class.text-red-600]="sec.sector_code === 'REAL_ESTATE'" [class.text-amber-600]="sec.sector_code === 'CONSTRUCTION'" [class.text-slate-600]="sec.sector_code !== 'REAL_ESTATE' && sec.sector_code !== 'CONSTRUCTION'"></i>
+                            <i class="fa-solid text-xs shrink-0" [class]="getSectorBadgeClass(sec.sector_code).icon" [class.text-red-600]="sec.sector_code === 'REAL_ESTATE_CONSTRUCTION' || sec.sector_code === 'REAL_ESTATE'" [class.text-slate-600]="sec.sector_code !== 'REAL_ESTATE_CONSTRUCTION' && sec.sector_code !== 'REAL_ESTATE'"></i>
                             <span>{{ getSectorName(sec.sector_code) }}</span>
                           </span>
                           <span class="text-[10px] font-bold px-2 py-0.5 rounded shrink-0 whitespace-nowrap border"
-                                [class]="sec.sector_code === 'REAL_ESTATE' ? 'bg-rose-50 text-red-700 border-red-200' : 'bg-slate-100 text-slate-700 border-slate-200'">
+                                [class]="sec.sector_code === 'REAL_ESTATE_CONSTRUCTION' || sec.sector_code === 'REAL_ESTATE' ? 'bg-rose-50 text-red-700 border-red-200' : 'bg-slate-100 text-slate-700 border-slate-200'">
                             {{ ((sec.stressed_ecl / (simulationResult()?.summary?.total_stressed_ecl || 1)) * 100).toFixed(1) }}% ECL
                           </span>
                         </div>
@@ -1934,12 +1934,11 @@
                             <select [ngModel]="selectedSectorFilter()" (ngModelChange)="selectedSectorFilter.set($event)"
                       class="bg-slate-50 border border-slate-300 rounded-md px-2.5 py-1.5 text-xs text-slate-700">
                 <option value="ALL">{{ t('filter_all_sectors') }}</option>
-                <option value="REAL_ESTATE">{{ getSectorName('REAL_ESTATE') }}</option>
-                <option value="CONSTRUCTION">{{ getSectorName('CONSTRUCTION') }}</option>
+                <option value="REAL_ESTATE_CONSTRUCTION">{{ getSectorName('REAL_ESTATE_CONSTRUCTION') }}</option>
                 <option value="MANUFACTURING">{{ getSectorName('MANUFACTURING') }}</option>
-                <option value="WHOLESALE_RETAIL">{{ getSectorName('WHOLESALE_RETAIL') }}</option>
                 <option value="AGRICULTURE">{{ getSectorName('AGRICULTURE') }}</option>
-                <option value="CONSUMER_LOAN">{{ getSectorName('CONSUMER_LOAN') }}</option>
+                <option value="COMMERCE">{{ getSectorName('COMMERCE') }}</option>
+                <option value="RETAIL">{{ getSectorName('RETAIL') }}</option>
               </select>
 
                             <select [ngModel]="selectedStageFilter()" (ngModelChange)="selectedStageFilter.set($event)"

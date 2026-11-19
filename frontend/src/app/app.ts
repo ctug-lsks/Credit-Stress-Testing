@@ -690,19 +690,21 @@ export class App implements OnInit {
 
   getSectorBadgeClass(code: string): { bg: string; border: string; text: string; icon: string } {
     switch (code) {
+      case 'REAL_ESTATE_CONSTRUCTION':
       case 'REAL_ESTATE':
-        return { bg: 'bg-rose-50/70', border: 'border-rose-300', text: 'text-rose-700', icon: 'fa-building' };
       case 'CONSTRUCTION':
-        return { bg: 'bg-amber-50/70', border: 'border-amber-300', text: 'text-amber-700', icon: 'fa-helmet-safety' };
+        return { bg: 'bg-rose-50/70', border: 'border-rose-300', text: 'text-rose-700', icon: 'fa-building' };
       case 'MANUFACTURING':
         return { bg: 'bg-blue-50/70', border: 'border-blue-300', text: 'text-blue-700', icon: 'fa-industry' };
-      case 'WHOLESALE_RETAIL':
-        return { bg: 'bg-indigo-50/70', border: 'border-indigo-300', text: 'text-indigo-700', icon: 'fa-cart-shopping' };
-      case 'HOSPITALITY':
-        return { bg: 'bg-emerald-50/70', border: 'border-emerald-300', text: 'text-emerald-700', icon: 'fa-utensils' };
       case 'AGRICULTURE':
-      default:
         return { bg: 'bg-teal-50/70', border: 'border-teal-300', text: 'text-teal-700', icon: 'fa-wheat-awn' };
+      case 'COMMERCE':
+      case 'WHOLESALE_RETAIL':
+        return { bg: 'bg-amber-50/70', border: 'border-amber-300', text: 'text-amber-700', icon: 'fa-cart-shopping' };
+      case 'RETAIL':
+      case 'CONSUMER_LOAN':
+      default:
+        return { bg: 'bg-indigo-50/70', border: 'border-indigo-300', text: 'text-indigo-700', icon: 'fa-user' };
     }
   }
 
@@ -1398,20 +1400,28 @@ export class App implements OnInit {
 
   getSectorName(sectorCode: string): string {
     const mapVi: { [key: string]: string } = {
-      'REAL_ESTATE': 'Bất động sản',
-      'CONSTRUCTION': 'Xây dựng và Hạ tầng',
+      'REAL_ESTATE_CONSTRUCTION': 'BĐS và Xây dựng',
       'MANUFACTURING': 'Sản xuất và Chế biến',
-      'WHOLESALE_RETAIL': 'Bán buôn và Bán lẻ',
       'AGRICULTURE': 'Nông - Lâm - Thủy sản',
-      'CONSUMER_LOAN': 'Cho vay tiêu dùng'
+      'COMMERCE': 'Thương mại',
+      'RETAIL': 'Bán lẻ',
+      // Aliases
+      'REAL_ESTATE': 'BĐS và Xây dựng',
+      'CONSTRUCTION': 'BĐS và Xây dựng',
+      'WHOLESALE_RETAIL': 'Thương mại',
+      'CONSUMER_LOAN': 'Bán lẻ'
     };
     const mapEn: { [key: string]: string } = {
-      'REAL_ESTATE': 'Real Estate',
-      'CONSTRUCTION': 'Construction',
-      'MANUFACTURING': 'Manufacturing',
-      'WHOLESALE_RETAIL': 'Wholesale and Retail',
-      'AGRICULTURE': 'Agriculture',
-      'CONSUMER_LOAN': 'Consumer Loan'
+      'REAL_ESTATE_CONSTRUCTION': 'Real Estate & Construction',
+      'MANUFACTURING': 'Manufacturing & Processing',
+      'AGRICULTURE': 'Agriculture, Forestry & Fishery',
+      'COMMERCE': 'Commerce & Trade',
+      'RETAIL': 'Retail Banking',
+      // Aliases
+      'REAL_ESTATE': 'Real Estate & Construction',
+      'CONSTRUCTION': 'Real Estate & Construction',
+      'WHOLESALE_RETAIL': 'Commerce & Trade',
+      'CONSUMER_LOAN': 'Retail Banking'
     };
     return this.currentLang() === 'vi' ? (mapVi[sectorCode] || sectorCode) : (mapEn[sectorCode] || sectorCode);
   }
