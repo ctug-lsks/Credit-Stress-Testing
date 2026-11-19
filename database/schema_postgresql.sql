@@ -46,13 +46,33 @@ CREATE INDEX idx_system_users_username ON system_users(username);
 COMMENT ON TABLE system_users IS 'Bảng lưu trữ người dùng hệ thống, phân quyền RBAC và băm mật khẩu chuẩn PBKDF2 with SHA-256';
 
 -- ------------------------------------------------------------------------------
--- 2. CUSTOMERS (THÔNG TIN KHÁCH HÀNG VAY - Bảng 24 / 31 Báo cáo)
+-- 2. SECTOR SENSITIVITY (HỆ SỐ ĐỘ NHẠY THEO NGÀNH - Bảng 29 / 36 Báo cáo)
+-- ------------------------------------------------------------------------------
+CREATE TABLE sector_sensitivity (
+    sector_code VARCHAR(50) PRIMARY KEY,
+    sector_name_vn VARCHAR(100) NOT NULL,
+    beta_gdp NUMERIC(6, 4) NOT NULL,
+    beta_interest NUMERIC(6, 4) NOT NULL,
+    beta_real_estate NUMERIC(6, 4) NOT NULL,
+    pd_multiplier NUMERIC(6, 3) NOT NULL DEFAULT 1.000,
+    CONSTRAINT chk_standard_sectors CHECK (sector_code IN (
+        'REAL_ESTATE_CONSTRUCTION', 'MANUFACTURING', 'AGRICULTURE', 'COMMERCE', 'RETAIL'
+    ))
+);
+
+-- Alias view for industry_sensitivities backward compatibility
+CREATE OR REPLACE VIEW industry_sensitivities AS SELECT * FROM sector_sensitivity;
+COMMENT ON TABLE sector_sensitivity IS 'Hệ số nhạy cảm vĩ mô cho 5 ngành kinh tế chuẩn hóa (BĐS và Xây dựng, Sản xuất và Chế biến, Nông - Lâm - Thủy sản, Thương mại, Bán lẻ)';
+
+-- ------------------------------------------------------------------------------
+-- 3. CUSTOMERS (THÔNG TIN KHÁCH HÀNG VAY - Bảng 24 / 31 Báo cáo)
+-- Quan hệ 1-N: SECTOR_SENSITIVITY (1) -> CUSTOMERS (N)
 -- ------------------------------------------------------------------------------
 CREATE TABLE customers (
     customer_id VARCHAR(20) PRIMARY KEY,
     customer_name VARCHAR(150) NOT NULL,
     segment VARCHAR(30) NOT NULL CHECK (segment IN ('CORPORATE', 'SME', 'RETAIL', 'Doanh nghiệp', 'Bán lẻ')),
-    sector_code VARCHAR(50) NOT NULL,
+    sector_code VARCHAR(50) NOT NULL REFERENCES sector_sensitivity(sector_code) ON UPDATE CASCADE ON DELETE RESTRICT,
     internal_rating VARCHAR(10),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
@@ -62,7 +82,7 @@ CREATE INDEX idx_customers_rating ON customers(internal_rating);
 COMMENT ON TABLE customers IS 'Danh mục thông tin định danh khách hàng vay vốn';
 
 -- ------------------------------------------------------------------------------
--- 3. LOAN ACCOUNTS (HỢP ĐỒNG KHOẢN VAY TẠI NGÀY CHỐT - Bảng 25 / 32 Báo cáo)
+-- 4. LOAN ACCOUNTS (HỢP ĐỒNG KHOẢN VAY TẠI NGÀY CHỐT - Bảng 25 / 32 Báo cáo)
 -- ------------------------------------------------------------------------------
 CREATE TABLE loan_accounts (
     loan_id VARCHAR(30) PRIMARY KEY,
@@ -86,7 +106,7 @@ CREATE INDEX idx_loan_accounts_debt_group ON loan_accounts(debt_group);
 COMMENT ON TABLE loan_accounts IS 'Danh mục khoản vay chuẩn hóa tại ngày chốt số liệu';
 
 -- ------------------------------------------------------------------------------
--- 4. COLLATERALS (TÀI SẢN BẢO ĐẢM - Bảng 26 / 33 Báo cáo)
+-- 5. COLLATERALS (TÀI SẢN BẢO ĐẢM - Bảng 26 / 33 Báo cáo)
 -- ------------------------------------------------------------------------------
 CREATE TABLE collaterals (
     collateral_id VARCHAR(30) PRIMARY KEY,
@@ -100,7 +120,7 @@ CREATE TABLE collaterals (
 COMMENT ON TABLE collaterals IS 'Danh mục tài sản bảo đảm định giá và tỷ lệ chi phí thanh lý';
 
 -- ------------------------------------------------------------------------------
--- 5. LOAN COLLATERAL (QUAN HỆ KHOẢN VAY - TÀI SẢN BẢO ĐẢM N-N - Bảng 27 / 34 Báo cáo)
+-- 6. LOAN COLLATERAL (QUAN HỆ KHOẢN VAY - TÀI SẢN BẢO ĐẢM N-N - Bảng 27 / 34 Báo cáo)
 -- ------------------------------------------------------------------------------
 CREATE TABLE loan_collateral (
     id BIGSERIAL PRIMARY KEY,
@@ -117,7 +137,7 @@ CREATE INDEX idx_loan_collateral_collateral ON loan_collateral(collateral_id);
 COMMENT ON TABLE loan_collateral IS 'Bảng liên kết quan hệ N-N giữa khoản vay và tài sản bảo đảm kèm giá trị phân bổ';
 
 -- ------------------------------------------------------------------------------
--- 6. MACROECONOMIC SCENARIOS (KỊCH BẢN VĨ MÔ - Bảng 28 / 35 Báo cáo)
+-- 7. MACROECONOMIC SCENARIOS (KỊCH BẢN VĨ MÔ - Bảng 28 / 35 Báo cáo)
 -- ------------------------------------------------------------------------------
 CREATE TABLE macro_scenarios (
     scenario_id SERIAL PRIMARY KEY,
@@ -137,22 +157,6 @@ CREATE TABLE macro_scenarios (
 );
 
 COMMENT ON TABLE macro_scenarios IS 'Danh mục kịch bản kiểm định sức chịu đựng vĩ mô (Baseline, Adverse, Severe)';
-
--- ------------------------------------------------------------------------------
--- 7. SECTOR SENSITIVITY (HỆ SỐ ĐỘ NHẠY THEO NGÀNH - Bảng 29 / 36 Báo cáo)
--- ------------------------------------------------------------------------------
-CREATE TABLE sector_sensitivity (
-    sector_code VARCHAR(50) PRIMARY KEY,
-    sector_name_vn VARCHAR(100) NOT NULL,
-    beta_gdp NUMERIC(6, 4) NOT NULL,
-    beta_interest NUMERIC(6, 4) NOT NULL,
-    beta_real_estate NUMERIC(6, 4) NOT NULL,
-    pd_multiplier NUMERIC(6, 3) NOT NULL DEFAULT 1.000
-);
-
--- Alias view for industry_sensitivities backward compatibility
-CREATE OR REPLACE VIEW industry_sensitivities AS SELECT * FROM sector_sensitivity;
-COMMENT ON TABLE sector_sensitivity IS 'Hệ số nhạy cảm vĩ mô cho từng ngành kinh tế';
 
 -- ------------------------------------------------------------------------------
 -- 8. STRESS TEST RUNS / ECL REPORTS (PHIÊN KIỂM ĐỊNH & WORKFLOW - Bảng 30 / 37 Báo cáo)

@@ -47,10 +47,24 @@ class Customer(models.Model):
     """
     Bảng 24 / Bảng 31 Báo cáo: Thông tin khách hàng vay (CUSTOMERS)
     """
+    SECTOR_CHOICES = [
+        ('REAL_ESTATE_CONSTRUCTION', 'BĐS và Xây dựng'),
+        ('MANUFACTURING', 'Sản xuất và Chế biến'),
+        ('AGRICULTURE', 'Nông - Lâm - Thủy sản'),
+        ('COMMERCE', 'Thương mại'),
+        ('RETAIL', 'Bán lẻ'),
+    ]
+
+    SEGMENT_CHOICES = [
+        ('CORPORATE', 'Doanh nghiệp lớn (Corporate)'),
+        ('SME', 'Doanh nghiệp vừa và nhỏ (SME)'),
+        ('RETAIL', 'Khách hàng cá nhân (Retail)'),
+    ]
+
     customer_id = models.CharField(max_length=20, primary_key=True, verbose_name="Mã khách hàng")
     customer_name = models.CharField(max_length=150, verbose_name="Tên khách hàng")
-    segment = models.CharField(max_length=30, verbose_name="Phân khúc")  # 'Doanh nghiệp', 'Bán lẻ'
-    sector_code = models.CharField(max_length=50, verbose_name="Ngành kinh tế")  # BDS_XD, SX_CB, NLTS, TM, BL
+    segment = models.CharField(max_length=30, choices=SEGMENT_CHOICES, verbose_name="Phân khúc")
+    sector_code = models.CharField(max_length=50, choices=SECTOR_CHOICES, verbose_name="Ngành kinh tế (5 ngành chuẩn)")
     internal_rating = models.CharField(max_length=10, blank=True, null=True, verbose_name="Hạng tín dụng nội bộ")
     created_at = models.DateTimeField(default=timezone.now, verbose_name="Thời điểm tạo")
 
