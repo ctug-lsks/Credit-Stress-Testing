@@ -2262,7 +2262,7 @@
           <button (click)="selectedCalcTab.set('npl')"
                   [class]="selectedCalcTab() === 'npl' ? 'bg-slate-900 text-white font-bold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
                   class="px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer">
-            Nợ xấu NPL
+            {{ currentLang() === 'vi' ? 'Tỷ lệ vỡ nợ kỳ vọng' : 'Expected NPL' }}
           </button>
         </div>
 
@@ -2342,7 +2342,7 @@
               </div>
               <div class="text-[11px] font-semibold"
                    [class]="simulationResult()!.summary.is_capital_adequate ? 'text-emerald-700' : 'text-red-700'">
-                {{ simulationResult()!.summary.is_capital_adequate ? '• Đạt chuẩn an toàn vốn (≥ 8.00% Thông tư 41/2016/TT-NHNN).' : '• Vi phạm ngưỡng an toàn vốn tối thiểu 8.00% (Thâm hụt vốn đệm cần giải pháp can thiệp).' }}
+                {{ simulationResult()!.summary.is_capital_adequate ? '• Đạt chuẩn an toàn vốn (≥ 8.00% Thông tư 14/2025/TT-NHNN).' : '• Vi phạm ngưỡng an toàn vốn tối thiểu 8.00% (Thâm hụt vốn đệm cần giải pháp can thiệp).' }}
               </div>
             </div>
           }
@@ -2350,20 +2350,20 @@
                     @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'npl') {
             <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
               <div class="flex items-center justify-between border-b border-slate-200 pb-1.5">
-                <span class="font-bold text-slate-900 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Tỷ Lệ Nợ Xấu' : 'Non-Performing Loan Ratio' }}</span>
+                <span class="font-bold text-slate-900 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Tỷ Lệ Vỡ Nợ Kỳ Vọng (Expected NPL)' : 'Expected Default Rate (NPL)' }}</span>
                 <span class="text-xs font-bold text-slate-900 bg-white px-2.5 py-0.5 rounded border border-slate-200">
                   {{ formatPercent(simulationResult()!.summary.npl_ratio_post) }}
                 </span>
               </div>
               <div class="text-slate-800 bg-white p-3 rounded-lg border border-slate-200 text-xs space-y-1.5 leading-relaxed">
-                <div>• <strong>Công thức:</strong> NPL = [ Số HĐ Nhóm 3 / Tổng số HĐ ] × 100%</div>
+                <div>• <strong>Công thức:</strong> NPL_kỳ_vọng = [ (Dư nợ Stage 3 + ∑ PD_sốc × EAD_khoản còn lại) / Tổng EAD ] × 100%</div>
                 <div>• <strong>Dịch chuyển nhóm nợ hiện tại:</strong></div>
                 <div class="pl-3 text-[11px] space-y-0.5">
                   <div>{{ currentLang() === 'vi' ? '- Nhóm 1 - Nợ tiêu chuẩn:' : '- Stage 1 - Performing:' }} <strong>{{ simulationResult()!.stage_migration.post_stress[1] }}</strong> {{ currentLang() === 'vi' ? 'hợp đồng' : 'loans' }}</div>
                   <div>{{ currentLang() === 'vi' ? '- Nhóm 2 - Rủi ro gia tăng:' : '- Stage 2 - Underperforming:' }} <strong>{{ simulationResult()!.stage_migration.post_stress[2] }}</strong> {{ currentLang() === 'vi' ? 'hợp đồng (+ ' + simulationResult()!.stage_migration.migrated_to_stage2 + ' hợp đồng nhảy nhóm)' : 'loans' }}</div>
-                  <div>{{ currentLang() === 'vi' ? '- Nhóm 3 - Nợ xấu:' : '- Stage 3 - Impaired:' }} <strong>{{ simulationResult()!.stage_migration.post_stress[3] }}</strong> {{ currentLang() === 'vi' ? 'hợp đồng (+ ' + simulationResult()!.stage_migration.migrated_to_stage3 + ' hợp đồng vỡ nợ mới)' : 'loans' }}</div>
+                  <div>{{ currentLang() === 'vi' ? '- Nhóm 3 - Nợ xấu hiện hữu:' : '- Stage 3 - Impaired:' }} <strong>{{ simulationResult()!.stage_migration.post_stress[3] }}</strong> {{ currentLang() === 'vi' ? 'hợp đồng (+ ' + simulationResult()!.stage_migration.migrated_to_stage3 + ' hợp đồng vỡ nợ mới)' : 'loans' }}</div>
                 </div>
-                <div class="font-bold text-slate-900">• NPL = <strong>{{ formatPercent(simulationResult()!.summary.npl_ratio_post) }}</strong> ({{ currentLang() === 'vi' ? 'Trước sốc: ' : 'Baseline: ' }}{{ formatPercent(simulationResult()!.summary.npl_ratio_pre) }})</div>
+                <div class="font-bold text-slate-900">• Tỷ lệ vỡ nợ kỳ vọng sau sốc = <strong>{{ formatPercent(simulationResult()!.summary.npl_ratio_post) }}</strong> ({{ currentLang() === 'vi' ? 'Trước sốc: ' : 'Baseline: ' }}{{ formatPercent(simulationResult()!.summary.npl_ratio_pre) }})</div>
               </div>
             </div>
           }
@@ -2371,7 +2371,7 @@
         </div>
 
                 <div class="flex items-center justify-between pt-3 border-t border-slate-200 text-xs">
-          <span class="text-slate-400 text-xs">Chuẩn mực IFRS 9 và Basel II</span>
+          <span class="text-slate-400 text-xs">Chuẩn mực IFRS 9 và Thông tư 14/2025/TT-NHNN</span>
           <button (click)="methodologyModalOpen.set(false)"
                   class="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-md border border-slate-300 transition-colors cursor-pointer">
             {{ currentLang() === 'vi' ? 'Đóng Cửa Sổ' : 'Close' }}

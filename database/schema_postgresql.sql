@@ -3,7 +3,7 @@
 -- Target RDBMS: PostgreSQL 14+ / 16+
 -- Encoding: UTF-8
 -- Designed for: Bank Credit Risk Management Division
--- Standard Compliance: IFRS 9, Circular 11/2021/TT-NHNN, Circular 41/2016/TT-NHNN
+-- Standard Compliance: IFRS 9, Circular 11/2021/TT-NHNN, Circular 14/2025/TT-NHNN
 -- Security Model: RBAC, PBKDF2 Password Hashing, Four-Eyes Principle, Immutable Audit Trail
 -- ==============================================================================
 
@@ -245,7 +245,7 @@ CREATE TABLE car_impacts (
 
 -- Alias view for car_impact backward compatibility
 CREATE OR REPLACE VIEW car_impact AS SELECT * FROM car_impacts;
-COMMENT ON TABLE car_impacts IS 'Tổng hợp tác động trích lập bổ sung lên Vốn cấp 1, RWA và tỷ lệ CAR';
+COMMENT ON TABLE car_impacts IS 'Tổng hợp tác động trích lập bổ sung lên Vốn cấp 1, RWA và tỷ lệ an toàn vốn CAR (Thông tư 14/2025/TT-NHNN)';
 
 -- ------------------------------------------------------------------------------
 -- 11. AUDIT LOGS (NHẬT KÝ BẤT BIẾN APPEND-ONLY - Bảng 33 / 40 Báo cáo)

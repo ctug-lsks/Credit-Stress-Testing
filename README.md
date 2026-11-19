@@ -1,6 +1,6 @@
 # Credit Risk Stress Testing & ECL Provisioning System (IFRS 9 & Basel II)
 
-Hệ thống Kiểm định Sức chịu tải Rủi ro Tín dụng và Phân bổ Trích lập Dự phòng theo Chuẩn mực IFRS 9 và Khung An toàn Vốn Basel II (Thông tư 41/2016/TT-NHNN).
+Hệ thống Kiểm định Sức chịu tải Rủi ro Tín dụng và Phân bổ Trích lập Dự phòng theo Chuẩn mực IFRS 9 và Khung An toàn Vốn (Thông tư 14/2025/TT-NHNN).
 
 ---
 

@@ -348,7 +348,7 @@ def calculate_stress_test(
     llr_accounting_post = round((total_stressed_ecl / max(1.0, ead_stage3_post)) * 100.0, 2) if ead_stage3_post > 0 else 100.0
 
     # --------------------------------------------------------------------------
-    # 6. TÁC ĐỘNG TỶ LỆ AN TOÀN VỐN (CAR - THÔNG TƯ 41/2016/TT-NHNN)
+    # 6. TÁC ĐỘNG TỶ LỆ AN TOÀN VỐN (CAR - THÔNG TƯ 14/2025/TT-NHNN)
     # --------------------------------------------------------------------------
     baseline_tier1 = total_ead * 0.145
     baseline_tier2 = total_ead * 0.035
