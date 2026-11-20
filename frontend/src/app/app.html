@@ -689,10 +689,10 @@
                       <td class="p-3 text-[11px] text-slate-600 whitespace-nowrap">
                         <div class="space-y-0.5">
                           <span>GDP: <strong class="text-blue-700">{{ formatShock(run.custom_gdp_shock, 100, 1) }}%</strong></span> |
-                          <span>{{ currentLang() === 'vi' ? 'Lãi suất:' : 'IR:' }} <strong class="text-amber-700">+{{ formatShock(run.custom_ir_shock, 10000, 0) }} bps</strong></span>
+                          <span>{{ currentLang() === 'vi' ? 'Lãi suất (IR):' : 'IR:' }} <strong class="text-amber-700">+{{ formatShock(run.custom_ir_shock, 10000, 0) }} bps</strong></span>
                         </div>
                         <div class="space-y-0.5 mt-0.5">
-                          <span>{{ currentLang() === 'vi' ? 'Thất nghiệp:' : 'Unemp:' }} <strong class="text-emerald-700">+{{ formatShock(run.custom_unemp_shock, 100, 1) }}%</strong></span> |
+                          <span>{{ currentLang() === 'vi' ? 'Thất nghiệp (UNEMP):' : 'Unemp:' }} <strong class="text-emerald-700">+{{ formatShock(run.custom_unemp_shock, 100, 1) }}%</strong></span> |
                           <span>{{ currentLang() === 'vi' ? 'BĐS:' : 'RE:' }} <strong class="text-red-700">{{ formatShock(run.custom_re_shock, 100, 1) }}%</strong></span>
                         </div>
                       </td>
@@ -952,8 +952,8 @@
                 </span>
                 <div class="flex items-center gap-3 text-slate-700 font-medium">
                   <span>ΔGDP: <strong class="text-blue-700">{{ formatShock(selectedRunToReview()!.custom_gdp_shock, 100, 1) }}%</strong></span>
-                  <span>ΔLãi suất: <strong class="text-amber-700">+{{ formatShock(selectedRunToReview()!.custom_ir_shock, 10000, 0) }} bps</strong></span>
-                  <span>ΔThất nghiệp: <strong class="text-emerald-700">+{{ formatShock(selectedRunToReview()!.custom_unemp_shock, 100, 1) }}%</strong></span>
+                  <span>ΔLãi suất (IR): <strong class="text-amber-700">+{{ formatShock(selectedRunToReview()!.custom_ir_shock, 10000, 0) }} bps</strong></span>
+                  <span>ΔThất nghiệp (UNEMP): <strong class="text-emerald-700">+{{ formatShock(selectedRunToReview()!.custom_unemp_shock, 100, 1) }}%</strong></span>
                   <span>ΔGiá BĐS: <strong class="text-red-700">{{ formatShock(selectedRunToReview()!.custom_re_shock, 100, 1) }}%</strong></span>
                 </div>
               </div>
@@ -1196,7 +1196,7 @@
                       + Điều chỉnh lại GDP
                     </button>
                     <button type="button"
-                            (click)="applyQuickSuggestion('Tỷ lệ CAR sau sốc suy giảm dưới ngưỡng an toàn, yêu cầu rà soát lại tài sản bảo đảm')"
+                            (click)="applyQuickSuggestion('Hệ số An toàn Vốn (CAR) sau sốc suy giảm dưới ngưỡng an toàn, yêu cầu rà soát lại tài sản bảo đảm')"
                             class="text-[11px] px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 cursor-pointer transition-colors">
                       + Rà soát vốn đệm CAR
                     </button>
@@ -1358,15 +1358,15 @@
                     <div class="font-bold text-blue-700 text-sm">{{ formatShock(selectedApproverRun()!.custom_gdp_shock, 100, 1) }}%</div>
                   </div>
                   <div class="p-2 bg-white rounded-lg border border-slate-200">
-                    <span class="text-slate-500 text-[11px]">Cú sốc Lãi suất:</span>
+                    <span class="text-slate-500 text-[11px]">{{ currentLang() === 'vi' ? 'Cú sốc Lãi suất (IR):' : 'Interest Rate Shock (IR):' }}</span>
                     <div class="font-bold text-amber-700 text-sm">+{{ formatShock(selectedApproverRun()!.custom_ir_shock, 10000, 0) }} bps</div>
                   </div>
                   <div class="p-2 bg-white rounded-lg border border-slate-200">
-                    <span class="text-slate-500 text-[11px]">Cú sốc Thất nghiệp:</span>
+                    <span class="text-slate-500 text-[11px]">{{ currentLang() === 'vi' ? 'Cú sốc Thất nghiệp (UNEMP):' : 'Unemployment Shock (UNEMP):' }}</span>
                     <div class="font-bold text-emerald-700 text-sm">+{{ formatShock(selectedApproverRun()!.custom_unemp_shock, 100, 1) }}%</div>
                   </div>
                   <div class="p-2 bg-white rounded-lg border border-slate-200">
-                    <span class="text-slate-500 text-[11px]">Cú sốc Bất động sản:</span>
+                    <span class="text-slate-500 text-[11px]">{{ currentLang() === 'vi' ? 'Cú sốc Bất động sản (RE):' : 'Property Shock (RE):' }}</span>
                     <div class="font-bold text-red-700 text-sm">{{ formatShock(selectedApproverRun()!.custom_re_shock, 100, 1) }}%</div>
                   </div>
                 </div>
@@ -1456,7 +1456,7 @@
                       </div>
                       <div class="pt-2 mt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
                         <span>{{ sec.contract_count }} HĐ tín dụng</span>
-                        <span class="font-medium text-slate-700">Dư nợ: {{ formatVND(sec.ead) }}</span>
+                        <span class="font-medium text-slate-700">{{ currentLang() === 'vi' ? 'Dư nợ (EAD):' : 'Exposure (EAD):' }} {{ formatVND(sec.ead) }}</span>
                       </div>
                     </div>
                   }
@@ -1515,7 +1515,7 @@
                     <strong class="text-slate-900">{{ getReviewStageMigration()?.sicr_count || 0 }} / 100 HĐ</strong>
                   </div>
                   <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-between">
-                    <span class="text-slate-600">Tỷ lệ Nợ xấu NPL sau sốc:</span>
+                    <span class="text-slate-600">{{ currentLang() === 'vi' ? 'Tỷ lệ Nợ xấu (NPL) sau sốc:' : 'Stressed NPL Ratio (NPL):' }}</span>
                     <strong class="text-red-700 font-bold">{{ ((getStageCount(getReviewStageMigration()?.post_stress, 3) / 100) * 100).toFixed(1) }}%</strong>
                   </div>
                 </div>
@@ -1816,10 +1816,10 @@
                       <th class="p-2.5">Mã HĐ</th>
                       <th class="p-2.5">Khách hàng</th>
                       <th class="p-2.5">Ngành</th>
-                      <th class="p-2.5">Dư nợ</th>
+                      <th class="p-2.5">{{ currentLang() === 'vi' ? 'Dư nợ (EAD)' : 'Exposure (EAD)' }}</th>
                       <th class="p-2.5">Dịch chuyển Nhóm</th>
                       <th class="p-2.5">Xác suất vỡ nợ</th>
-                      <th class="p-2.5">Trích lập bổ sung</th>
+                      <th class="p-2.5">{{ currentLang() === 'vi' ? 'Trích lập Bổ sung (ΔPS)' : 'Addl Provision (ΔPS)' }}</th>
                       <th class="p-2.5">Thao tác</th>
                     </tr>
                   </thead>
@@ -1903,14 +1903,14 @@
             </div>
 
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-              <div class="text-[11px] font-semibold text-slate-500 uppercase">Dư nợ cảnh báo</div>
+              <div class="text-[11px] font-semibold text-slate-500 uppercase">{{ currentLang() === 'vi' ? 'Dư nợ cảnh báo (EAD)' : 'Watchlist Exposure (EAD)' }}</div>
               <div class="text-2xl font-extrabold text-slate-900 mt-1">
                 {{ formatVND(earlyWarningEAD()) }}
               </div>
             </div>
 
             <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-              <div class="text-[11px] font-semibold text-slate-500 uppercase">Trích lập bổ sung</div>
+              <div class="text-[11px] font-semibold text-slate-500 uppercase">{{ currentLang() === 'vi' ? 'Trích lập Bổ sung (ΔPS)' : 'Addl Provision (ΔPS)' }}</div>
               <div class="text-2xl font-extrabold text-red-700 mt-1">
                 +{{ formatVND(earlyWarningDeltaPS()) }}
               </div>
@@ -2242,27 +2242,27 @@
           <button (click)="selectedCalcTab.set('ead')"
                   [class]="selectedCalcTab() === 'ead' ? 'bg-slate-900 text-white font-bold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
                   class="px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer">
-            Dư nợ EAD
+            Dư nợ (EAD)
           </button>
           <button (click)="selectedCalcTab.set('ecl')"
                   [class]="selectedCalcTab() === 'ecl' ? 'bg-slate-900 text-white font-bold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
                   class="px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer">
-            Tổn thất ECL
+            Tổn thất (ECL)
           </button>
           <button (click)="selectedCalcTab.set('deltaps')"
                   [class]="selectedCalcTab() === 'deltaps' ? 'bg-red-600 text-white font-bold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
                   class="px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer">
-            Trích lập ΔPS
+            Trích lập (ΔPS)
           </button>
           <button (click)="selectedCalcTab.set('car')"
                   [class]="selectedCalcTab() === 'car' ? 'bg-slate-900 text-white font-bold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
                   class="px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer">
-            Tỷ lệ CAR
+            Hệ số An toàn Vốn (CAR)
           </button>
           <button (click)="selectedCalcTab.set('npl')"
                   [class]="selectedCalcTab() === 'npl' ? 'bg-slate-900 text-white font-bold' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
                   class="px-2.5 py-1 text-xs rounded-md transition-colors cursor-pointer">
-            {{ currentLang() === 'vi' ? 'Tỷ lệ vỡ nợ kỳ vọng' : 'Expected NPL' }}
+            {{ currentLang() === 'vi' ? 'Tỷ lệ Nợ xấu (NPL)' : 'Expected NPL (NPL)' }}
           </button>
         </div>
 
@@ -2271,7 +2271,7 @@
                     @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'ead') {
             <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
               <div class="flex items-center justify-between border-b border-slate-200 pb-1.5">
-                <span class="font-bold text-slate-900 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Tổng Dư Nợ Chịu Rủi Ro' : 'Total Exposure at Default' }}</span>
+                <span class="font-bold text-slate-900 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Tổng Dư Nợ Chịu Rủi Ro (EAD)' : 'Total Exposure at Default (EAD)' }}</span>
                 <span class="text-xs font-bold text-blue-700 bg-white px-2.5 py-0.5 rounded border border-slate-200">
                   {{ formatVND(simulationResult()!.summary.total_ead) }}
                 </span>
@@ -2289,7 +2289,7 @@
                     @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'ecl') {
             <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
               <div class="flex items-center justify-between border-b border-slate-200 pb-1.5">
-                <span class="font-bold text-slate-900 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Tổn Thất Tín Dụng Dự Kiến' : 'Stressed Expected Credit Loss' }}</span>
+                <span class="font-bold text-slate-900 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Tổn Thất Tín Dụng Dự Kiến (ECL)' : 'Stressed Expected Credit Loss (ECL)' }}</span>
                 <span class="text-xs font-bold text-amber-700 bg-white px-2.5 py-0.5 rounded border border-slate-200">
                   {{ formatVND(simulationResult()!.summary.total_stressed_ecl) }}
                 </span>
@@ -2308,7 +2308,7 @@
                     @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'deltaps') {
             <div class="p-4 rounded-lg bg-red-50/40 border border-red-200 space-y-2">
               <div class="flex items-center justify-between border-b border-red-200 pb-1.5">
-                <span class="font-bold text-rose-800 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Chi Phí Trích Lập Dự Phòng Bổ Sung' : 'Additional Provision Allocation' }}</span>
+                <span class="font-bold text-rose-800 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Chi Phí Trích Lập Dự Phòng Bổ Sung (ΔPS)' : 'Additional Provision Allocation (ΔPS)' }}</span>
                 <span class="text-xs font-bold text-red-700 bg-white px-2.5 py-0.5 rounded border border-red-200">
                   +{{ formatVND(simulationResult()!.summary.total_delta_provision) }}
                 </span>
@@ -2327,7 +2327,7 @@
                     @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'car') {
             <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
               <div class="flex items-center justify-between border-b border-slate-200 pb-1.5">
-                <span class="font-bold text-slate-900 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Tỷ Lệ An Toàn Vốn' : 'Capital Adequacy Ratio' }}</span>
+                <span class="font-bold text-slate-900 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Hệ Số An Toàn Vốn (CAR)' : 'Capital Adequacy Ratio (CAR)' }}</span>
                 <span class="text-xs font-bold px-2.5 py-0.5 rounded border"
                       [class]="simulationResult()!.summary.is_capital_adequate ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-red-700 bg-red-50 border-red-200'">
                   {{ formatPercent(simulationResult()!.summary.stressed_car) }}
@@ -2350,7 +2350,7 @@
                     @if (selectedCalcTab() === 'all' || selectedCalcTab() === 'npl') {
             <div class="p-4 rounded-lg bg-slate-50 border border-slate-200 space-y-2">
               <div class="flex items-center justify-between border-b border-slate-200 pb-1.5">
-                <span class="font-bold text-slate-900 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Tỷ Lệ Vỡ Nợ Kỳ Vọng (Expected NPL)' : 'Expected Default Rate (NPL)' }}</span>
+                <span class="font-bold text-slate-900 text-xs uppercase tracking-wide">{{ currentLang() === 'vi' ? 'Tỷ Lệ Nợ Xấu Kỳ Vọng (NPL)' : 'Expected Default Rate (NPL)' }}</span>
                 <span class="text-xs font-bold text-slate-900 bg-white px-2.5 py-0.5 rounded border border-slate-200">
                   {{ formatPercent(simulationResult()!.summary.npl_ratio_post) }}
                 </span>
@@ -2433,11 +2433,11 @@
 
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 text-xs">
           <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
-            <div class="text-[11px] text-slate-500 font-medium">Tổn thất Dự kiến</div>
+            <div class="text-[11px] text-slate-500 font-medium">{{ currentLang() === 'vi' ? 'Tổn thất Dự kiến (ECL)' : 'Expected Loss (ECL)' }}</div>
             <div class="text-sm font-bold text-slate-900 mt-0.5">{{ formatVND(selectedRunDetail()!.total_stressed_ecl) }}</div>
           </div>
           <div class="p-3 bg-red-50/60 rounded-lg border border-rose-100">
-            <div class="text-[11px] text-red-700 font-semibold">Trích lập Bổ sung</div>
+            <div class="text-[11px] text-red-700 font-semibold">{{ currentLang() === 'vi' ? 'Trích lập Bổ sung (ΔPS)' : 'Addl Provision (ΔPS)' }}</div>
             <div class="text-sm font-bold text-red-700 mt-0.5">+{{ formatVND(selectedRunDetail()!.total_delta_provision) }}</div>
           </div>
           <div class="p-3 bg-blue-50/60 rounded-lg border border-blue-100">
@@ -2454,9 +2454,9 @@
           <div class="font-bold text-slate-800 text-[11px] uppercase tracking-wide">Bộ Tham Số Cú Sốc Vĩ Mô Áp Dụng</div>
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px]">
             <div>GDP: <strong class="text-blue-700">{{ formatShock(selectedRunDetail()!.custom_gdp_shock, 100, 1) }}%</strong></div>
-            <div>Lãi suất: <strong class="text-amber-700">+{{ formatShock(selectedRunDetail()!.custom_ir_shock, 10000, 0) }} bps</strong></div>
-            <div>Thất nghiệp: <strong class="text-emerald-700">+{{ formatShock(selectedRunDetail()!.custom_unemp_shock, 100, 1) }}%</strong></div>
-            <div>Bất động sản: <strong class="text-red-700">{{ formatShock(selectedRunDetail()!.custom_re_shock, 100, 1) }}%</strong></div>
+            <div>{{ currentLang() === 'vi' ? 'Lãi suất (IR):' : 'IR:' }} <strong class="text-amber-700">+{{ formatShock(selectedRunDetail()!.custom_ir_shock, 10000, 0) }} bps</strong></div>
+            <div>{{ currentLang() === 'vi' ? 'Thất nghiệp (UNEMP):' : 'Unemp:' }} <strong class="text-emerald-700">+{{ formatShock(selectedRunDetail()!.custom_unemp_shock, 100, 1) }}%</strong></div>
+            <div>{{ currentLang() === 'vi' ? 'Bất động sản (RE):' : 'Property:' }} <strong class="text-red-700">{{ formatShock(selectedRunDetail()!.custom_re_shock, 100, 1) }}%</strong></div>
           </div>
         </div>
 
@@ -2503,7 +2503,7 @@
               {{ currentLang() === 'vi' ? 'Bảng Kê Chi Tiết 100 Hợp Đồng Kiểm Định Của Đề Án' : 'Detailed Portfolio Loans Audit Inspection' }}
             </h3>
             <p class="text-xs text-slate-500">
-              {{ currentLang() === 'vi' ? 'Dữ liệu tính toán định lượng từng hợp đồng: Dư nợ EAD, dịch chuyển nhóm nợ, PD sốc và trích lập bổ sung.' : 'Loan-level quantitative audit data: EAD, stage transition, stressed PD and incremental provision.' }}
+              {{ currentLang() === 'vi' ? 'Dữ liệu tính toán định lượng từng hợp đồng: Dư nợ (EAD), dịch chuyển nhóm nợ, PD sốc và trích lập bổ sung.' : 'Loan-level quantitative audit data: EAD, stage transition, stressed PD and incremental provision.' }}
             </p>
           </div>
           <button (click)="checkerContractModalOpen.set(false)" class="w-8 h-8 rounded-full hover:bg-slate-100 text-slate-400 hover:text-slate-600 flex items-center justify-center cursor-pointer">

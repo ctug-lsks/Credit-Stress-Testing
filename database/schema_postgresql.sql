@@ -54,6 +54,7 @@ CREATE TABLE sector_sensitivity (
     beta_gdp NUMERIC(6, 4) NOT NULL,
     beta_interest NUMERIC(6, 4) NOT NULL,
     beta_real_estate NUMERIC(6, 4) NOT NULL,
+    beta_unemployment NUMERIC(6, 4) NOT NULL DEFAULT 1.0000,
     pd_multiplier NUMERIC(6, 3) NOT NULL DEFAULT 1.000,
     CONSTRAINT chk_standard_sectors CHECK (sector_code IN (
         'REAL_ESTATE_CONSTRUCTION', 'MANUFACTURING', 'AGRICULTURE', 'COMMERCE', 'RETAIL'

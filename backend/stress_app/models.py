@@ -187,6 +187,7 @@ class IndustrySensitivity(models.Model):
     beta_gdp = models.DecimalField(max_digits=6, decimal_places=4, verbose_name="Hệ số nhạy cảm GDP (Beta GDP)")
     beta_interest = models.DecimalField(max_digits=6, decimal_places=4, verbose_name="Hệ số nhạy cảm Lãi suất (Beta IR)")
     beta_real_estate = models.DecimalField(max_digits=6, decimal_places=4, verbose_name="Hệ số nhạy cảm BĐS (Beta RE)")
+    beta_unemployment = models.DecimalField(max_digits=6, decimal_places=4, default=1.0000, verbose_name="Hệ số nhạy cảm Thất nghiệp (Beta Unemp)")
     pd_multiplier = models.DecimalField(max_digits=6, decimal_places=3, default=1.000, verbose_name="Hệ số khuếch đại PD")
 
     class Meta:
